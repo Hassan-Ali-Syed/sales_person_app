@@ -61,10 +61,6 @@ class SignInController extends GetxController {
           log('Token: ${Preferences().getUserToken()}');
           Get.offNamed(AppRoutes.MAIN_PAGE);
         }
-
-        // if (response.data!['login']["token"] != null) {
-
-        // }
       },
       onLoading: () {
         isLoading.value = true;

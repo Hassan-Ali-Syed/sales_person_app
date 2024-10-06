@@ -107,6 +107,7 @@ class MainPageController extends GetxController {
         isLoading.value = true;
       },
       onSuccessGraph: (response) {
+        log("########RESPONSE: ############## \n ${response.data}");
         addTliCustomerModel(response.data!['tliCustomers']);
         isLoading.value = false;
       },
@@ -129,7 +130,7 @@ class MainPageController extends GetxController {
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: """ query MyQuery {
         tliItems(
-          companyId: "aabdd4f3-a1f4-ec11-82f8-0022483487fb"
+          companyId: "${ApiConstants.POSH_ID}"
           page: 1
           perPage: 10000
           filter: "no eq '$no'"
@@ -159,7 +160,7 @@ class MainPageController extends GetxController {
 
   void setCustomerData(var indexNo) {
     customerAddress.value =
-        '${tliCustomers!.value[indexNo].address}.${tliCustomers!.value[indexNo].address2}';
+        '${tliCustomers!.value[indexNo].address}.", ".${tliCustomers!.value[indexNo].address2}';
     isAddressFieldVisible.value = true;
     addressController = TextEditingController(text: customerAddress.value);
     setCustomerShipToAdd(indexNo);
@@ -171,7 +172,7 @@ class MainPageController extends GetxController {
     var instanceCustomerShipToAdd = tliCustomers!.value[index].tliShipToAdds;
     if (instanceCustomerShipToAdd != null) {
       for (var element in instanceCustomerShipToAdd) {
-        customersShipToAdd.add('${element.address!}.${element.address2!}');
+        customersShipToAdd.add('${element.address!}.", ".${element.address2!}');
       }
     }
     shipToAddController = TextEditingController(text: '');

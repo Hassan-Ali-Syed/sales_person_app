@@ -20,7 +20,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // First TextField - Always Visible
+            // First TextField Customer's Name- Always Visible
             Obx(
               () => !controller.isCustomerExpanded.value
                   ? Padding(
@@ -39,7 +39,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           suffixIcon: IconButton(
                             onPressed: () {
                               controller.isCustomerExpanded.value = true;
-                              controller.getCustomersFromGraphQL();
                             },
                             icon: const Icon(
                               Icons.arrow_drop_down,
@@ -117,40 +116,40 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               ),
                             ],
                           ),
-                          // Expanded(
-                          //   child: Scrollbar(
-                          //     thumbVisibility: true,
-                          //     controller: controller.customerScrollController,
-                          //     child: controller.tliCustomers?.value != null &&
-                          //             controller.tliCustomers!.value.isNotEmpty
-                          //         ? ListView.builder(
-                          //             controller:
-                          //                 controller.customerScrollController,
-                          //             itemCount:
-                          //                 controller.tliCustomers?.value.length,
-                          //             itemBuilder: (context, index) {
-                          //               final filteredData = controller
-                          //                   .tliCustomers?.value[index].name;
-                          //               return ListTile(
-                          //                 title: Text(filteredData!),
-                          //                 onTap: () {
-                          //                   controller.setCustomerData(index);
-                          //                   controller
-                          //                       .customerTextFieldController
-                          //                       .text = filteredData;
-                          //                   controller.isCustomerExpanded
-                          //                       .value = false;
-                          //                   controller.searchCustomerController
-                          //                       .clear();
-                          //                 },
-                          //               );
-                          //             },
-                          //           )
-                          //         : const Center(
-                          //             child: Text('No customers available'),
-                          //           ),
-                          //   ),
-                          // ),
+                          Expanded(
+                            child: Scrollbar(
+                              thumbVisibility: true,
+                              controller: controller.customerScrollController,
+                              child: controller.tliCustomers?.value != null &&
+                                      controller.tliCustomers!.value.isNotEmpty
+                                  ? ListView.builder(
+                                      controller:
+                                          controller.customerScrollController,
+                                      itemCount:
+                                          controller.tliCustomers?.value.length,
+                                      itemBuilder: (context, index) {
+                                        final filteredData = controller
+                                            .tliCustomers?.value[index].name;
+                                        return ListTile(
+                                          title: Text(filteredData!),
+                                          onTap: () {
+                                            controller.setCustomerData(index);
+                                            controller
+                                                .customerTextFieldController
+                                                .text = filteredData;
+                                            controller.isCustomerExpanded
+                                                .value = false;
+                                            controller.searchCustomerController
+                                                .clear();
+                                          },
+                                        );
+                                      },
+                                    )
+                                  : const Center(
+                                      child: Text('No customers available'),
+                                    ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Row(
@@ -175,7 +174,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                       ),
                     ),
             ),
-
+            // Second TextField Bill to Add automatically filled when select customer
             Obx(
               () => controller.isAddressFieldVisible.value
                   ? SizedBox(
@@ -191,6 +190,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                     )
                   : const SizedBox.shrink(),
             ),
+            // third TextField of Ship to Address we have to fill
             Obx(
               () => controller.isShipToAddFieldVisible.value
                   ? !controller.isShipToAddExpanded.value
@@ -201,10 +201,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           child: TextField(
                             controller: controller.shipToAddController,
                             textAlign: TextAlign.left,
-                            // onSubmitted: (value) {
-                            //   controller.isAddressFieldVisible.value = true;
-                            // },
-                            // onChanged: (value) =>,
                             decoration: InputDecoration(
                               labelText: 'Ship to add',
                               suffixIcon: IconButton(
@@ -305,8 +301,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                       return ListTile(
                                         title: Text(filteredData),
                                         onTap: () {
-                                          // controller.tliCustomers!.value[index];
-                                          // controller.setCustomerAddress(index);
                                           controller.shipToAddController.text =
                                               filteredData;
                                           controller.isShipToAddExpanded.value =
@@ -344,6 +338,154 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         )
                   : const SizedBox.shrink(),
             ),
+
+            // Fourth  TextField of contacts
+            // Obx(
+            //   () => controller.isAttandeeFieldVisible.value
+            //       ? !controller.isAttandeeExpanded.value
+            //           ? Padding(
+            //               padding: const EdgeInsets.only(
+            //                 top: Sizes.PADDING_8,
+            //               ),
+            //               child: TextField(
+            //                 controller: controller.attandeeController,
+            //                 textAlign: TextAlign.left,
+            //                 decoration: InputDecoration(
+            //                   labelText: 'Attandee',
+            //                   suffixIcon: IconButton(
+            //                     onPressed: () {
+            //                       controller.isAttandeeExpanded.value = true;
+            //                     },
+            //                     icon: const Icon(
+            //                       Icons.arrow_drop_down,
+            //                       size: Sizes.WIDTH_30,
+            //                       color: Colors.black,
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ),
+            //             )
+            //           : Container(
+            //               height: Sizes.HEIGHT_250,
+            //               width: double.infinity,
+            //               decoration: const BoxDecoration(
+            //                 border: Border(
+            //                   bottom: BorderSide(
+            //                     color: Colors.grey,
+            //                   ),
+            //                 ),
+            //               ),
+            //               child: Column(
+            //                 children: [
+            //                   Row(
+            //                     mainAxisAlignment:
+            //                         MainAxisAlignment.spaceBetween,
+            //                     children: [
+            //                       controller.isAttandeeSearch.value
+            //                           ? Expanded(
+            //                               child: TextField(
+            //                                 controller: controller
+            //                                     .searchAttandeeController,
+            //                                 autofocus: true,
+            //                                 decoration: InputDecoration(
+            //                                   labelText: 'Search Attandee',
+            //                                   border:
+            //                                       const UnderlineInputBorder(),
+            //                                   suffixIcon: IconButton(
+            //                                       icon: const Icon(Icons.close),
+            //                                       onPressed: () {
+            //                                         controller.isAttandeeSearch
+            //                                             .value = false;
+            //                                         controller
+            //                                             .attandeeController
+            //                                             .clear();
+            //                                       }),
+            //                                 ),
+            //                               ),
+            //                             )
+            //                           : Text(
+            //                               'Add new attandee',
+            //                               style: context.bodyLarge,
+            //                             ),
+            //                       Row(
+            //                         children: [
+            //                           controller.isAttandeeSearch.value
+            //                               ? const SizedBox.shrink()
+            //                               : GestureDetector(
+            //                                   onTap: () {
+            //                                     controller.isAttandeeSearch
+            //                                         .value = true;
+            //                                   },
+            //                                   child: const Icon(Icons.search),
+            //                                 ),
+            //                           GestureDetector(
+            //                             onTap: () {
+            //                               controller.isAttandeeExpanded.value =
+            //                                   false;
+            //                             },
+            //                             child: const Icon(
+            //                               Icons.arrow_drop_up,
+            //                               size: Sizes.WIDTH_40,
+            //                               color: Color.fromRGBO(0, 0, 0, 1),
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                     ],
+            //                   ),
+            //                   Expanded(
+            //                     child: Scrollbar(
+            //                       thumbVisibility: true,
+            //                       controller:
+            //                           controller.attandeeScrollController,
+            //                       child: ListView.builder(
+            //                         controller:
+            //                             controller.attandeeScrollController,
+            //                         itemCount:
+            //                             controller.customersShipToAdd.length,
+            //                         itemBuilder: (context, index) {
+            //                           final filteredData =
+            //                               controller.customersShipToAdd[index];
+            //                           return ListTile(
+            //                             title: Text(filteredData),
+            //                             onTap: () {
+            //                               controller.shipToAddController.text =
+            //                                   filteredData;
+            //                               controller.isShipToAddExpanded.value =
+            //                                   false;
+            //                               controller.searchShipToAddController
+            //                                   .clear();
+            //                             },
+            //                           );
+            //                         },
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   Padding(
+            //                     padding: const EdgeInsets.only(top: 8.0),
+            //                     child: Row(
+            //                       mainAxisAlignment: MainAxisAlignment.end,
+            //                       children: [
+            //                         GestureDetector(
+            //                           onTap: () {},
+            //                           child: Row(
+            //                             children: [
+            //                               Text(
+            //                                 'Add new ship to add',
+            //                                 style: context.bodyLarge,
+            //                               ),
+            //                               const Icon(Icons.add),
+            //                             ],
+            //                           ),
+            //                         ),
+            //                       ],
+            //                     ),
+            //                   ),
+            //                 ],
+            //               ),
+            //             )
+            //       : const SizedBox.shrink(),
+            // ),
 
             // const SizedBox(
             //   height: Sizes.HEIGHT_10,

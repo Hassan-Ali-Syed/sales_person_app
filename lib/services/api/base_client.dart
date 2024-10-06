@@ -51,7 +51,7 @@ class BaseClient {
     Map<String, String> headers = {
       "Accept": "*/*",
       "Content-Type": "application/json",
-      "Authorization": "Bearer ${Preferences().getUserToken()}}"
+      "Authorization": "Bearer Bearer ${Preferences().getUserToken()}"
     };
     return headers;
   }
