@@ -4,7 +4,6 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_person_app/constants/constants.dart';
-import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
@@ -102,23 +101,18 @@ class MainPageController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(
-          token: '1248|onDPJb7TVCt16FjKCnh3LvIyYyfMGTbLgIuQHPW0b781fbb3'),
+      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicustomersQuery.tliCustomersQuery(),
       onLoading: () {
         isLoading.value = true;
-        log("***********loading**********");
       },
       onSuccessGraph: (response) {
-        log('Token: ${Preferences().getUserToken()} ');
-        log('=========${response.data!['tliCustomers']}========');
-        // addTliCustomerModel(response.data!['tliCustomers']);
+        log("########RESPONSE: ############## \n ${response.data}");
+        addTliCustomerModel(response.data!['tliCustomers']);
         isLoading.value = false;
       },
       onError: (e) {
         isLoading.value = false;
-        print(
-            'header ************* ${BaseClient.generateHeadersWithTokenForGraphQL()}');
         CustomSnackBar.showCustomErrorSnackBar(
           title: 'Error',
           message: e.message,
@@ -136,7 +130,7 @@ class MainPageController extends GetxController {
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: """ query MyQuery {
         tliItems(
-          companyId: "aabdd4f3-a1f4-ec11-82f8-0022483487fb"
+          companyId: "${ApiConstants.POSH_ID}"
           page: 1
           perPage: 10000
           filter: "no eq '$no'"
@@ -166,7 +160,7 @@ class MainPageController extends GetxController {
 
   void setCustomerData(var indexNo) {
     customerAddress.value =
-        '${tliCustomers!.value[indexNo].address}.${tliCustomers!.value[indexNo].address2}';
+        '${tliCustomers!.value[indexNo].address}.", ".${tliCustomers!.value[indexNo].address2}';
     isAddressFieldVisible.value = true;
     addressController = TextEditingController(text: customerAddress.value);
     setCustomerShipToAdd(indexNo);
@@ -178,7 +172,7 @@ class MainPageController extends GetxController {
     var instanceCustomerShipToAdd = tliCustomers!.value[index].tliShipToAdds;
     if (instanceCustomerShipToAdd != null) {
       for (var element in instanceCustomerShipToAdd) {
-        customersShipToAdd.add('${element.address!}.${element.address2!}');
+        customersShipToAdd.add('${element.address!}.", ".${element.address2!}');
       }
     }
     shipToAddController = TextEditingController(text: '');

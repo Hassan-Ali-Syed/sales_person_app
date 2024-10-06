@@ -47,20 +47,19 @@ class BaseClient {
     return headers;
   }
 
-  static Map<String, String>? generateHeadersWithTokenForGraphQL(
-      {String? token}) {
+  static Map<String, String>? generateHeadersWithTokenForGraphQL() {
     Map<String, String> headers = {
-      "Authorization": "Bearer ${token ?? Preferences().getUserToken()}"
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer Bearer ${Preferences().getUserToken()}"
     };
     return headers;
   }
-      // "Accept": "*/*",
-      // "Content-Type": "application/json",
 
   static Map<String, String>? generateHeadersForGraphQL2_0() {
     Map<String, String> headers = {
       "Accept": "*/*",
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
     return headers;
   }
