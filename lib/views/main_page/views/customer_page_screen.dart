@@ -3,10 +3,7 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
-import 'package:sales_person_app/views/main_page/components/custom_header_row.dart';
-import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
-import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class CustomerPageScreen extends GetView<MainPageController> {
   static const String routeName = '/custome_page_screen';
