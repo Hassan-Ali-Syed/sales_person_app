@@ -3,8 +3,6 @@
 part of 'constants.dart';
 
 class AppStrings {
-
-
   // Font Names
   static const String ROBOTO = 'Roboto';
   static const String POPPINS = 'Poppins';
@@ -34,7 +32,7 @@ class AppStrings {
 // App Bar title
   static const String HOME_TITLE = 'Home';
   static const String CUSTOMER_TITLE = 'Customer';
-  static const String CONTACT_TITLE = 'Contact';
+  static const String CONTACT_TITLE = 'Add Contact';
   static const String MORE_TITLE = 'More';
 
   // hint_text
