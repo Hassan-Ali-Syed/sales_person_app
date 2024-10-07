@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
+import 'package:sales_person_app/views/main_page/components/custom_header_row.dart';
+import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
+import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class CustomerPageScreen extends GetView<MainPageController> {
   static const String routeName = '/custome_page_screen';
@@ -492,7 +495,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              'Add new ship to add',
+                                              'Add new attandee',
                                               style: context.bodyLarge,
                                             ),
                                             const Icon(Icons.add),
@@ -535,18 +538,16 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ? LightTheme.buttonBackgroundColor2
                                     : Colors.white,
                               ),
-                              child: Obx(
-                                () => Text(
-                                  index == 0
-                                      ? 'General'
-                                      : controller.selectedItems[index - 1],
-                                  style: TextStyle(
-                                    color: controller
-                                                .attandeeSelectedIndex.value ==
-                                            index
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
+                              child: Text(
+                                index == 0
+                                    ? 'General'
+                                    : controller.selectedItems[index - 1],
+                                style: TextStyle(
+                                  color:
+                                      controller.attandeeSelectedIndex.value ==
+                                              index
+                                          ? Colors.white
+                                          : Colors.black,
                                 ),
                               ),
                             ),
@@ -555,41 +556,39 @@ class CustomerPageScreen extends GetView<MainPageController> {
                       ),
                     )
                   : const SizedBox(),
-              // const SizedBox(
-              //   height: Sizes.HEIGHT_10,
-              // ),
-              // const CustomHeaderRow(),
-              // Obx(
-              //   () => CustomRowCells(
-              //     itemName: controller.scanBarcode.value,
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: Sizes.HEIGHT_250,
-              // ),
-              // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              //   CustomElevatedButton(
-              //     onPressed: () {
-              //       controller.getCustomersFromGraphQL();
-              //     },
-              //     title: 'Finish',
-              //     minWidht: Sizes.WIDTH_120,
-              //     minHeight: Sizes.HEIGHT_30,
-              //     backgroundColor: LightTheme.buttonBackgroundColor2,
-              //     borderRadiusCircular: BorderRadius.circular(10),
-              //   ),
-              //   const SizedBox(
-              //     width: Sizes.WIDTH_10,
-              //   ),
-              //   CustomElevatedButton(
-              //     onPressed: () => controller.scanBarcodeNormal(),
-              //     title: 'Scan',
-              //     minWidht: Sizes.WIDTH_120,
-              //     minHeight: Sizes.HEIGHT_30,
-              //     backgroundColor: LightTheme.buttonBackgroundColor2,
-              //     borderRadiusCircular: BorderRadius.circular(10),
-              //   )
-              // ])
+              const SizedBox(
+                height: Sizes.HEIGHT_10,
+              ),
+              const CustomHeaderRow(),
+              Obx(
+                () => CustomRowCells(
+                  itemName: controller.scanBarcode.value,
+                ),
+              ),
+              const SizedBox(
+                height: Sizes.HEIGHT_200,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomElevatedButton(
+                  onPressed: () {},
+                  title: 'Finish',
+                  minWidht: Sizes.WIDTH_120,
+                  minHeight: Sizes.HEIGHT_30,
+                  backgroundColor: LightTheme.buttonBackgroundColor2,
+                  borderRadiusCircular: BorderRadius.circular(10),
+                ),
+                const SizedBox(
+                  width: Sizes.WIDTH_10,
+                ),
+                CustomElevatedButton(
+                  onPressed: () => controller.scanBarcodeNormal(),
+                  title: 'Scan',
+                  minWidht: Sizes.WIDTH_120,
+                  minHeight: Sizes.HEIGHT_30,
+                  backgroundColor: LightTheme.buttonBackgroundColor2,
+                  borderRadiusCircular: BorderRadius.circular(10),
+                ),
+              ])
             ],
           )),
     );

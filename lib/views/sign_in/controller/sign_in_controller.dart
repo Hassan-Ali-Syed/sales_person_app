@@ -61,11 +61,8 @@ class SignInController extends GetxController {
       },
       onSuccessGraph: (response) async {
         Preferences().setUserToken(response.data!['login']["token"]);
-
-        if (Preferences().getUserToken() != null) {
-          log('Token: ${Preferences().getUserToken()}');
-          Get.offNamed(AppRoutes.MAIN_PAGE);
-        }
+        log('Token: ${Preferences().getUserToken()}');
+        Get.offNamed(AppRoutes.MAIN_PAGE);
       },
       onError: (e) {
         isServerError.value = true;

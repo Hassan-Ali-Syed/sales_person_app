@@ -81,7 +81,7 @@ class MainPage extends GetView<MainPageController> {
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
                 onTap: () {
-               
+                  controller.userLogOut();
                 },
               ),
             ],

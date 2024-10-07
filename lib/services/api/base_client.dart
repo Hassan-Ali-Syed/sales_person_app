@@ -64,6 +64,13 @@ class BaseClient {
     return headers;
   }
 
+  static Future<Map<String, dynamic>> generateHeadersForLogout() async {
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${Preferences().getUserToken()}',
+    };
+    return headers;
+  }
+
   static final Dio _dio = Dio()
     ..interceptors.add(
       PrettyDioLogger(

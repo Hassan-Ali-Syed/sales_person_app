@@ -10,6 +10,8 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/views/main_page/models/tliItems_model.dart';
+import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
@@ -21,12 +23,6 @@ class MainPageController extends GetxController {
       GlobalKey<ScaffoldState>();
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
-  TliCustomers? tliCustomers;
-  RxBool isAttandeeFieldVisible = false.obs;
-  RxBool isAttandeeExpanded = false.obs;
-  RxBool isAttandeeSearch = false.obs;
-  RxList<bool> checkBoxStates = <bool>[].obs;
-
   RxList<String> selectedItems = <String>[].obs;
 
   // Pages for bottom navigation
@@ -66,19 +62,18 @@ class MainPageController extends GetxController {
     selectedIndex.value = index;
   }
 
-  Future<void> signOut() async {
+  Future<void> userLogOut() async {
     await BaseClient.safeApiCall(
-      ApiConstants.BASE_URL_GRAPHQL,
+      ApiConstants.LOG_OUT,
       RequestType.post,
-      headers: {"Authorization": "Bearer ${Preferences().getUserToken()}"},
+      headers: await BaseClient.generateHeadersForLogout(),
       onLoading: () {
         isLoading.value = true;
       },
       onSuccess: (response) {
-        if (response.data['success'] == true) {
-          Get.offNamed(AppRoutes.SIGN_IN);
-        }
+        Preferences().removeToken();
         isLoading.value = false;
+        Get.offAllNamed(AppRoutes.SIGN_IN);
       },
       onError: (p0) {
         isLoading.value = false;
@@ -92,6 +87,9 @@ class MainPageController extends GetxController {
   }
 
   //**************** CUSTOMER PAGE PORTION ************************//
+//Instance of Models which
+  TliCustomers? tliCustomers;
+  TliItems? tliItems;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -109,6 +107,14 @@ class MainPageController extends GetxController {
   RxBool isShipToAddFieldVisible = false.obs;
   RxBool isAttandeesFieldVisible = false.obs;
 
+//Flags of attandee
+  RxBool isAttandeeFieldVisible = false.obs;
+  RxBool isAttandeeExpanded = false.obs;
+  RxBool isAttandeeSearch = false.obs;
+
+  //attandee List of checkbox
+  RxList<bool> checkBoxStates = <bool>[].obs;
+
   // attandee (Contact) selected index flag
   RxInt attandeeSelectedIndex = 0.obs;
 
@@ -121,17 +127,15 @@ class MainPageController extends GetxController {
   late TextEditingController customerController;
   TextEditingController customerTextFieldController = TextEditingController();
   TextEditingController searchCustomerController = TextEditingController();
-
   // Customer's Bill to Address TextField
   late TextEditingController addressController;
-
 // Ship to Address TextField
   late TextEditingController shipToAddController;
   TextEditingController searchShipToAddController = TextEditingController();
-
   // Contacts textField
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
+
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -167,7 +171,7 @@ class MainPageController extends GetxController {
         tliItems(
           companyId: "${ApiConstants.POSH_ID}"
           page: 1
-          perPage: 10000
+          perPage: 10
           filter: "no eq '$no'"
           ) {
           value {
@@ -179,16 +183,17 @@ class MainPageController extends GetxController {
         }
       }""",
       onSuccessGraph: (response) {
-        final data = response.data!["tliItems"];
+        addTliCustomerModel(response.data!["tliItems"]);
         isLoading.value = false;
-        log(data);
+        log('******* On SUCCESS ******** \n $tliItems');
       },
       onLoading: () {
         isLoading.value = true;
+        log('******* LOADING ********');
       },
       onError: (e) {
         isLoading.value = false;
-        log(e.message);
+        log('******* ON ERROR******** \n ${e.message}');
       },
     );
   }
@@ -220,6 +225,11 @@ class MainPageController extends GetxController {
 
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
+    isLoading.value = false;
+  }
+
+  addTliItemsModel(response) {
+    tliItems = TliItems.fromJson(response);
     isLoading.value = false;
   }
 
