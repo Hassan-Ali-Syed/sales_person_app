@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
@@ -99,6 +98,7 @@ class MainPageController extends GetxController {
 
   // Customer's Ship To Address
   List<String> customersShipToAdd = [''].obs;
+  List<String> customersContacts = [''].obs;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -229,6 +229,7 @@ class MainPageController extends GetxController {
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
     setCustomerShipToAdd();
+    setCustomerContacts();
   }
 
   void setCustomerShipToAdd() {
@@ -239,6 +240,19 @@ class MainPageController extends GetxController {
         var tliShipToAddresses = values.tliShipToAdds;
         for (var element in tliShipToAddresses!) {
           customersShipToAdd.add('${element.address!}.${element.address2!}');
+        }
+      }
+    }
+  }
+
+  void setCustomerContacts() {
+    customersContacts.clear();
+    var instanceCustomer = tliCustomerById!.value;
+    if (instanceCustomer.isNotEmpty) {
+      for (var values in instanceCustomer) {
+        var tliContacts = values.tliContact;
+        for (var element in tliContacts!) {
+          customersContacts.add('${element.name}');
         }
       }
     }
@@ -284,19 +298,67 @@ class MainPageController extends GetxController {
     }
   }
 
+  Map<String, dynamic> data = {};
+  void showCommentDialog(BuildContext context) {
+    final TextEditingController commentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add a Comment'),
+          content: TextField(
+            controller: commentController,
+            decoration: const InputDecoration(
+              hintText: 'Enter your comment here',
+            ),
+            maxLines: 3, // Allows multiple lines for the comment
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog without saving
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String comment = commentController.text;
+                if (comment.isNotEmpty) {
+                  // Perform action with the comment, e.g., save it
+                  log('Comment: $comment');
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  // Show a message or handle empty comment
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Comment cannot be empty')),
+                  );
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // **************************** CONTACT PAGE PORTION ************************ //
   // CONTACT PAGE's TEXTFIELD CONTROLLERS
   TextEditingController contactFullNameTextFieldController =
       TextEditingController();
   TextEditingController contactSearchTextFieldController =
       TextEditingController();
-  late TextEditingController contactCustomerTextFieldController;
+  TextEditingController contactCustomerTextFieldController =
+      TextEditingController();
   TextEditingController contactEmailTextFieldController =
       TextEditingController();
   TextEditingController contactAddressTextFieldController =
       TextEditingController();
   TextEditingController contactPhoneNoTextFieldController =
       TextEditingController();
+
+  var contactCustomerNo = ''.obs;
 
 // CONTACT PAGE's SCROLL CONTROLLERS
   ScrollController contactCustomerScrollController = ScrollController();
@@ -305,35 +367,44 @@ class MainPageController extends GetxController {
   RxBool isContactCustomerExpanded = false.obs;
   RxBool isContactCustomerSearch = false.obs;
 
-  Future<void> createTliContacts(
-    String name,
-    String no,
-    String customerNo,
-    String address,
-    String email,
-    String phoneNo,
-  ) async {
+  Future<void> createTliContacts({
+    required String name,
+    required String customerNo,
+    required String address,
+    String? email,
+    String? phoneNo,
+  }) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicontactMutate.tliContactMutate(
-        name,
-        no,
-        customerNo,
-        address,
-        email,
-        phoneNo,
+        name: name,
+        customerNo: customerNo,
+        address: address,
+        email: email,
+        phoneNo: phoneNo,
       ),
       onLoading: () {
         isLoading.value = true;
       },
       onSuccessGraph: (response) {
-        log("########RESPONSE: ############## \n ${response.data!['message']}");
-        var msg = '${response.data!['message']}';
+        log("******* RESPONSE: *********\n ${response.data!['message']}");
 
-        CustomSnackBar.showCustomToast(message: msg);
-        isLoading.value = false;
+        if (response.data!['createtliContact']['status'] == 400) {
+          CustomSnackBar.showCustomToast(
+              message: '${response.data!['createtliContact']['success']}',
+              duration: const Duration(seconds: 3),
+              color: AppColors.redShade5);
+          isLoading.value = false;
+        } else {
+          CustomSnackBar.showCustomToast(
+            message: '${response.data!['createtliContact']['message']}',
+            duration: const Duration(seconds: 3),
+            color: Colors.green,
+          );
+          isLoading.value = false;
+        }
       },
       onError: (e) {
         isLoading.value = false;
@@ -347,7 +418,14 @@ class MainPageController extends GetxController {
     );
   }
 
-  Map<String, dynamic> data = {};
+  void clearAllTextFieldsOfContactPage() {
+    contactFullNameTextFieldController.clear();
+    // controller.contactCustomerNo.value,
+    contactCustomerTextFieldController.clear();
+    contactAddressTextFieldController.clear();
+    contactEmailTextFieldController.clear();
+    contactPhoneNoTextFieldController.clear();
+  }
 
   //MORE PAGE
 }
