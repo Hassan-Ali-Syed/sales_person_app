@@ -295,38 +295,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ),
                                   ],
                                 ),
-                                Expanded(
-                                  child: Scrollbar(
-                                    interactive: true,
-                                    thickness: 12,
-                                    thumbVisibility: true,
-                                    controller:
-                                        controller.shipToAddScrollController,
-                                    child: ListView.builder(
-                                      controller:
-                                          controller.shipToAddScrollController,
-                                      itemCount:
-                                          controller.customersShipToAdd.length,
-                                      itemBuilder: (context, index) {
-                                        final filteredData = controller
-                                            .customersShipToAdd[index];
-                                        return ListTile(
-                                          title: Text(filteredData),
-                                          onTap: () {
-                                            controller.shipToAddController
-                                                .text = filteredData;
-                                            controller.isShipToAddExpanded
-                                                .value = false;
-                                            controller.isAttandeeFieldVisible
-                                                .value = true;
-                                            controller.searchShipToAddController
-                                                .clear();
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
                                 controller.customersShipToAdd.isNotEmpty
                                     ? Expanded(
                                         child: Scrollbar(
@@ -403,6 +371,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                 labelText: 'Attandee',
                                 suffixIcon: IconButton(
                                   onPressed: () {
+                                    print(controller.customersContacts);
                                     controller.isAttandeeExpanded.value = true;
                                   },
                                   icon: const Icon(
@@ -484,47 +453,57 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ),
                                   ],
                                 ),
-                                Expanded(
-                                  child: Scrollbar(
-                                    interactive: true,
-                                    thickness: 12,
-                                    thumbVisibility: true,
-                                    controller:
-                                        controller.attandeeScrollController,
-                                    child: ListView.builder(
-                                      controller:
-                                          controller.attandeeScrollController,
-                                      itemCount:
-                                          controller.customersContacts.length,
-                                      itemBuilder: (context, index) {
-                                        final filteredData =
-                                            controller.customersContacts[index];
-
-                                        return ListTile(
-                                          leading: Obx(
-                                            () => Checkbox(
-                                              value: controller
-                                                  .checkBoxStates[index],
-                                              onChanged: (value) {
-                                                controller.onCheckboxChanged(
-                                                    value, index);
-                                              },
-                                            ),
+                                controller.customersContacts.isNotEmpty
+                                    ? Expanded(
+                                        child: Scrollbar(
+                                          interactive: true,
+                                          thickness: 12,
+                                          thumbVisibility: true,
+                                          controller: controller
+                                              .attandeeScrollController,
+                                          child: ListView.builder(
+                                            controller: controller
+                                                .attandeeScrollController,
+                                            itemCount: controller
+                                                .customersContacts.length,
+                                            itemBuilder: (context, index) {
+                                              final filteredData = controller
+                                                  .customersContacts[index];
+                                              controller.checkBoxStates.value =
+                                                  List.generate(
+                                                      controller
+                                                          .customersContacts
+                                                          .length,
+                                                      (index) => false);
+                                              return ListTile(
+                                                leading: Obx(
+                                                  () => Checkbox(
+                                                    value: controller
+                                                        .checkBoxStates[index],
+                                                    onChanged: (value) {
+                                                      controller
+                                                          .onCheckboxChanged(
+                                                              value, index);
+                                                    },
+                                                  ),
+                                                ),
+                                                title: Text(filteredData),
+                                                onTap: () {
+                                                  controller.attandeeController
+                                                      .text = filteredData;
+                                                  controller.isAttandeeExpanded
+                                                      .value = false;
+                                                  // controller.attandeeController
+                                                  //     .clear();
+                                                },
+                                              );
+                                            },
                                           ),
-                                          title: Text(filteredData),
-                                          onTap: () {
-                                            controller.attandeeController.text =
-                                                filteredData;
-                                            controller.isAttandeeExpanded
-                                                .value = false;
-                                            // controller.attandeeController
-                                            //     .clear();
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
+                                        ),
+                                      )
+                                    : const Center(
+                                        child: Text('No Contacts Available'),
+                                      ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Row(

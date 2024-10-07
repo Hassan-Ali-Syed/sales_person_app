@@ -54,7 +54,7 @@ class MainPageController extends GetxController {
   void onInit() async {
     super.onInit();
     await getCustomersFromGraphQL();
-    checkBoxStates.value = List.filled(tliCustomers!.value.length, false);
+    checkBoxStates.value = List.filled(customersContacts.length, false);
   }
 
   // Method to update selectedIndex of Bottom Navigation Bar
@@ -129,6 +129,7 @@ class MainPageController extends GetxController {
   ScrollController customerScrollController = ScrollController();
   ScrollController shipToAddScrollController = ScrollController();
   ScrollController attandeeScrollController = ScrollController();
+  ScrollController contactScrollController = ScrollController();
 
   // Customer's TextFields
   late TextEditingController customerController;
@@ -276,9 +277,9 @@ class MainPageController extends GetxController {
   void onCheckboxChanged(bool? value, int index) {
     checkBoxStates[index] = value!;
     if (value) {
-      selectedItems.add(tliCustomers!.value[index].contact!);
+      selectedItems.add(customersContacts[index]);
     } else {
-      selectedItems.remove(tliCustomers!.value[index].contact!);
+      selectedItems.remove(customersContacts[index]);
     }
     attandeeController.text = selectedItems.join(',');
   }
@@ -429,118 +430,3 @@ class MainPageController extends GetxController {
 
   //MORE PAGE
 }
-
-// Future<void> getSingleCustomerFromGraphQL(String no) async {
-//     await BaseClient.safeApiCall(
-//       ApiConstants.BASE_URL_GRAPHQL,
-//       RequestType.query,
-//       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-//       query: """query MyQuery {
-//         tliCustomers(
-//           companyId: "${ApiConstants.SILK_ID}",
-//           page: 1,
-//           perPage: 1000,
-//           filter: "name eq '$no'",
-//           )
-//           {
-//           message
-//           success
-//           value {
-//             systemId
-//             name
-//             no
-
-//           }
-//         }
-//       }""",
-//       onSuccessGraph: (response) {
-//         final data = response.data!["tliCustomers"];
-//         isLoading.value = false;
-//         print(data);
-//       },
-//       onLoading: () {
-//         isLoading.value = true;
-//       },
-//       onError: (e) {
-//         isLoading.value = false;
-//         print(e.message);
-//       },
-//     );
-//   }
-
-//   Future<void> getSingleCustomerShipToAddressFromGraphQL(
-//       String customerNo) async {
-//     await BaseClient.safeApiCall(
-//       ApiConstants.BASE_URL_GRAPHQL,
-//       RequestType.query,
-//       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-//       query: """
-//       query MyQuery {
-//       tliShipToAdds(
-//         companyId: "${ApiConstants.SILK_ID}"
-//         page: 1
-//         perPage: 10,
-//         filter: " customerNo eq 'C00005'"
-//         )
-//         {
-//         message
-//         value {
-//           address
-//           address2
-//           code
-//           customerNo
-//           }
-//         }
-//       }
-//     }""",
-//       onSuccessGraph: (response) {
-//         final data = response.data!["tliShipToAdds"];
-//         isLoading.value = false;
-//         print(data);
-//       },
-//       onLoading: () {
-//         isLoading.value = true;
-//       },
-//       onError: (e) {
-//         isLoading.value = false;
-//         print(e.message);
-//       },
-//     );
-//   }
-
-//   Future<void> getSingleCustomerContactsFromGraphQL(String customerNo) async {
-//     await BaseClient.safeApiCall(
-//       ApiConstants.BASE_URL_GRAPHQL,
-//       RequestType.query,
-//       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-//       query: """ query MyQuery {
-//       tliContacts(
-//         companyId: "${ApiConstants.SILK_ID}"
-//         page: 1
-//         perPage: 100
-//         filter: "customerNo eq '$customerNo'"
-//       ) {
-//         status
-//         success
-//         value {
-//           address
-//           address2
-//           customerNo
-//           name
-//         }
-//       }
-//     }""",
-//       onSuccessGraph: (response) {
-//         final data = response.data!["tliContacts"];
-//         isLoading.value = false;
-//         print(data);
-//       },
-//       onLoading: () {
-//         isLoading.value = true;
-//       },
-//       onError: (e) {
-//         isLoading.value = false;
-//         print(e.message);
-//       },
-//     );
-//   }
