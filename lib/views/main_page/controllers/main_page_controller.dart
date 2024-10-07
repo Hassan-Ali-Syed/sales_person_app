@@ -169,6 +169,7 @@ class MainPageController extends GetxController {
 // Customer's Ship To Address
   List<String> customersShipToAdd = [''].obs;
   void setCustomerShipToAdd(var index) {
+    customersShipToAdd.clear();
     var instanceCustomerShipToAdd = tliCustomers!.value[index].tliShipToAdds;
     if (instanceCustomerShipToAdd != null) {
       for (var element in instanceCustomerShipToAdd) {
