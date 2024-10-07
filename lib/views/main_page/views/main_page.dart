@@ -20,8 +20,10 @@ class MainPage extends GetView<MainPageController> {
             },
             context: context,
             automaticallyImplyLeading: false,
-            title: Obx(() =>
-                Text(controller.appBarTitle[controller.selectedIndex.value])),
+            title: Obx(
+              () =>
+                  Text(controller.appBarTitle[controller.selectedIndex.value]),
+            ),
             isDrawerIcon: true),
         bottomNavigationBar: Obx(
           () => CustomLineIndicatorBottomNavbar(
@@ -80,9 +82,7 @@ class MainPage extends GetView<MainPageController> {
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
-                onTap: () {
-               
-                },
+                onTap: () {},
               ),
             ],
           ),

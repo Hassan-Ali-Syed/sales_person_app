@@ -15,8 +15,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
       child: Padding(
           padding: const EdgeInsets.only(
             top: Sizes.PADDING_10,
-            left: Sizes.PADDING_10,
-            right: Sizes.PADDING_10,
+            left: Sizes.PADDING_24,
+            right: Sizes.PADDING_24,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
