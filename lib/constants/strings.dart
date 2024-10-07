@@ -43,6 +43,24 @@ class AppStrings {
   static const String PASSWORD = "Password";
   static const String PASSWORD_2 = "PASSWORD";
   static const String CONFIRM_PASSWORD = "Confirm Password";
+  static const String ADDRESS = 'Address';
+
+  static const String SEARCH_CUSTOMER = 'Search customer';
+  static const String SEARCH_ADDRESS = 'Search address';
+  static const String NO_CUST_AVAIL = 'No customers available';
+  static const String SEARCH_SHIP_TO_ADD = 'Search Ship to Address';
+  static const String SEARCH_ATTANDEE = 'Search attandee';
+  static const String ADD_CUSTOMER = 'Add new customer';
+  static const String ADD_ADDRESS = 'Add new address';
+  static const String ADD_SHIP_TO_ADD = 'Add new ship to address';
+  static const String ADD_ATTANDEE = 'Add new attandee';
+  static const String ATTANDEE_F_NAME = 'Attendee Full Name';
+
+  //ELEVATED BUTTONS CONST STRING
+  static const String CANCEL = 'Cancel';
+  static const String SAVE = 'Save';
+  static const String FINISH = 'Finish';
+  static const String UPDATE = 'Update';
 
   // Api Message Strings
   static const String LOADING = 'Loading';
