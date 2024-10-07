@@ -3,12 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/preferences/preferences.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/views/main_page/models/tliItems_model.dart';
+import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
@@ -20,14 +23,7 @@ class MainPageController extends GetxController {
       GlobalKey<ScaffoldState>();
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
-  TliCustomers? tliCustomers;
-  RxBool isAttandeeFieldVisible = false.obs;
-  RxBool isAttandeeExpanded = false.obs;
-  RxBool isAttandeeSearch = false.obs;
-  RxList<bool> checkBoxStates = <bool>[].obs;
-
   RxList<String> selectedItems = <String>[].obs;
-  
 
   // Pages for bottom navigation
   List pages = [
@@ -36,16 +32,6 @@ class MainPageController extends GetxController {
     const ContactPageScreen(),
     const MorePageScreen()
   ];
-
-  void onCheckboxChanged(bool? value, int index) {
-    checkBoxStates[index] = value!;
-    if (value) {
-      selectedItems.add(tliCustomers!.value[index].contact!);
-    } else {
-      selectedItems.remove(tliCustomers!.value[index].contact!);
-    }
-    attandeeController.text = selectedItems.join(',');
-  }
 
   // AppBar title
   final List<String> appBarTitle = [
@@ -65,13 +51,10 @@ class MainPageController extends GetxController {
   // RxString token = ''.obs;
 
   @override
-  void onInit() async{
+  void onInit() async {
     super.onInit();
-  
-      // Initialize the state once based on the number of customers
-   
     await getCustomersFromGraphQL();
-    checkBoxStates.value = List.filled(tliCustomers!.value.length, false); 
+    checkBoxStates.value = List.filled(tliCustomers!.value.length, false);
   }
 
   // Method to update selectedIndex of Bottom Navigation Bar
@@ -79,7 +62,34 @@ class MainPageController extends GetxController {
     selectedIndex.value = index;
   }
 
+  Future<void> userLogOut() async {
+    await BaseClient.safeApiCall(
+      ApiConstants.LOG_OUT,
+      RequestType.post,
+      headers: await BaseClient.generateHeadersForLogout(),
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccess: (response) {
+        Preferences().removeToken();
+        isLoading.value = false;
+        Get.offAllNamed(AppRoutes.SIGN_IN);
+      },
+      onError: (p0) {
+        isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Error',
+          message: p0.message,
+          duration: const Duration(seconds: 2),
+        );
+      },
+    );
+  }
+
   //**************** CUSTOMER PAGE PORTION ************************//
+//Instance of Models which
+  TliCustomers? tliCustomers;
+  TliItems? tliItems;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -97,6 +107,14 @@ class MainPageController extends GetxController {
   RxBool isShipToAddFieldVisible = false.obs;
   RxBool isAttandeesFieldVisible = false.obs;
 
+//Flags of attandee
+  RxBool isAttandeeFieldVisible = false.obs;
+  RxBool isAttandeeExpanded = false.obs;
+  RxBool isAttandeeSearch = false.obs;
+
+  //attandee List of checkbox
+  RxList<bool> checkBoxStates = <bool>[].obs;
+
   // attandee (Contact) selected index flag
   RxInt attandeeSelectedIndex = 0.obs;
 
@@ -109,17 +127,15 @@ class MainPageController extends GetxController {
   late TextEditingController customerController;
   TextEditingController customerTextFieldController = TextEditingController();
   TextEditingController searchCustomerController = TextEditingController();
-
   // Customer's Bill to Address TextField
   late TextEditingController addressController;
-
 // Ship to Address TextField
   late TextEditingController shipToAddController;
   TextEditingController searchShipToAddController = TextEditingController();
-
   // Contacts textField
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
+
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -155,7 +171,7 @@ class MainPageController extends GetxController {
         tliItems(
           companyId: "${ApiConstants.POSH_ID}"
           page: 1
-          perPage: 10000
+          perPage: 10
           filter: "no eq '$no'"
           ) {
           value {
@@ -167,16 +183,17 @@ class MainPageController extends GetxController {
         }
       }""",
       onSuccessGraph: (response) {
-        final data = response.data!["tliItems"];
+        addTliCustomerModel(response.data!["tliItems"]);
         isLoading.value = false;
-        log(data);
+        log('******* On SUCCESS ******** \n $tliItems');
       },
       onLoading: () {
         isLoading.value = true;
+        log('******* LOADING ********');
       },
       onError: (e) {
         isLoading.value = false;
-        log(e.message);
+        log('******* ON ERROR******** \n ${e.message}');
       },
     );
   }
@@ -209,6 +226,21 @@ class MainPageController extends GetxController {
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     isLoading.value = false;
+  }
+
+  addTliItemsModel(response) {
+    tliItems = TliItems.fromJson(response);
+    isLoading.value = false;
+  }
+
+  void onCheckboxChanged(bool? value, int index) {
+    checkBoxStates[index] = value!;
+    if (value) {
+      selectedItems.add(tliCustomers!.value[index].contact!);
+    } else {
+      selectedItems.remove(tliCustomers!.value[index].contact!);
+    }
+    attandeeController.text = selectedItems.join(',');
   }
 
 // Method for scanning barcode

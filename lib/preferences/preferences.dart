@@ -13,6 +13,7 @@ class Preferences {
 
   void setUserToken(String token) => storage.write("token", token);
   getUserToken() => storage.read("token");
+  removeToken() => storage.remove("token");
 
   // void setUser(User.Data user) => storage.write("user", user);
   // getUser() => storage.read("user");

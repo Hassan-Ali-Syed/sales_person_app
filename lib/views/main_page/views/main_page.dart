@@ -82,7 +82,12 @@ class MainPage extends GetView<MainPageController> {
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Log Out'),
-                onTap: () {},
+
+                onTap: () {
+                  controller.userLogOut();
+                },
+
+              
               ),
             ],
           ),
