@@ -32,7 +32,8 @@ class ContactPageTextField extends StatelessWidget {
                     Icons.arrow_drop_down,
                     size: Sizes.WIDTH_30,
                     color: Colors.black,
-                  ))
+                  ),
+                )
               : null),
     );
   }

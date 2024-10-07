@@ -123,6 +123,7 @@ class MainPageController extends GetxController {
 
   // attandee (Contact) selected index flag
   RxInt attandeeSelectedIndex = 0.obs;
+  RxBool barcodeScanned = false.obs;
 
   //Scroll Controller
   ScrollController customerScrollController = ScrollController();
@@ -209,6 +210,12 @@ class MainPageController extends GetxController {
         isLoading.value = true;
         log('******* LOADING ********');
       },
+      onSuccessGraph: (response) {
+        log('******* response.data ******** \n ${response.data!["tliItems"]}');
+        addTliItemsModel(response.data!["tliItems"]);
+        isLoading.value = false;
+        log('******* tliitems ******** \n ${tliItems.value}');
+      },
       onError: (e) {
         isLoading.value = false;
         log('******* ON ERROR******** \n ${e.message}');
@@ -278,7 +285,8 @@ class MainPageController extends GetxController {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (barcodeScanRes != 'Failed to get platform version.') {
-      getSingleItemFromGraphQL(barcodeScanRes);
+      await getSingleItemFromGraphQL(barcodeScanRes);
+      barcodeScanned.value = true;
     }
   }
 
