@@ -7,18 +7,22 @@ class ContactPageTextField extends StatelessWidget {
       required this.hintText,
       this.isSuffixIcon = false,
       this.onPressed,
-      required this.controller});
+      required this.controller,
+      this.onSubmitted,
+      this.onChanged});
   final String hintText;
   final bool isSuffixIcon;
   final void Function()? onPressed;
   final TextEditingController controller;
+  final void Function(String)? onSubmitted;
+  final void Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       textAlign: TextAlign.left,
-      onSubmitted: (value) {},
-      // onChanged: (value) =>,
+      onSubmitted: onSubmitted,
+      onChanged: onChanged,
       decoration: InputDecoration(
           hintText: hintText,
           suffixIcon: isSuffixIcon
@@ -28,7 +32,8 @@ class ContactPageTextField extends StatelessWidget {
                     Icons.arrow_drop_down,
                     size: Sizes.WIDTH_30,
                     color: Colors.black,
-                  ))
+                  ),
+                )
               : null),
     );
   }

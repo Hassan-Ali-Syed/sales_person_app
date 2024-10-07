@@ -7,6 +7,7 @@ class CustomRowCells extends StatelessWidget {
   final String? qty;
   final String? price;
   final String? notes;
+  final void Function()? commentDialogBoxOnPressed;
 
   const CustomRowCells({
     super.key,
@@ -14,6 +15,7 @@ class CustomRowCells extends StatelessWidget {
     this.qty,
     this.price,
     this.notes,
+    this.commentDialogBoxOnPressed,
   });
 
   @override
@@ -21,9 +23,51 @@ class CustomRowCells extends StatelessWidget {
     return Row(
       children: [
         _buildCell(itemName ?? '', Sizes.WIDTH_120),
-        _buildCell(qty ?? '', Sizes.WIDTH_60),
+        SizedBox(
+          width: Sizes.WIDTH_60,
+          height: Sizes.HEIGHT_40,
+          child: TextField(
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ), // Or use t ,
+            textAlign: TextAlign.center,
+            textAlignVertical: TextAlignVertical.top,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+              ),
+            ),
+          ),
+        ),
         _buildCell(price ?? '', Sizes.WIDTH_80),
-        _buildCell(notes ?? '', Sizes.WIDTH_130),
+        SizedBox(
+          width: Sizes.WIDTH_130,
+          height: Sizes.HEIGHT_40,
+          child: TextField(
+            onChanged: (text) {
+              if (text.length > 6) {}
+            },
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ), // Or use t ,
+            textAlign: TextAlign.center,
+            textAlignVertical: TextAlignVertical.top,
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                  onPressed: commentDialogBoxOnPressed,
+                  icon: const Icon(Icons.edit)),
+              border: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

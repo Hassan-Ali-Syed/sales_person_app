@@ -17,10 +17,10 @@ class CustomerPageScreen extends GetView<MainPageController> {
     return SingleChildScrollView(
       child: Padding(
           padding: const EdgeInsets.only(
-            top: Sizes.PADDING_10,
-            left: Sizes.PADDING_24,
-            right: Sizes.PADDING_24,
-          ),
+              top: Sizes.PADDING_10,
+              left: Sizes.PADDING_24,
+              right: Sizes.PADDING_24,
+              bottom: Sizes.PADDING_10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -123,6 +123,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             ),
                             Expanded(
                               child: Scrollbar(
+                                interactive: true,
+                                thickness: 12,
                                 thumbVisibility: true,
                                 controller: controller.customerScrollController,
                                 child: controller.tliCustomers?.value != null &&
@@ -296,6 +298,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                 ),
                                 Expanded(
                                   child: Scrollbar(
+                                    interactive: true,
+                                    thickness: 12,
                                     thumbVisibility: true,
                                     controller:
                                         controller.shipToAddScrollController,
@@ -448,6 +452,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                 ),
                                 Expanded(
                                   child: Scrollbar(
+                                    interactive: true,
+                                    thickness: 12,
                                     thumbVisibility: true,
                                     controller:
                                         controller.attandeeScrollController,
@@ -514,81 +520,129 @@ class CustomerPageScreen extends GetView<MainPageController> {
               const SizedBox(
                 height: Sizes.HEIGHT_10,
               ),
-              controller.selectedItems.isNotEmpty
-                  ? Wrap(
-                      spacing: 2,
-                      runSpacing: 5,
-                      children: List.generate(
-                        controller.selectedItems.isEmpty
-                            ? 1
-                            : (controller.selectedItems.length + 1),
-                        (index) => GestureDetector(
-                          onTap: () {
-                            controller.attandeeSelectedIndex.value = index;
-                          },
-                          child: Obx(
-                            () => Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 10),
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: LightTheme.borderColor),
-                                color: controller.attandeeSelectedIndex.value ==
-                                        index
-                                    ? LightTheme.buttonBackgroundColor2
-                                    : Colors.white,
-                              ),
-                              child: Text(
-                                index == 0
-                                    ? 'General'
-                                    : controller.selectedItems[index - 1],
-                                style: TextStyle(
+              Obx(
+                () => controller.selectedItems.isNotEmpty
+                    ? Wrap(
+                        spacing: 2,
+                        runSpacing: 5,
+                        children: List.generate(
+                          controller.selectedItems.isEmpty
+                              ? 1
+                              : (controller.selectedItems.length + 1),
+                          (index) => GestureDetector(
+                            onTap: () {
+                              controller.attandeeSelectedIndex.value = index;
+                            },
+                            child: Obx(
+                              () => Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.PADDING_8,
+                                    vertical: Sizes.PADDING_10),
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: LightTheme.borderColor),
                                   color:
                                       controller.attandeeSelectedIndex.value ==
                                               index
-                                          ? Colors.white
-                                          : Colors.black,
+                                          ? LightTheme.buttonBackgroundColor2
+                                          : Colors.white,
+                                ),
+                                child: Text(
+                                  index == 0
+                                      ? 'General'
+                                      : controller.selectedItems[index - 1],
+                                  style: TextStyle(
+                                    color: controller
+                                                .attandeeSelectedIndex.value ==
+                                            index
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  : const SizedBox(),
+                      )
+                    : const SizedBox(),
+              ),
               const SizedBox(
                 height: Sizes.HEIGHT_10,
               ),
-              const CustomHeaderRow(),
-              Obx(
-                () => CustomRowCells(
-                  itemName: controller.scanBarcode.value,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  children: [
+                    Obx(
+                      () => controller.selectedItems.isNotEmpty &&
+                              controller.barcodeScanned.value
+                          ? const CustomHeaderRow()
+                          : const SizedBox(),
+                    ),
+                    Obx(
+                      () => controller.selectedItems.isNotEmpty &&
+                              controller.barcodeScanned.value
+                          ? CustomRowCells(
+                              commentDialogBoxOnPressed: () {
+                                controller.showCommentDialog(context);
+                              },
+                              itemName: controller.tliItems.value.isNotEmpty
+                                  ? controller
+                                      .tliItems
+                                      .value[controller
+                                          .attandeeSelectedIndex.value]
+                                      .description
+                                  : '',
+                              price: controller.tliItems.value.isNotEmpty
+                                  ? controller
+                                      .tliItems
+                                      .value[controller
+                                          .attandeeSelectedIndex.value]
+                                      .unitPrice
+                                      .toString()
+                                  : '')
+                          : const SizedBox(),
+                    ),
+                  ],
                 ),
               ),
+
               const SizedBox(
                 height: Sizes.HEIGHT_200,
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomElevatedButton(
-                  onPressed: () {},
-                  title: 'Finish',
-                  minWidht: Sizes.WIDTH_120,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(10),
-                ),
-                const SizedBox(
-                  width: Sizes.WIDTH_10,
-                ),
-                CustomElevatedButton(
-                  onPressed: () => controller.scanBarcodeNormal(),
-                  title: 'Scan',
-                  minWidht: Sizes.WIDTH_120,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(10),
-                ),
-              ])
+              Obx(
+                () => controller.selectedItems.isNotEmpty
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            CustomElevatedButton(
+                              onPressed: () {},
+                              title: 'Finish',
+                              minWidht: Sizes.WIDTH_120,
+                              minHeight: Sizes.HEIGHT_30,
+                              backgroundColor:
+                                  LightTheme.buttonBackgroundColor2,
+                              borderRadiusCircular: BorderRadius.circular(
+                                Sizes.RADIUS_6,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: Sizes.WIDTH_10,
+                            ),
+                            CustomElevatedButton(
+                              onPressed: () => controller.scanBarcodeNormal(),
+                              title: 'Scan',
+                              minWidht: Sizes.WIDTH_120,
+                              minHeight: Sizes.HEIGHT_30,
+                              backgroundColor:
+                                  LightTheme.buttonBackgroundColor2,
+                              borderRadiusCircular: BorderRadius.circular(
+                                Sizes.RADIUS_6,
+                              ),
+                            ),
+                          ])
+                    : const SizedBox(),
+              )
             ],
           )),
     );

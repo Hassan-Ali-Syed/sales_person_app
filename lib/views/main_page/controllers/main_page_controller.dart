@@ -10,7 +10,6 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/api_quries/tlicustomers_query.dart';
-import 'package:sales_person_app/views/main_page/models/tliItems_model.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
@@ -89,7 +88,7 @@ class MainPageController extends GetxController {
   //**************** CUSTOMER PAGE PORTION ************************//
 //Instance of Models which
   TliCustomers? tliCustomers;
-  TliItems? tliItems;
+  TliItems tliItems = TliItems(value: []);
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -117,6 +116,7 @@ class MainPageController extends GetxController {
 
   // attandee (Contact) selected index flag
   RxInt attandeeSelectedIndex = 0.obs;
+  RxBool barcodeScanned = false.obs;
 
   //Scroll Controller
   ScrollController customerScrollController = ScrollController();
@@ -182,14 +182,15 @@ class MainPageController extends GetxController {
           }
         }
       }""",
-      onSuccessGraph: (response) {
-        addTliCustomerModel(response.data!["tliItems"]);
-        isLoading.value = false;
-        log('******* On SUCCESS ******** \n $tliItems');
-      },
       onLoading: () {
         isLoading.value = true;
         log('******* LOADING ********');
+      },
+      onSuccessGraph: (response) {
+        log('******* response.data ******** \n ${response.data!["tliItems"]}');
+        addTliItemsModel(response.data!["tliItems"]);
+        isLoading.value = false;
+        log('******* tliitems ******** \n ${tliItems.value}');
       },
       onError: (e) {
         isLoading.value = false;
@@ -253,14 +254,56 @@ class MainPageController extends GetxController {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (barcodeScanRes != 'Failed to get platform version.') {
-      getSingleItemFromGraphQL(barcodeScanRes);
+      await getSingleItemFromGraphQL(barcodeScanRes);
+      barcodeScanned.value = true;
     }
+  }  void showCommentDialog(BuildContext context) {
+    final TextEditingController commentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add a Comment'),
+          content: TextField(
+            controller: commentController,
+            decoration: InputDecoration(
+              hintText: 'Enter your comment here',
+            ),
+            maxLines: 3, // Allows multiple lines for the comment
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog without saving
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String comment = commentController.text;
+                if (comment.isNotEmpty) {
+                  // Perform action with the comment, e.g., save it
+                  print('Comment: $comment');
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  // Show a message or handle empty comment
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Comment cannot be empty')),
+                  );
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
   }
-
-  // CONTACT PAGE
-
-  //MORE PAGE
 }
+
+
+
 
 // Future<void> getSingleCustomerFromGraphQL(String no) async {
 //     await BaseClient.safeApiCall(
