@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
@@ -27,7 +26,6 @@ class MainPageController extends GetxController {
   RxList<bool> checkBoxStates = <bool>[].obs;
 
   RxList<String> selectedItems = <String>[].obs;
-  
 
   // Pages for bottom navigation
   List pages = [
@@ -36,16 +34,6 @@ class MainPageController extends GetxController {
     const ContactPageScreen(),
     const MorePageScreen()
   ];
-
-  void onCheckboxChanged(bool? value, int index) {
-    checkBoxStates[index] = value!;
-    if (value) {
-      selectedItems.add(tliCustomers!.value[index].contact!);
-    } else {
-      selectedItems.remove(tliCustomers!.value[index].contact!);
-    }
-    attandeeController.text = selectedItems.join(',');
-  }
 
   // AppBar title
   final List<String> appBarTitle = [
@@ -65,13 +53,10 @@ class MainPageController extends GetxController {
   // RxString token = ''.obs;
 
   @override
-  void onInit() async{
+  void onInit() async {
     super.onInit();
-  
-      // Initialize the state once based on the number of customers
-   
     await getCustomersFromGraphQL();
-    checkBoxStates.value = List.filled(tliCustomers!.value.length, false); 
+    checkBoxStates.value = List.filled(tliCustomers!.value.length, false);
   }
 
   // Method to update selectedIndex of Bottom Navigation Bar
@@ -209,6 +194,16 @@ class MainPageController extends GetxController {
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     isLoading.value = false;
+  }
+
+  void onCheckboxChanged(bool? value, int index) {
+    checkBoxStates[index] = value!;
+    if (value) {
+      selectedItems.add(tliCustomers!.value[index].contact!);
+    } else {
+      selectedItems.remove(tliCustomers!.value[index].contact!);
+    }
+    attandeeController.text = selectedItems.join(',');
   }
 
 // Method for scanning barcode
