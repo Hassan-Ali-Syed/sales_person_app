@@ -37,7 +37,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           onSubmitted: (value) {
                             controller.isAddressFieldVisible.value = true;
                           },
-                          // onChanged: (value) =>,
                           decoration: InputDecoration(
                             labelText: 'Customer name',
                             suffixIcon: IconButton(
@@ -76,7 +75,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           autofocus: true,
                                           decoration: InputDecoration(
                                             labelText: 'Search customer',
-                                            // hintText: widget.seachHintText,
                                             border:
                                                 const UnderlineInputBorder(),
                                             suffixIcon: IconButton(
@@ -153,7 +151,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         },
                                       )
                                     : const Center(
-                                        child: Text('No customers available'),
+                                        child: Text(AppStrings.NO_CUST_AVAIL),
                                       ),
                               ),
                             ),
@@ -167,7 +165,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          'Add new Customer',
+                                          AppStrings.ADD_CUSTOMER,
                                           style: context.bodyLarge,
                                         ),
                                         const Icon(Icons.add),
@@ -189,7 +187,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           child: TextField(
                             controller: controller.addressController,
                             decoration: const InputDecoration(
-                              labelText: 'Address',
+                              labelText: AppStrings.ADDRESS,
                               border: UnderlineInputBorder(),
                             ),
                           ),
@@ -197,6 +195,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                       )
                     : const SizedBox.shrink(),
               ),
+
               // third TextField of Ship to Address we have to fill
               Obx(
                 () => controller.isShipToAddFieldVisible.value
@@ -246,8 +245,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                   .searchCustomerController,
                                               autofocus: true,
                                               decoration: InputDecoration(
-                                                labelText:
-                                                    'Search ship to address',
+                                                labelText: AppStrings
+                                                    .SEARCH_SHIP_TO_ADD,
                                                 border:
                                                     const UnderlineInputBorder(),
                                                 suffixIcon: IconButton(
@@ -265,7 +264,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             ),
                                           )
                                         : Text(
-                                            'Search ship to Add',
+                                            AppStrings.SEARCH_SHIP_TO_ADD,
                                             style: context.bodyLarge,
                                           ),
                                     Row(
@@ -294,36 +293,41 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ),
                                   ],
                                 ),
-                                Expanded(
-                                  child: Scrollbar(
-                                    thumbVisibility: true,
-                                    controller:
-                                        controller.shipToAddScrollController,
-                                    child: ListView.builder(
-                                      controller:
-                                          controller.shipToAddScrollController,
-                                      itemCount:
-                                          controller.customersShipToAdd.length,
-                                      itemBuilder: (context, index) {
-                                        final filteredData = controller
-                                            .customersShipToAdd[index];
-                                        return ListTile(
-                                          title: Text(filteredData),
-                                          onTap: () {
-                                            controller.shipToAddController
-                                                .text = filteredData;
-                                            controller.isShipToAddExpanded
-                                                .value = false;
-                                            controller.isAttandeeFieldVisible
-                                                .value = true;
-                                            controller.searchShipToAddController
-                                                .clear();
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
+                                controller.customersShipToAdd.isNotEmpty
+                                    ? Expanded(
+                                        child: Scrollbar(
+                                          thumbVisibility: true,
+                                          controller: controller
+                                              .shipToAddScrollController,
+                                          child: ListView.builder(
+                                            controller: controller
+                                                .shipToAddScrollController,
+                                            itemCount: controller
+                                                .customersShipToAdd.length,
+                                            itemBuilder: (context, index) {
+                                              final filteredData = controller
+                                                  .customersShipToAdd[index];
+                                              return ListTile(
+                                                title: Text(filteredData),
+                                                onTap: () {
+                                                  controller.shipToAddController
+                                                      .text = filteredData;
+                                                  controller.isShipToAddExpanded
+                                                      .value = false;
+                                                  controller
+                                                      .isAttandeeFieldVisible
+                                                      .value = true;
+                                                  controller
+                                                      .searchShipToAddController
+                                                      .clear();
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Ship to Address not available'),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Row(
