@@ -495,10 +495,10 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                       controller:
                                           controller.attandeeScrollController,
                                       itemCount:
-                                          controller.tliCustomers!.value.length,
+                                          controller.customersContacts.length,
                                       itemBuilder: (context, index) {
-                                        final filteredData = controller
-                                            .tliCustomers!.value[index].contact;
+                                        final filteredData =
+                                            controller.customersContacts[index];
 
                                         return ListTile(
                                           leading: Obx(
@@ -620,16 +620,16 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               commentDialogBoxOnPressed: () {
                                 controller.showCommentDialog(context);
                               },
-                              itemName: controller.tliItems.value.isNotEmpty
+                              itemName: controller.tliItems!.value.isNotEmpty
                                   ? controller
-                                      .tliItems
+                                      .tliItems!
                                       .value[controller
                                           .attandeeSelectedIndex.value]
                                       .description
                                   : '',
-                              price: controller.tliItems.value.isNotEmpty
+                              price: controller.tliItems!.value.isNotEmpty
                                   ? controller
-                                      .tliItems
+                                      .tliItems!
                                       .value[controller
                                           .attandeeSelectedIndex.value]
                                       .unitPrice
