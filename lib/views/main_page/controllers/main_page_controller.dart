@@ -10,7 +10,7 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/api_quries/tlicustomers_query.dart';
-import 'package:sales_person_app/views/main_page/models/tliItems_model.dart';
+import 'package:sales_person_app/views/main_page/api_quries/tliitems_query.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
@@ -87,9 +87,12 @@ class MainPageController extends GetxController {
   }
 
   //**************** CUSTOMER PAGE PORTION ************************//
-//Instance of Models which
+  //Instance of Models which
   TliCustomers? tliCustomers;
   TliItems? tliItems;
+
+  // Customer's Ship To Address
+  List<String> customersShipToAdd = [''].obs;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -167,23 +170,9 @@ class MainPageController extends GetxController {
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-      query: """ query MyQuery {
-        tliItems(
-          companyId: "${ApiConstants.POSH_ID}"
-          page: 1
-          perPage: 10
-          filter: "no eq '$no'"
-          ) {
-          value {
-            description
-            systemId
-            unitPrice
-            no
-          }
-        }
-      }""",
+      query: TliItemsQuery.tliItemsQuery(no),
       onSuccessGraph: (response) {
-        addTliCustomerModel(response.data!["tliItems"]);
+        addTliItemsModel(response.data!["tliItems"]);
         isLoading.value = false;
         log('******* On SUCCESS ******** \n $tliItems');
       },
@@ -209,8 +198,6 @@ class MainPageController extends GetxController {
     isAddressFieldVisible.value = true;
   }
 
-// Customer's Ship To Address
-  List<String> customersShipToAdd = [''].obs;
   void setCustomerShipToAdd(var index) {
     customersShipToAdd.clear();
     var instanceCustomerShipToAdd = tliCustomers!.value[index].tliShipToAdds;
