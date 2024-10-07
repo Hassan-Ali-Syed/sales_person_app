@@ -4,6 +4,8 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/preferences/preferences.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
@@ -62,6 +64,31 @@ class MainPageController extends GetxController {
   // Method to update selectedIndex of Bottom Navigation Bar
   void updateSelectedIndex(int index) {
     selectedIndex.value = index;
+  }
+
+  Future<void> signOut() async {
+    await BaseClient.safeApiCall(
+      ApiConstants.BASE_URL_GRAPHQL,
+      RequestType.post,
+      headers: {"Authorization": "Bearer ${Preferences().getUserToken()}"},
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccess: (response) {
+        if (response.data['success'] == true) {
+          Get.offNamed(AppRoutes.SIGN_IN);
+        }
+        isLoading.value = false;
+      },
+      onError: (p0) {
+        isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Error',
+          message: p0.message,
+          duration: const Duration(seconds: 2),
+        );
+      },
+    );
   }
 
   //**************** CUSTOMER PAGE PORTION ************************//
