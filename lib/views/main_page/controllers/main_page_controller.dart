@@ -99,6 +99,7 @@ class MainPageController extends GetxController {
 
   // Customer's Ship To Address
   List<String> customersShipToAdd = [''].obs;
+  List<String> customersContacts = [''].obs;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -210,12 +211,6 @@ class MainPageController extends GetxController {
         isLoading.value = true;
         log('******* LOADING ********');
       },
-      onSuccessGraph: (response) {
-        log('******* response.data ******** \n ${response.data!["tliItems"]}');
-        addTliItemsModel(response.data!["tliItems"]);
-        isLoading.value = false;
-        log('******* tliitems ******** \n ${tliItems.value}');
-      },
       onError: (e) {
         isLoading.value = false;
         log('******* ON ERROR******** \n ${e.message}');
@@ -234,10 +229,10 @@ class MainPageController extends GetxController {
     await getCustomerbyIdFromGraphQL(customerNo.value);
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
-    setCustomeShipToAdd();
+    setCustomerShipToAdd();
   }
 
-  void setCustomeShipToAdd() {
+  void setCustomerShipToAdd() {
     customersShipToAdd.clear();
     var instanceCustomerShipToAdd = tliCustomerById!.value;
     if (instanceCustomerShipToAdd.isNotEmpty) {
@@ -245,6 +240,19 @@ class MainPageController extends GetxController {
         var tliShipToAddresses = values.tliShipToAdds;
         for (var element in tliShipToAddresses!) {
           customersShipToAdd.add('${element.address!}.${element.address2!}');
+        }
+      }
+    }
+  }
+
+  void setCustomerContacts() {
+    customersContacts.clear();
+    var instanceCustomer = tliCustomerById!.value;
+    if (instanceCustomer.isNotEmpty) {
+      for (var values in instanceCustomer) {
+        var tliContacts = values.tliContact;
+        for (var element in tliContacts!) {
+          customersContacts.add('${element.name}');
         }
       }
     }
@@ -354,7 +362,49 @@ class MainPageController extends GetxController {
   }
 
   Map<String, dynamic> data = {};
+  void showCommentDialog(BuildContext context) {
+    final TextEditingController commentController = TextEditingController();
 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add a Comment'),
+          content: TextField(
+            controller: commentController,
+            decoration: const InputDecoration(
+              hintText: 'Enter your comment here',
+            ),
+            maxLines: 3, // Allows multiple lines for the comment
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog without saving
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String comment = commentController.text;
+                if (comment.isNotEmpty) {
+                  // Perform action with the comment, e.g., save it
+                  log('Comment: $comment');
+                  Navigator.of(context).pop(); // Close the dialog
+                } else {
+                  // Show a message or handle empty comment
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Comment cannot be empty')),
+                  );
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   //MORE PAGE
 }
 
