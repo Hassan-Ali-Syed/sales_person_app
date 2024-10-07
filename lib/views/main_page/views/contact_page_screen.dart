@@ -130,15 +130,14 @@ class ContactPageScreen extends GetView<MainPageController> {
                                 interactive: true,
                                 thickness: 12,
                                 thumbVisibility: true,
-                                controller:
-                                    controller.contactCustomerScrollController,
+                                controller: controller.contactScrollController,
                                 child: controller.tliCustomers?.value != null &&
                                         controller
                                             .tliCustomers!.value.isNotEmpty
                                     ? ListView.builder(
                                         scrollDirection: Axis.vertical,
-                                        controller: controller
-                                            .contactCustomerScrollController,
+                                        controller:
+                                            controller.contactScrollController,
                                         itemCount: controller
                                             .tliCustomers?.value.length,
                                         itemBuilder: (context, index) {
