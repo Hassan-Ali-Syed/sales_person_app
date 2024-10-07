@@ -15,8 +15,11 @@ class MainPage extends GetView<MainPageController> {
     return Scaffold(
         key: controller.mainPageScaffoldKey,
         appBar: customAppBar(
+            onTap: () {
+              controller.mainPageScaffoldKey.currentState!.openDrawer();
+            },
             context: context,
-            automaticallyImplyLeading: true,
+            automaticallyImplyLeading: false,
             title: Obx(() =>
                 Text(controller.appBarTitle[controller.selectedIndex.value])),
             isDrawerIcon: true),
@@ -54,6 +57,32 @@ class MainPage extends GetView<MainPageController> {
                 label: AppStrings.MORE,
                 icon: Icons.sort,
                 isAssetsImage: false,
+              ),
+            ],
+          ),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey,
+                ),
+                child: Text(
+                  'Drawer Header',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Log Out'),
+                onTap: () {
+               
+                },
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
@@ -20,6 +21,13 @@ class MainPageController extends GetxController {
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
   TliCustomers? tliCustomers;
+  RxBool isAttandeeFieldVisible = false.obs;
+  RxBool isAttandeeExpanded = false.obs;
+  RxBool isAttandeeSearch = false.obs;
+  RxList<bool> checkBoxStates = <bool>[].obs;
+
+  RxList<String> selectedItems = <String>[].obs;
+  
 
   // Pages for bottom navigation
   List pages = [
@@ -28,6 +36,16 @@ class MainPageController extends GetxController {
     const ContactPageScreen(),
     const MorePageScreen()
   ];
+
+  void onCheckboxChanged(bool? value, int index) {
+    checkBoxStates[index] = value!;
+    if (value) {
+      selectedItems.add(tliCustomers!.value[index].contact!);
+    } else {
+      selectedItems.remove(tliCustomers!.value[index].contact!);
+    }
+    attandeeController.text = selectedItems.join(',');
+  }
 
   // AppBar title
   final List<String> appBarTitle = [
@@ -47,9 +65,13 @@ class MainPageController extends GetxController {
   // RxString token = ''.obs;
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
-    getCustomersFromGraphQL();
+  
+      // Initialize the state once based on the number of customers
+   
+    await getCustomersFromGraphQL();
+    checkBoxStates.value = List.filled(tliCustomers!.value.length, false); 
   }
 
   // Method to update selectedIndex of Bottom Navigation Bar
@@ -81,6 +103,7 @@ class MainPageController extends GetxController {
   //Scroll Controller
   ScrollController customerScrollController = ScrollController();
   ScrollController shipToAddScrollController = ScrollController();
+  ScrollController attandeeScrollController = ScrollController();
 
   // Customer's TextFields
   late TextEditingController customerController;
@@ -95,8 +118,8 @@ class MainPageController extends GetxController {
   TextEditingController searchShipToAddController = TextEditingController();
 
   // Contacts textField
-  late TextEditingController attandeeController;
-
+  TextEditingController attandeeController = TextEditingController();
+  TextEditingController searchAttandeeController = TextEditingController();
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -159,11 +182,14 @@ class MainPageController extends GetxController {
   }
 
   void setCustomerData(var indexNo) {
+    isAddressFieldVisible.value = false;
+
     customerAddress.value =
-        '${tliCustomers!.value[indexNo].address}.", ".${tliCustomers!.value[indexNo].address2}';
+        "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     isAddressFieldVisible.value = true;
     addressController = TextEditingController(text: customerAddress.value);
     setCustomerShipToAdd(indexNo);
+    isAddressFieldVisible.value = true;
   }
 
 // Customer's Ship To Address
@@ -173,7 +199,7 @@ class MainPageController extends GetxController {
     var instanceCustomerShipToAdd = tliCustomers!.value[index].tliShipToAdds;
     if (instanceCustomerShipToAdd != null) {
       for (var element in instanceCustomerShipToAdd) {
-        customersShipToAdd.add('${element.address!}.", ".${element.address2!}');
+        customersShipToAdd.add('${element.address!}.${element.address2!}');
       }
     }
     shipToAddController = TextEditingController(text: '');
