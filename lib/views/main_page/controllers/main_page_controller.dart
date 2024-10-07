@@ -210,12 +210,6 @@ class MainPageController extends GetxController {
         isLoading.value = true;
         log('******* LOADING ********');
       },
-      onSuccessGraph: (response) {
-        log('******* response.data ******** \n ${response.data!["tliItems"]}');
-        addTliItemsModel(response.data!["tliItems"]);
-        isLoading.value = false;
-        log('******* tliitems ******** \n ${tliItems.value}');
-      },
       onError: (e) {
         isLoading.value = false;
         log('******* ON ERROR******** \n ${e.message}');
@@ -234,10 +228,10 @@ class MainPageController extends GetxController {
     await getCustomerbyIdFromGraphQL(customerNo.value);
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
-    setCustomeShipToAdd();
+    setCustomerShipToAdd();
   }
 
-  void setCustomeShipToAdd() {
+  void setCustomerShipToAdd() {
     customersShipToAdd.clear();
     var instanceCustomerShipToAdd = tliCustomerById!.value;
     if (instanceCustomerShipToAdd.isNotEmpty) {
