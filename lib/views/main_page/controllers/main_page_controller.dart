@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
@@ -55,7 +54,7 @@ class MainPageController extends GetxController {
   void onInit() async {
     super.onInit();
     await getCustomersFromGraphQL();
-    checkBoxStates.value = List.filled(tliCustomers!.value.length, false);
+    checkBoxStates.value = List.filled(customersContacts.length, false);
   }
 
   // Method to update selectedIndex of Bottom Navigation Bar
@@ -130,6 +129,7 @@ class MainPageController extends GetxController {
   ScrollController customerScrollController = ScrollController();
   ScrollController shipToAddScrollController = ScrollController();
   ScrollController attandeeScrollController = ScrollController();
+  ScrollController contactScrollController = ScrollController();
 
   // Customer's TextFields
   late TextEditingController customerController;
@@ -230,6 +230,7 @@ class MainPageController extends GetxController {
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
     setCustomerShipToAdd();
+    setCustomerContacts();
   }
 
   void setCustomerShipToAdd() {
@@ -276,9 +277,9 @@ class MainPageController extends GetxController {
   void onCheckboxChanged(bool? value, int index) {
     checkBoxStates[index] = value!;
     if (value) {
-      selectedItems.add(tliCustomers!.value[index].contact!);
+      selectedItems.add(customersContacts[index]);
     } else {
-      selectedItems.remove(tliCustomers!.value[index].contact!);
+      selectedItems.remove(customersContacts[index]);
     }
     attandeeController.text = selectedItems.join(',');
   }
