@@ -20,30 +20,32 @@ class ContactPageScreen extends GetView<MainPageController> {
             horizontal: Sizes.PADDING_22, vertical: Sizes.PADDING_28),
         child: Column(
           children: [
+            //ATTANDEE FULL NAME
             ContactPageTextField(
-              hintText: 'Attendee Full Name',
-              controller: TextEditingController(),
+              hintText: AppStrings.ATTANDEE_F_NAME,
+              controller: controller.contactFullNameTextFieldController,
             ),
+
+            // RELATED CUSTOMER TEXTFIELD
             Padding(
               padding: const EdgeInsets.symmetric(vertical: Sizes.PADDING_10),
               child: Obx(
-                () => !controller.isCustomerExpanded.value
+                () => !controller.isContactCustomerExpanded.value
                     ? Padding(
                         padding: const EdgeInsets.only(
                           top: Sizes.PADDING_8,
                         ),
                         child: TextField(
-                          controller: controller.customerTextFieldController,
+                          controller:
+                              controller.contactCustomerTextFieldController,
                           textAlign: TextAlign.left,
-                          onSubmitted: (value) {
-                            controller.isAddressFieldVisible.value = true;
-                          },
-                          // onChanged: (value) =>,
+                          onSubmitted: (value) {},
                           decoration: InputDecoration(
-                            labelText: 'Customer ',
+                            labelText: AppStrings.CUSTOMER,
                             suffixIcon: IconButton(
                               onPressed: () {
-                                controller.isCustomerExpanded.value = true;
+                                controller.isContactCustomerExpanded.value =
+                                    true;
                               },
                               icon: const Icon(
                                 Icons.arrow_drop_down,
@@ -69,47 +71,49 @@ class ContactPageScreen extends GetView<MainPageController> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                controller.isCustomerSearch.value
+                                controller.isContactCustomerSearch.value
                                     ? Expanded(
                                         child: TextField(
                                           controller: controller
-                                              .searchCustomerController,
+                                              .contactSearchTextFieldController,
                                           autofocus: true,
                                           decoration: InputDecoration(
-                                            labelText: 'Search customer',
+                                            labelText:
+                                                AppStrings.SEARCH_CUSTOMER,
                                             border:
                                                 const UnderlineInputBorder(),
                                             suffixIcon: IconButton(
                                                 icon: const Icon(Icons.close),
                                                 onPressed: () {
-                                                  controller.isCustomerSearch
+                                                  controller
+                                                      .isContactCustomerSearch
                                                       .value = false;
                                                   controller
-                                                      .searchCustomerController
+                                                      .contactSearchTextFieldController
                                                       .clear();
                                                 }),
                                           ),
                                         ),
                                       )
                                     : Text(
-                                        'Search customer',
+                                        AppStrings.SEARCH_CUSTOMER,
                                         style: context.bodyLarge,
                                       ),
                                 Row(
                                   children: [
-                                    controller.isCustomerSearch.value
+                                    controller.isContactCustomerSearch.value
                                         ? const SizedBox.shrink()
                                         : GestureDetector(
                                             onTap: () {
-                                              controller.isCustomerSearch
+                                              controller.isContactCustomerSearch
                                                   .value = true;
                                             },
                                             child: const Icon(Icons.search),
                                           ),
                                     GestureDetector(
                                       onTap: () {
-                                        controller.isCustomerExpanded.value =
-                                            false;
+                                        controller.isContactCustomerExpanded
+                                            .value = false;
                                       },
                                       child: const Icon(
                                         Icons.arrow_drop_up,
@@ -126,14 +130,15 @@ class ContactPageScreen extends GetView<MainPageController> {
                                 interactive: true,
                                 thickness: 12,
                                 thumbVisibility: true,
-                                controller: controller.customerScrollController,
+                                controller:
+                                    controller.contactCustomerScrollController,
                                 child: controller.tliCustomers?.value != null &&
                                         controller
                                             .tliCustomers!.value.isNotEmpty
                                     ? ListView.builder(
                                         scrollDirection: Axis.vertical,
-                                        controller:
-                                            controller.customerScrollController,
+                                        controller: controller
+                                            .contactCustomerScrollController,
                                         itemCount: controller
                                             .tliCustomers?.value.length,
                                         itemBuilder: (context, index) {
@@ -142,21 +147,22 @@ class ContactPageScreen extends GetView<MainPageController> {
                                           return ListTile(
                                             title: Text(filteredData!),
                                             onTap: () {
-                                              controller.setCustomerData(index);
+                                              // controller.setCustomerData(index);
                                               controller
-                                                  .customerTextFieldController
+                                                  .contactCustomerTextFieldController
                                                   .text = filteredData;
-                                              controller.isCustomerExpanded
+                                              controller
+                                                  .isContactCustomerExpanded
                                                   .value = false;
                                               controller
-                                                  .searchCustomerController
+                                                  .contactSearchTextFieldController
                                                   .clear();
                                             },
                                           );
                                         },
                                       )
                                     : const Center(
-                                        child: Text('No customers available'),
+                                        child: Text(AppStrings.NO_CUST_AVAIL),
                                       ),
                               ),
                             ),
@@ -165,28 +171,35 @@ class ContactPageScreen extends GetView<MainPageController> {
                       ),
               ),
             ),
+
+            //EMAIL OF ATTANDEE
             ContactPageTextField(
-              hintText: 'Email',
-              controller: TextEditingController(),
+              hintText: AppStrings.EMAIL,
+              controller: controller.contactEmailTextFieldController,
             ),
+
+            //PHONE NUMBER OF ATTANDEE
             Padding(
               padding: const EdgeInsets.symmetric(vertical: Sizes.PADDING_10),
               child: ContactPageTextField(
-                hintText: 'Phone Number',
-                controller: TextEditingController(),
+                hintText: AppStrings.PH_NUMBER,
+                controller: controller.contactPhoneNoTextFieldController,
               ),
             ),
+            // ADDRESS OF ATTANDEE
             ContactPageTextField(
-              hintText: 'Address',
-              controller: TextEditingController(),
+              hintText: AppStrings.ADDRESS,
+              controller: controller.contactAddressTextFieldController,
             ),
+
+            //ELEVATED BUTTONS FOR CANCEL & ADD
             Padding(
               padding: const EdgeInsets.only(top: Sizes.PADDING_260),
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 CustomElevatedButton(
                   onPressed: () {},
-                  title: 'Cancel',
+                  title: AppStrings.CANCEL,
                   minWidht: Sizes.WIDTH_100,
                   minHeight: Sizes.HEIGHT_30,
                   backgroundColor: LightTheme.buttonBackgroundColor2,
@@ -197,7 +210,7 @@ class ContactPageScreen extends GetView<MainPageController> {
                 ),
                 CustomElevatedButton(
                   onPressed: () {},
-                  title: 'Save',
+                  title: AppStrings.SAVE,
                   minWidht: Sizes.WIDTH_100,
                   minHeight: Sizes.HEIGHT_30,
                   backgroundColor: LightTheme.buttonBackgroundColor2,

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,9 @@ import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
+import 'package:sales_person_app/views/main_page/api_quries/api_mutate/tlicontact_mutate.dart';
 import 'package:sales_person_app/views/main_page/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/views/main_page/api_quries/tliitems_query.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
@@ -24,6 +27,8 @@ class MainPageController extends GetxController {
   var selectedIndex = 1.obs;
   RxList<String> selectedItems = <String>[].obs;
 
+  // flag for tracking API process
+  var isLoading = false.obs;
   // Pages for bottom navigation
   List pages = [
     const HomePageScreen(),
@@ -40,14 +45,11 @@ class MainPageController extends GetxController {
     AppStrings.MORE_TITLE
   ];
 
-  // flag for tracking API process
-  var isLoading = false.obs;
-
   // Initialize the list to hold customer data
   List<Map<String, dynamic>> customersData = [];
+
   // reactive variable for scanning result
   RxString scanBarcode = ''.obs;
-  // RxString token = ''.obs;
 
   @override
   void onInit() async {
@@ -86,16 +88,21 @@ class MainPageController extends GetxController {
   }
 
   //**************** CUSTOMER PAGE PORTION ************************//
-//Instance of Models which
+  //Instance of Models which
   TliCustomers? tliCustomers;
-  TliItems tliItems = TliItems(value: []);
+  TliCustomers? tliCustomerById;
+  TliItems? tliItems;
+
+// Reactive variable for Customers
+  RxString customerNo = ''.obs;
+  RxString customerAddress = ''.obs;
+
+  // Customer's Ship To Address
+  List<String> customersShipToAdd = [''].obs;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
   RxBool isCustomerSearch = false.obs;
-
-  //Reactive variable for customer's Address
-  RxString customerAddress = ''.obs;
 
   //flags for ship to Address text fields
   RxBool isShipToAddExpanded = false.obs;
@@ -146,8 +153,34 @@ class MainPageController extends GetxController {
         isLoading.value = true;
       },
       onSuccessGraph: (response) {
-        log("########RESPONSE: ############## \n ${response.data}");
         addTliCustomerModel(response.data!['tliCustomers']);
+        log("########RESPONSE: ############## \n ${response.data!['tliCustomers']}");
+        isLoading.value = false;
+      },
+      onError: (e) {
+        isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Error',
+          message: e.message,
+          duration: const Duration(seconds: 5),
+        );
+        log('*** onError *** \n ${e.message}');
+      },
+    );
+  }
+
+  Future<void> getCustomerbyIdFromGraphQL(String no) async {
+    await BaseClient.safeApiCall(
+      ApiConstants.BASE_URL_GRAPHQL,
+      RequestType.query,
+      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      query: TlicustomersQuery.tliCustomerGetByIdQuery(no),
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccessGraph: (response) {
+        log("########RESPONSE: ############## \n ${response.data}");
+        addTliCustomerByIdModel(response.data!['tliCustomers']);
         isLoading.value = false;
       },
       onError: (e) {
@@ -167,21 +200,12 @@ class MainPageController extends GetxController {
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-      query: """ query MyQuery {
-        tliItems(
-          companyId: "${ApiConstants.POSH_ID}"
-          page: 1
-          perPage: 10
-          filter: "no eq '$no'"
-          ) {
-          value {
-            description
-            systemId
-            unitPrice
-            no
-          }
-        }
-      }""",
+      query: TliItemsQuery.tliItemsQuery(no),
+      onSuccessGraph: (response) {
+        addTliItemsModel(response.data!["tliItems"]);
+        isLoading.value = false;
+        log('******* On SUCCESS ******** \n $tliItems');
+      },
       onLoading: () {
         isLoading.value = true;
         log('******* LOADING ********');
@@ -199,33 +223,40 @@ class MainPageController extends GetxController {
     );
   }
 
-  void setCustomerData(var indexNo) {
+  void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
-
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
-    isAddressFieldVisible.value = true;
     addressController = TextEditingController(text: customerAddress.value);
-    setCustomerShipToAdd(indexNo);
     isAddressFieldVisible.value = true;
-  }
-
-// Customer's Ship To Address
-  List<String> customersShipToAdd = [''].obs;
-  void setCustomerShipToAdd(var index) {
-    customersShipToAdd.clear();
-    var instanceCustomerShipToAdd = tliCustomers!.value[index].tliShipToAdds;
-    if (instanceCustomerShipToAdd != null) {
-      for (var element in instanceCustomerShipToAdd) {
-        customersShipToAdd.add('${element.address!}.${element.address2!}');
-      }
-    }
+    customerNo.value = tliCustomers!.value[indexNo].no!;
+    log(customerNo.value);
+    await getCustomerbyIdFromGraphQL(customerNo.value);
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
+    setCustomeShipToAdd();
+  }
+
+  void setCustomeShipToAdd() {
+    customersShipToAdd.clear();
+    var instanceCustomerShipToAdd = tliCustomerById!.value;
+    if (instanceCustomerShipToAdd.isNotEmpty) {
+      for (var values in instanceCustomerShipToAdd) {
+        var tliShipToAddresses = values.tliShipToAdds;
+        for (var element in tliShipToAddresses!) {
+          customersShipToAdd.add('${element.address!}.${element.address2!}');
+        }
+      }
+    }
   }
 
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
+    isLoading.value = false;
+  }
+
+  addTliCustomerByIdModel(response) {
+    tliCustomerById = TliCustomers.fromJson(response);
     isLoading.value = false;
   }
 
@@ -257,53 +288,75 @@ class MainPageController extends GetxController {
       await getSingleItemFromGraphQL(barcodeScanRes);
       barcodeScanned.value = true;
     }
-  }  void showCommentDialog(BuildContext context) {
-    final TextEditingController commentController = TextEditingController();
+  }
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add a Comment'),
-          content: TextField(
-            controller: commentController,
-            decoration: InputDecoration(
-              hintText: 'Enter your comment here',
-            ),
-            maxLines: 3, // Allows multiple lines for the comment
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog without saving
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String comment = commentController.text;
-                if (comment.isNotEmpty) {
-                  // Perform action with the comment, e.g., save it
-                  print('Comment: $comment');
-                  Navigator.of(context).pop(); // Close the dialog
-                } else {
-                  // Show a message or handle empty comment
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Comment cannot be empty')),
-                  );
-                }
-              },
-              child: Text('Submit'),
-            ),
-          ],
+  // **************************** CONTACT PAGE PORTION ************************ //
+  // CONTACT PAGE's TEXTFIELD CONTROLLERS
+  TextEditingController contactFullNameTextFieldController =
+      TextEditingController();
+  TextEditingController contactSearchTextFieldController =
+      TextEditingController();
+  late TextEditingController contactCustomerTextFieldController;
+  TextEditingController contactEmailTextFieldController =
+      TextEditingController();
+  TextEditingController contactAddressTextFieldController =
+      TextEditingController();
+  TextEditingController contactPhoneNoTextFieldController =
+      TextEditingController();
+
+// CONTACT PAGE's SCROLL CONTROLLERS
+  ScrollController contactCustomerScrollController = ScrollController();
+
+  //FLAGS OF CUSTOMER's TEXTFIELD
+  RxBool isContactCustomerExpanded = false.obs;
+  RxBool isContactCustomerSearch = false.obs;
+
+  Future<void> createTliContacts(
+    String name,
+    String no,
+    String customerNo,
+    String address,
+    String email,
+    String phoneNo,
+  ) async {
+    await BaseClient.safeApiCall(
+      ApiConstants.BASE_URL_GRAPHQL,
+      RequestType.mutate,
+      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      query: TlicontactMutate.tliContactMutate(
+        name,
+        no,
+        customerNo,
+        address,
+        email,
+        phoneNo,
+      ),
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccessGraph: (response) {
+        log("########RESPONSE: ############## \n ${response.data!['message']}");
+        var msg = '${response.data!['message']}';
+
+        CustomSnackBar.showCustomToast(message: msg);
+        isLoading.value = false;
+      },
+      onError: (e) {
+        isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Error',
+          message: e.message,
+          duration: const Duration(seconds: 5),
         );
+        log('*** onError *** \n ${e.message}');
       },
     );
   }
+
+  Map<String, dynamic> data = {};
+
+  //MORE PAGE
 }
-
-
-
 
 // Future<void> getSingleCustomerFromGraphQL(String no) async {
 //     await BaseClient.safeApiCall(
