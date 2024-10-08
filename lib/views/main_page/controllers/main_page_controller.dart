@@ -344,6 +344,27 @@ class MainPageController extends GetxController {
     );
   }
 
+  Map<String, dynamic> attandeeList = {
+    "Anna": [
+      {
+        'description': 'name',
+        'unitPrice': '20.0',
+      },
+      {
+        'description': 'name',
+        'unitPrice': '20.0',
+      },
+      {
+        'description': 'name',
+        'unitPrice': '20.0',
+      }
+    ],
+    "gill": {
+      'description': 'name',
+      'unitPrice': '20.0',
+    }
+  };
+
   // **************************** CONTACT PAGE PORTION ************************ //
   // CONTACT PAGE's TEXTFIELD CONTROLLERS
   TextEditingController contactFullNameTextFieldController =

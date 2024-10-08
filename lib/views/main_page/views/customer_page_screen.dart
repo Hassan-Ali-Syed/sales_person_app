@@ -78,13 +78,13 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             border:
                                                 const UnderlineInputBorder(),
                                             suffixIcon: IconButton(
-                                                icon: const Icon(Icons.close),
+                                                icon: const Icon(Icons.search),
                                                 onPressed: () {
-                                                  controller.isCustomerSearch
-                                                      .value = false;
-                                                  controller
-                                                      .searchCustomerController
-                                                      .clear();
+                                                  // controller.isCustomerSearch
+                                                  //     .value = false;
+                                                  // controller
+                                                  //     .searchCustomerController
+                                                  //     .clear();
                                                 }),
                                           ),
                                         ),
@@ -371,7 +371,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                 labelText: 'Attandee',
                                 suffixIcon: IconButton(
                                   onPressed: () {
-                                    print(controller.customersContacts);
                                     controller.isAttandeeExpanded.value = true;
                                   },
                                   icon: const Icon(
