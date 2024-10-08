@@ -468,12 +468,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             itemBuilder: (context, index) {
                                               final filteredData = controller
                                                   .customersContacts[index];
-                                              controller.checkBoxStates.value =
-                                                  List.generate(
-                                                      controller
-                                                          .customersContacts
-                                                          .length,
-                                                      (index) => false);
+
                                               return ListTile(
                                                 leading: Obx(
                                                   () => Checkbox(
@@ -533,16 +528,62 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_10,
               ),
               Obx(
-                () => controller.selectedItems.isNotEmpty
-                    ? Wrap(
+                () => controller.selectedAttendees.isNotEmpty
+                    ?
+                    // SizedBox(
+                    //     height: Sizes.HEIGHT_40,
+                    //     child: ListView.builder(
+                    //         scrollDirection: Axis.horizontal,
+                    //         itemCount: controller.selectedAttendees.length + 1,
+                    //         itemBuilder: (context, index) {
+                    //           return GestureDetector(
+                    //             onTap: () {
+                    //               controller.attandeeSelectedIndex.value =
+                    //                   index;
+                    //             },
+                    //             child: Obx(
+                    //               () => Container(
+                    //                 padding: const EdgeInsets.symmetric(
+                    //                     horizontal: Sizes.PADDING_8,
+                    //                     vertical: Sizes.PADDING_10),
+                    //                 decoration: BoxDecoration(
+                    //                   border: Border.all(
+                    //                       color: LightTheme.borderColor),
+                    //                   color: controller.attandeeSelectedIndex
+                    //                               .value ==
+                    //                           index
+                    //                       ? LightTheme.buttonBackgroundColor2
+                    //                       : Colors.white,
+                    //                 ),
+                    //                 child: Text(
+                    //                   index == 0
+                    //                       ? 'General'
+                    //                       : controller
+                    //                           .selectedAttendees[index - 1],
+                    //                   style: TextStyle(
+                    //                     color: controller.attandeeSelectedIndex
+                    //                                 .value ==
+                    //                             index
+                    //                         ? Colors.white
+                    //                         : Colors.black,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           );
+                    //         }),
+                    //   )
+                    Wrap(
                         spacing: 2,
                         runSpacing: 5,
                         children: List.generate(
-                          controller.selectedItems.isEmpty
+                          controller.selectedAttendees.isEmpty
                               ? 1
-                              : (controller.selectedItems.length + 1),
+                              : (controller.selectedAttendees.length + 1),
                           (index) => GestureDetector(
                             onTap: () {
+                              controller.selectedAttendee =
+                                  controller.selectedAttendees[index - 1];
                               controller.attandeeSelectedIndex.value = index;
                             },
                             child: Obx(
@@ -562,7 +603,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                 child: Text(
                                   index == 0
                                       ? 'General'
-                                      : controller.selectedItems[index - 1],
+                                      : controller.selectedAttendees[index - 1],
                                   style: TextStyle(
                                     color: controller
                                                 .attandeeSelectedIndex.value ==
@@ -586,13 +627,13 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 child: Column(
                   children: [
                     Obx(
-                      () => controller.selectedItems.isNotEmpty &&
+                      () => controller.selectedAttendees.isNotEmpty &&
                               controller.barcodeScanned.value
                           ? const CustomHeaderRow()
                           : const SizedBox(),
                     ),
                     Obx(
-                      () => controller.selectedItems.isNotEmpty &&
+                      () => controller.selectedAttendees.isNotEmpty &&
                               controller.barcodeScanned.value
                           ? CustomRowCells(
                               commentDialogBoxOnPressed: () {
@@ -623,7 +664,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_200,
               ),
               Obx(
-                () => controller.selectedItems.isNotEmpty
+                () => controller.selectedAttendees.isNotEmpty
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -642,7 +683,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               width: Sizes.WIDTH_10,
                             ),
                             CustomElevatedButton(
-                              onPressed: () => controller.scanBarcodeNormal(),
+                              onPressed: () {
+                                controller.scanBarcodeNormal();
+                              },
                               title: 'Scan',
                               minWidht: Sizes.WIDTH_120,
                               minHeight: Sizes.HEIGHT_30,

@@ -24,8 +24,8 @@ class MainPageController extends GetxController {
       GlobalKey<ScaffoldState>();
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
-  RxList<String> selectedItems = <String>[].obs;
-
+  RxList<String> selectedAttendees = <String>[].obs;
+  Map<String, dynamic> attendeeItemsMap = {};
   // flag for tracking API process
   var isLoading = false.obs;
   // Pages for bottom navigation
@@ -54,7 +54,6 @@ class MainPageController extends GetxController {
   void onInit() async {
     super.onInit();
     await getCustomersFromGraphQL();
-    checkBoxStates.value = List.filled(customersContacts.length, false);
   }
 
   // Method to update selectedIndex of Bottom Navigation Bar
@@ -99,6 +98,8 @@ class MainPageController extends GetxController {
   // Customer's Ship To Address
   List<String> customersShipToAdd = [''].obs;
   List<String> customersContacts = [''].obs;
+  List<Widget> attendeeButtons = [];
+  String? selectedAttendee;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -182,6 +183,7 @@ class MainPageController extends GetxController {
       onSuccessGraph: (response) {
         log("########RESPONSE: ############## \n ${response.data}");
         addTliCustomerByIdModel(response.data!['tliCustomers']);
+
         isLoading.value = false;
       },
       onError: (e) {
@@ -227,10 +229,11 @@ class MainPageController extends GetxController {
     customerNo.value = tliCustomers!.value[indexNo].no!;
     log(customerNo.value);
     await getCustomerbyIdFromGraphQL(customerNo.value);
+
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
-    setCustomerShipToAdd();
     setCustomerContacts();
+    setCustomerShipToAdd();
   }
 
   void setCustomerShipToAdd() {
@@ -255,6 +258,8 @@ class MainPageController extends GetxController {
         for (var element in tliContacts!) {
           customersContacts.add('${element.name}');
         }
+        checkBoxStates.value =
+            List.generate(customersContacts.length, (index) => false);
       }
     }
   }
@@ -271,17 +276,31 @@ class MainPageController extends GetxController {
 
   addTliItemsModel(response) {
     tliItems = TliItems.fromJson(response);
+    if (attendeeItemsMap[selectedAttendee!].length == 0) {
+      attendeeItemsMap[selectedAttendee!][tliItems];
+    } else {
+      attendeeItemsMap[selectedAttendee!].add(tliItems);
+    }
+    log('================${attendeeItemsMap.toString()}==============');
     isLoading.value = false;
   }
 
   void onCheckboxChanged(bool? value, int index) {
     checkBoxStates[index] = value!;
     if (value) {
-      selectedItems.add(customersContacts[index]);
+      selectedAttendees.add(customersContacts[index]);
+      for (String attendeeName in selectedAttendees) {
+        attendeeItemsMap[attendeeName] = '';
+
+        // log(attendeeItemsMap.toString());
+      }
     } else {
-      selectedItems.remove(customersContacts[index]);
+      selectedAttendees.remove(customersContacts[index]);
+      attendeeItemsMap.remove(customersContacts[index]);
     }
-    attandeeController.text = selectedItems.join(',');
+    Preferences().setAttendeesData(attendeeItemsMap);
+    // log('============${Preferences().getAttendeesData()}===================');
+    attandeeController.text = selectedAttendees.join(',');
   }
 
 // Method for scanning barcode
@@ -294,7 +313,7 @@ class MainPageController extends GetxController {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (barcodeScanRes != 'Failed to get platform version.') {
-      await getSingleItemFromGraphQL(barcodeScanRes);
+      await getSingleItemFromGraphQL('S10082-002');
       barcodeScanned.value = true;
     }
   }
