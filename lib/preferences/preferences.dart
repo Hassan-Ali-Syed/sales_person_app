@@ -15,8 +15,10 @@ class Preferences {
   getUserToken() => storage.read("token");
   removeToken() => storage.remove("token");
 
-  // void setUser(User.Data user) => storage.write("user", user);
-  // getUser() => storage.read("user");
+  void setAttendeesData(Map<String, dynamic> attendeesList) =>
+      storage.write("attendeesData", attendeesList);
+  getAttendeesData() => storage.read("attendeesData");
+  getAttendee(String name) => storage.read("attendeesData")[name];
 
   // void setUserRole(String userRole) => storage.write("userRole", userRole);
   // getUserRole() => storage.read("userRole");
