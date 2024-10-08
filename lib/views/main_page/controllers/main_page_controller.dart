@@ -25,7 +25,7 @@ class MainPageController extends GetxController {
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
   RxList<String> selectedAttendees = <String>[].obs;
-  Map<String, dynamic> attendeeItemsMap = {};
+  Map<String, List> attendeeItemsMap = {};
   // flag for tracking API process
   var isLoading = false.obs;
   // Pages for bottom navigation
@@ -99,7 +99,7 @@ class MainPageController extends GetxController {
   List<String> customersShipToAdd = [''].obs;
   List<String> customersContacts = [''].obs;
   List<Widget> attendeeButtons = [];
-  String? selectedAttendee;
+  RxString selectedAttendee= ''.obs;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -109,7 +109,7 @@ class MainPageController extends GetxController {
   RxBool isShipToAddExpanded = false.obs;
   RxBool isShipToAddSearch = false.obs;
 
-// flags for Textfields visibilty
+// flags for Textfields visibility
   RxBool isAddressFieldVisible = false.obs;
   RxBool isShipToAddFieldVisible = false.obs;
   RxBool isAttandeesFieldVisible = false.obs;
@@ -276,32 +276,79 @@ class MainPageController extends GetxController {
     isLoading.value = false;
   }
 
+  // addTliItemModel(response) {
+  //   tliItem = TliItems.fromJson(response);
+  //   log('============After Parse================');
+  //   log('********Attandee Map********* $attendeeItemsMap');
+  //   if (attendeeItemsMap[selectedAttendee.value] == null) {
+  //     log('============If Block================');
+  //     attendeeItemsMap[selectedAttendee.value] = [tliItem!.value.first];
+  //   } else {
+  //     log('============ELSE Block================');
+  //     attendeeItemsMap[selectedAttendee.value]!.add(tliItem!.value.first);
+  //   }
+  //   Preferences().setAttendeesData(attendeeItemsMap);
+  //   log('=============attendee data===${attendeeItemsMap.toString()}==============');
+  //   List item = Preferences().getAttendee(selectedAttendee.value);
+  //   log(' =====List of Items :  $item ===========');
+  //   for (var description in item) {
+  //     log("===========${description.description}================");
+  //   }
+  //   isLoading.value = false;
+  // }
+
   addTliItemModel(response) {
+    // Parse the response into a TliItems object
     tliItem = TliItems.fromJson(response);
-    log('============After Parse================');
-    if (attendeeItemsMap[selectedAttendee!].length == 0) {
-      log('============If Block================');
-      attendeeItemsMap[selectedAttendee!] = [tliItem!.value.first];
+    log('============ After Parse ================');
+    log('******** Attendee Map ********* $attendeeItemsMap');
+
+    // Check if selectedAttendee is valid
+    String attendeeKey = selectedAttendee.value;
+    if (attendeeKey.isEmpty) {
+      log('Error: Selected Attendee is empty.');
+      return;
+    }
+
+    // Ensure that the tliItem has a valid value list
+    if (tliItem == null || tliItem!.value.isEmpty) {
+      log('Error: No items found in the response.');
+      return;
+    }
+
+    // Check if this attendee already has items in the map
+    if (attendeeItemsMap[attendeeKey] == null) {
+      log('============ If Block (Adding New Attendee) ================');
+      attendeeItemsMap[attendeeKey] = [tliItem!.value.first];
     } else {
-      log('============ELSE Block================');
-      attendeeItemsMap[selectedAttendee!].add(tliItem!.value.first);
+      log('============ ELSE Block (Appending to Existing Attendee) ================');
+      attendeeItemsMap[attendeeKey]!.add(tliItem!.value.first);
     }
+
+    // Save updated data to preferences
     Preferences().setAttendeesData(attendeeItemsMap);
-    log('=============attendee data===${attendeeItemsMap.toString()}==============');
-    List item = Preferences().getAttendee(selectedAttendee!);
-    log(' =====List of Items :  $item ===========');
+    log('============= Updated Attendee Data: ${attendeeItemsMap.toString()} ==============');
+
+    // Fetch the updated attendee list to verify
+    List item = Preferences().getAttendee(attendeeKey) ?? [];
+    log(' ===== List of Items:  $item ===========');
+
+    // Log the descriptions of the items for the attendee
     for (var description in item) {
-      log("===========${description.description}================");
+      log("=========== Item Description: ${description.description} ================");
     }
+
+    // Set the loading indicator to false
     isLoading.value = false;
   }
+
 
   void onCheckboxChanged(bool? value, int index) {
     checkBoxStates[index] = value!;
     if (value) {
       selectedAttendees.add(customersContacts[index]);
       for (String attendeeName in selectedAttendees) {
-        attendeeItemsMap[attendeeName] = '';
+        attendeeItemsMap[attendeeName] = [];
       }
     } else {
       selectedAttendees.remove(customersContacts[index]);
