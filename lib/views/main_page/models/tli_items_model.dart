@@ -2,7 +2,7 @@ class TliItems {
   String? message;
   int? status;
   bool? success;
-  List<Value> value;
+  List<ItemValue> value;
 
   TliItems({
     this.message,
@@ -18,7 +18,7 @@ class TliItems {
       status: json['status'] as int?,
       success: json['success'] as bool?,
       value: (json['value'] as List<dynamic>)
-          .map((item) => Value.fromJson(item as Map<String, dynamic>))
+          .map((item) => ItemValue.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -34,13 +34,13 @@ class TliItems {
   }
 }
 
-class Value {
+class ItemValue {
   String? systemId;
   String? description;
   int? unitPrice;
   String? no;
 
-  Value({
+  ItemValue({
     this.systemId,
     this.description,
     this.unitPrice,
@@ -48,8 +48,8 @@ class Value {
   });
 
   // fromJson method
-  factory Value.fromJson(Map<String, dynamic> json) {
-    return Value(
+  factory ItemValue.fromJson(Map<String, dynamic> json) {
+    return ItemValue(
       systemId: json['systemId'] as String?,
       description: json['description'] as String?,
       unitPrice: json['unitPrice'] as int?,
