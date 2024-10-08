@@ -299,69 +299,6 @@ class MainPageController extends GetxController {
     }
   }
 
-  // **************************** CONTACT PAGE PORTION ************************ //
-  // CONTACT PAGE's TEXTFIELD CONTROLLERS
-  TextEditingController contactFullNameTextFieldController =
-      TextEditingController();
-  TextEditingController contactSearchTextFieldController =
-      TextEditingController();
-  late TextEditingController contactCustomerTextFieldController;
-  TextEditingController contactEmailTextFieldController =
-      TextEditingController();
-  TextEditingController contactAddressTextFieldController =
-      TextEditingController();
-  TextEditingController contactPhoneNoTextFieldController =
-      TextEditingController();
-
-// CONTACT PAGE's SCROLL CONTROLLERS
-  ScrollController contactCustomerScrollController = ScrollController();
-
-  //FLAGS OF CUSTOMER's TEXTFIELD
-  RxBool isContactCustomerExpanded = false.obs;
-  RxBool isContactCustomerSearch = false.obs;
-
-  Future<void> createTliContacts(
-    String name,
-    String no,
-    String customerNo,
-    String address,
-    String email,
-    String phoneNo,
-  ) async {
-    await BaseClient.safeApiCall(
-      ApiConstants.BASE_URL_GRAPHQL,
-      RequestType.mutate,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-      query: TlicontactMutate.tliContactMutate(
-        name,
-        no,
-        customerNo,
-        address,
-        email,
-        phoneNo,
-      ),
-      onLoading: () {
-        isLoading.value = true;
-      },
-      onSuccessGraph: (response) {
-        log("########RESPONSE: ############## \n ${response.data!['message']}");
-        var msg = '${response.data!['message']}';
-
-        CustomSnackBar.showCustomToast(message: msg);
-        isLoading.value = false;
-      },
-      onError: (e) {
-        isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Error',
-          message: e.message,
-          duration: const Duration(seconds: 5),
-        );
-        log('*** onError *** \n ${e.message}');
-      },
-    );
-  }
-
   Map<String, dynamic> data = {};
   void showCommentDialog(BuildContext context) {
     final TextEditingController commentController = TextEditingController();
@@ -406,120 +343,90 @@ class MainPageController extends GetxController {
       },
     );
   }
+
+  // **************************** CONTACT PAGE PORTION ************************ //
+  // CONTACT PAGE's TEXTFIELD CONTROLLERS
+  TextEditingController contactFullNameTextFieldController =
+      TextEditingController();
+  TextEditingController contactSearchTextFieldController =
+      TextEditingController();
+  TextEditingController contactCustomerTextFieldController =
+      TextEditingController();
+  TextEditingController contactEmailTextFieldController =
+      TextEditingController();
+  TextEditingController contactAddressTextFieldController =
+      TextEditingController();
+  TextEditingController contactPhoneNoTextFieldController =
+      TextEditingController();
+
+  var contactCustomerNo = ''.obs;
+
+// CONTACT PAGE's SCROLL CONTROLLERS
+  ScrollController contactCustomerScrollController = ScrollController();
+
+  //FLAGS OF CUSTOMER's TEXTFIELD
+  RxBool isContactCustomerExpanded = false.obs;
+  RxBool isContactCustomerSearch = false.obs;
+
+  Future<void> createTliContacts({
+    required String name,
+    required String customerNo,
+    required String address,
+    String? email,
+    String? phoneNo,
+  }) async {
+    await BaseClient.safeApiCall(
+      ApiConstants.BASE_URL_GRAPHQL,
+      RequestType.mutate,
+      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      query: TlicontactMutate.tliContactMutate(
+        name: name,
+        customerNo: customerNo,
+        address: address,
+        email: email,
+        phoneNo: phoneNo,
+      ),
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccessGraph: (response) {
+        log("******* RESPONSE: *********\n ${response.data!['message']}");
+
+        if (response.data!['createtliContact']['status'] == 400) {
+          CustomSnackBar.showCustomToast(
+              message: '${response.data!['createtliContact']['success']}',
+              duration: const Duration(seconds: 3),
+              color: AppColors.redShade5);
+          isLoading.value = false;
+        } else {
+          CustomSnackBar.showCustomToast(
+            message: '${response.data!['createtliContact']['message']}',
+            duration: const Duration(seconds: 3),
+            color: Colors.green,
+          );
+          isLoading.value = false;
+        }
+      },
+      onError: (e) {
+        isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Error',
+          message: e.message,
+          duration: const Duration(seconds: 5),
+        );
+        log('*** onError *** \n ${e.message}');
+      },
+    );
+  }
+
+  void clearAllTextFieldsOfContactPage() {
+    contactFullNameTextFieldController.clear();
+    // controller.contactCustomerNo.value,
+    contactCustomerTextFieldController.clear();
+    contactAddressTextFieldController.clear();
+    contactEmailTextFieldController.clear();
+    contactPhoneNoTextFieldController.clear();
+  }
+
   //MORE PAGE
 }
-
-// Future<void> getSingleCustomerFromGraphQL(String no) async {
-//     await BaseClient.safeApiCall(
-//       ApiConstants.BASE_URL_GRAPHQL,
-//       RequestType.query,
-//       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-//       query: """query MyQuery {
-//         tliCustomers(
-//           companyId: "${ApiConstants.SILK_ID}",
-//           page: 1,
-//           perPage: 1000,
-//           filter: "name eq '$no'",
-//           )
-//           {
-//           message
-//           success
-//           value {
-//             systemId
-//             name
-//             no
-
-//           }
-//         }
-//       }""",
-//       onSuccessGraph: (response) {
-//         final data = response.data!["tliCustomers"];
-//         isLoading.value = false;
-//         print(data);
-//       },
-//       onLoading: () {
-//         isLoading.value = true;
-//       },
-//       onError: (e) {
-//         isLoading.value = false;
-//         print(e.message);
-//       },
-//     );
-//   }
-
-//   Future<void> getSingleCustomerShipToAddressFromGraphQL(
-//       String customerNo) async {
-//     await BaseClient.safeApiCall(
-//       ApiConstants.BASE_URL_GRAPHQL,
-//       RequestType.query,
-//       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-//       query: """
-//       query MyQuery {
-//       tliShipToAdds(
-//         companyId: "${ApiConstants.SILK_ID}"
-//         page: 1
-//         perPage: 10,
-//         filter: " customerNo eq 'C00005'"
-//         )
-//         {
-//         message
-//         value {
-//           address
-//           address2
-//           code
-//           customerNo
-//           }
-//         }
-//       }
-//     }""",
-//       onSuccessGraph: (response) {
-//         final data = response.data!["tliShipToAdds"];
-//         isLoading.value = false;
-//         print(data);
-//       },
-//       onLoading: () {
-//         isLoading.value = true;
-//       },
-//       onError: (e) {
-//         isLoading.value = false;
-//         print(e.message);
-//       },
-//     );
-//   }
-
-//   Future<void> getSingleCustomerContactsFromGraphQL(String customerNo) async {
-//     await BaseClient.safeApiCall(
-//       ApiConstants.BASE_URL_GRAPHQL,
-//       RequestType.query,
-//       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-//       query: """ query MyQuery {
-//       tliContacts(
-//         companyId: "${ApiConstants.SILK_ID}"
-//         page: 1
-//         perPage: 100
-//         filter: "customerNo eq '$customerNo'"
-//       ) {
-//         status
-//         success
-//         value {
-//           address
-//           address2
-//           customerNo
-//           name
-//         }
-//       }
-//     }""",
-//       onSuccessGraph: (response) {
-//         final data = response.data!["tliContacts"];
-//         isLoading.value = false;
-//         print(data);
-//       },
-//       onLoading: () {
-//         isLoading.value = true;
-//       },
-//       onError: (e) {
-//         isLoading.value = false;
-//         print(e.message);
-//       },
-//     );
-//   }
