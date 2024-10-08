@@ -6,9 +6,7 @@ import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
-import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
-
 import '../components/custom_header_row.dart';
 
 class CustomerPageScreen extends GetView<MainPageController> {
@@ -184,6 +182,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         ),
                       ),
               ),
+
               // Second TextField Bill to Add automatically filled when select customer
               Obx(
                 () => controller.isAddressFieldVisible.value
@@ -624,53 +623,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           )
                         : const CircularProgressIndicator();
                   }),
-
-                  // Obx(()=>controller.selectedAttendee.value==''? const SizedBox():SizedBox(
-                  //   height: Sizes.HEIGHT_200,
-                  //   width: Sizes.WIDTH_300,
-                  //   child: ListView.builder(
-                  //       scrollDirection: Axis.vertical,
-                  //       itemCount: Preferences()
-                  //           .getAttendee(controller.selectedAttendee.value)
-                  //           .length?? 0,
-                  //       itemBuilder: (context, index) {
-                  //         ItemValue itemData = Preferences().getAttendee(
-                  //             controller.selectedAttendee.value)[index];
-                  //         return Row(
-                  //           children: [
-                  //             Center(
-                  //               child: Text("${itemData.description}"),
-                  //             )
-                  //           ],
-                  //         );
-                  //       }),
-                  // )),
-
-                  // Obx(
-                  //   () =>
-                  //controller.selectedAttendees.isNotEmpty &&
-                  //           controller.barcodeScanned.value
-                  //       ? CustomRowCells(
-                  //           commentDialogBoxOnPressed: () {
-                  //             controller.showCommentDialog(context);
-                  //           },
-                  //           itemName: controller.tliItem!.value.isNotEmpty
-                  //               ? controller
-                  //                   .tliItem!
-                  //                   .value[controller
-                  //                       .attandeeSelectedIndex.value]
-                  //                   .description
-                  //               : '',
-                  //           price: controller.tliItem!.value.isNotEmpty
-                  //               ? controller
-                  //                   .tliItem!
-                  //                   .value[controller
-                  //                       .attandeeSelectedIndex.value]
-                  //                   .unitPrice
-                  //                   .toString()
-                  //               : '')
-                  //       : const SizedBox(),
-                  // ),
                 ],
               ),
 
@@ -684,18 +636,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         children: [
                             CustomElevatedButton(
                               onPressed: () {
-                                controller
-                                    .getSingleItemFromGraphQL('S10082-002');
-                                // // if (Preferences().getAttendeesData() != null) {
-                                // //   final attendeesData =
-                                // //       Preferences().getAttendeesData();
-                                // //   final items =
-                                // //       controller.selectedAttendee != null
-                                // //           ? attendeesData[
-                                // //               controller.selectedAttendee]
-                                // //           : [];
-                                // //   log('**** PREFERENCES ********\n $items');
-                                // } else {}
+                                // controller
+                                //     .getSingleItemFromGraphQL('S10082-002');
                               },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,
