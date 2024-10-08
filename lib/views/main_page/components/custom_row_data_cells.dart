@@ -4,29 +4,32 @@ import 'package:sales_person_app/themes/themes.dart';
 
 class CustomRowCells extends StatelessWidget {
   final String? itemName;
-  final String? qty;
+
   final String? price;
-  final String? notes;
+
   final void Function()? commentDialogBoxOnPressed;
+  final TextEditingController qntyController;
+  final TextEditingController notesController;
 
   const CustomRowCells({
     super.key,
     this.itemName,
-    this.qty,
     this.price,
-    this.notes,
     this.commentDialogBoxOnPressed,
+    required this.qntyController,
+    required this.notesController,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _buildCell(itemName ?? '', Sizes.WIDTH_120),
+        _buildCell(itemName ?? '', Sizes.WIDTH_118),
         SizedBox(
           width: Sizes.WIDTH_60,
-          height: Sizes.HEIGHT_40,
+          height: Sizes.HEIGHT_50,
           child: TextField(
+            controller: qntyController,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -35,7 +38,11 @@ class CustomRowCells extends StatelessWidget {
             textAlign: TextAlign.center,
             textAlignVertical: TextAlignVertical.top,
             decoration: InputDecoration(
-              border: OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+              ),
+              enabledBorder: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: LightTheme.grayColorShade5, width: 2),
               ),
@@ -44,9 +51,10 @@ class CustomRowCells extends StatelessWidget {
         ),
         _buildCell(price ?? '', Sizes.WIDTH_80),
         SizedBox(
-          width: Sizes.WIDTH_130,
-          height: Sizes.HEIGHT_40,
+          width: Sizes.WIDTH_118,
+          height: Sizes.HEIGHT_50,
           child: TextField(
+            controller: notesController,
             onChanged: (text) {
               if (text.length > 6) {}
             },
@@ -61,7 +69,11 @@ class CustomRowCells extends StatelessWidget {
               suffixIcon: IconButton(
                   onPressed: commentDialogBoxOnPressed,
                   icon: const Icon(Icons.edit)),
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+              ),
+              focusedBorder: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: LightTheme.grayColorShade5, width: 2),
               ),
@@ -74,7 +86,7 @@ class CustomRowCells extends StatelessWidget {
 
   Widget _buildCell(String value, double width) {
     return Container(
-      height: Sizes.HEIGHT_40,
+      height: Sizes.HEIGHT_50,
       width: width,
       decoration: BoxDecoration(
         border: Border.all(

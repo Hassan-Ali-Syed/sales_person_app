@@ -9,9 +9,9 @@ import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
-import 'package:sales_person_app/views/main_page/api_quries/api_mutate/tlicontact_mutate.dart';
-import 'package:sales_person_app/views/main_page/api_quries/tlicustomers_query.dart';
-import 'package:sales_person_app/views/main_page/api_quries/tliitems_query.dart';
+import 'package:sales_person_app/views/main_page/queries/api_mutate/tlicontact_mutate.dart';
+import 'package:sales_person_app/views/main_page/queries/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/views/main_page/queries/api_quries/tliitems_query.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
@@ -99,7 +99,7 @@ class MainPageController extends GetxController {
   List<String> customersShipToAdd = [''].obs;
   List<String> customersContacts = [''].obs;
   List<Widget> attendeeButtons = [];
-  RxString selectedAttendee= ''.obs;
+  RxString selectedAttendee = ''.obs;
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -118,6 +118,7 @@ class MainPageController extends GetxController {
   RxBool isAttandeeFieldVisible = false.obs;
   RxBool isAttandeeExpanded = false.obs;
   RxBool isAttandeeSearch = false.obs;
+  RxBool itemsListRefresh = false.obs;
 
   //attandee List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
@@ -141,6 +142,7 @@ class MainPageController extends GetxController {
 // Ship to Address TextField
   late TextEditingController shipToAddController;
   TextEditingController searchShipToAddController = TextEditingController();
+
   // Contacts textField
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
@@ -298,6 +300,7 @@ class MainPageController extends GetxController {
   // }
 
   addTliItemModel(response) {
+    itemsListRefresh.value = true;
     // Parse the response into a TliItems object
     tliItem = TliItems.fromJson(response);
     log('============ After Parse ================');
@@ -329,6 +332,10 @@ class MainPageController extends GetxController {
     Preferences().setAttendeesData(attendeeItemsMap);
     log('============= Updated Attendee Data: ${attendeeItemsMap.toString()} ==============');
 
+    itemsListRefresh.value = false;
+    // Set the loading indicator to false
+    isLoading.value = false;
+
     // Fetch the updated attendee list to verify
     List item = Preferences().getAttendee(attendeeKey) ?? [];
     log(' ===== List of Items:  $item ===========');
@@ -337,11 +344,7 @@ class MainPageController extends GetxController {
     for (var description in item) {
       log("=========== Item Description: ${description.description} ================");
     }
-
-    // Set the loading indicator to false
-    isLoading.value = false;
   }
-
 
   void onCheckboxChanged(bool? value, int index) {
     checkBoxStates[index] = value!;
