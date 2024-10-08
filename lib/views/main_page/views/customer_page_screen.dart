@@ -1,16 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/themes/themes.dart';
-import 'package:sales_person_app/views/main_page/components/custom_header_row.dart';
-import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
+
+import '../components/custom_header_row.dart';
 
 class CustomerPageScreen extends GetView<MainPageController> {
   static const String routeName = '/custome_page_screen';
@@ -189,13 +187,11 @@ class CustomerPageScreen extends GetView<MainPageController> {
               Obx(
                 () => controller.isAddressFieldVisible.value
                     ? SizedBox(
-                        child: Expanded(
-                          child: TextField(
-                            controller: controller.addressController,
-                            decoration: const InputDecoration(
-                              labelText: AppStrings.ADDRESS,
-                              border: UnderlineInputBorder(),
-                            ),
+                        child: TextField(
+                          controller: controller.addressController,
+                          decoration: const InputDecoration(
+                            labelText: AppStrings.ADDRESS,
+                            border: UnderlineInputBorder(),
                           ),
                         ),
                       )
@@ -531,6 +527,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
               const SizedBox(
                 height: Sizes.HEIGHT_10,
               ),
+
+
+              //Wrap widget for generate contact buttons
               Obx(
                 () => controller.selectedAttendees.isNotEmpty
                     ? Wrap(
@@ -540,7 +539,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           (controller.selectedAttendees.length),
                           (index) => GestureDetector(
                             onTap: () {
-                              controller.selectedAttendee =
+                              controller.selectedAttendee.value =
                                   controller.selectedAttendees[index];
                               controller.attandeeSelectedIndex.value = index;
                             },
@@ -575,40 +574,83 @@ class CustomerPageScreen extends GetView<MainPageController> {
                       )
                     : const SizedBox(),
               ),
+
               const SizedBox(
                 height: Sizes.HEIGHT_10,
               ),
+
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Column(
                   children: [
-                    // Obx(
-                    //   () => controller.selectedAttendees.isNotEmpty
-                    //       ? const CustomHeaderRow()
-                    //       : const SizedBox(),
-                    // ),
+                    Obx(
+                      () => controller.selectedAttendees.isNotEmpty
+                          ? const CustomHeaderRow()
+                          : const SizedBox(),
+                    ),
+                    Obx(() {
+                      final selectedAttendee = controller.selectedAttendee.value;
 
-                    SizedBox(
-                      height: Sizes.HEIGHT_200,
-                      width: Sizes.WIDTH_300,
-                      child: ListView.builder(
+                      // Check if selectedAttendee is not empty or null
+                      if (selectedAttendee.isEmpty) {
+                        return const SizedBox();
+                      }
+
+                      // Get the list of attendee data from Preferences
+                      final attendeeData = Preferences().getAttendee(selectedAttendee) ?? [];
+
+                      return SizedBox(
+                        height: Sizes.HEIGHT_200,
+                        width: Sizes.WIDTH_300,
+                        child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: Preferences()
-                              .getAttendee(controller.selectedAttendee!)
-                              .length,
+                          itemCount: attendeeData.length, // Safe item count
                           itemBuilder: (context, index) {
-                            ItemValue itemData = Preferences().getAttendee(
-                                controller.selectedAttendee!)[index];
+                            // Fetch the item at the current index
+                            final itemData = attendeeData[index];
+
                             return Row(
                               children: [
-                                Container(
-                                    child: Center(
-                                  child: Text("${itemData.description}"),
-                                ))
+                                Text(itemData?.description ?? 'No description'),
+                                Text(itemData?.unitPrice.toString()?? '0'),
+
                               ],
                             );
-                          }),
-                    )
+
+                            // Assuming itemData has the 'description' field, display it
+                            return Row(
+                              children: [
+
+                                   Center(
+                                    child: Text("${itemData.description}"), // Display the description
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    }),
+
+                    // Obx(()=>controller.selectedAttendee.value==''? const SizedBox():SizedBox(
+                    //   height: Sizes.HEIGHT_200,
+                    //   width: Sizes.WIDTH_300,
+                    //   child: ListView.builder(
+                    //       scrollDirection: Axis.vertical,
+                    //       itemCount: Preferences()
+                    //           .getAttendee(controller.selectedAttendee.value)
+                    //           .length?? 0,
+                    //       itemBuilder: (context, index) {
+                    //         ItemValue itemData = Preferences().getAttendee(
+                    //             controller.selectedAttendee.value)[index];
+                    //         return Row(
+                    //           children: [
+                    //             Center(
+                    //               child: Text("${itemData.description}"),
+                    //             )
+                    //           ],
+                    //         );
+                    //       }),
+                    // )),
 
                     // Obx(
                     //   () =>
