@@ -625,7 +625,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         children: [
                             CustomElevatedButton(
                               onPressed: () {
-                                log('**** PREFERENCES ********\n ${Preferences().getAttendeesData()}');
+                                log('**** PREFERENCES ********\n ${Preferences().getAttendeesData()['BERNARDON PA'][0]}');
                               },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,

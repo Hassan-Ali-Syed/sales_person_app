@@ -205,6 +205,7 @@ class MainPageController extends GetxController {
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliItemsQuery.tliItemsQuery(no),
       onSuccessGraph: (response) {
+        log('******* On SUCCESS ********');
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
         log('******* On SUCCESS ******** \n $tliItem');
@@ -275,11 +276,7 @@ class MainPageController extends GetxController {
   }
 
   addTliItemModel(response) {
-    log('******* TliItems Body before*****');
     tliItem = TliItems.fromJson(response);
-    log('******* TliItems Body After *******');
-    log('Selected Attandee: $selectedAttendee ');
-    log("Attandee ${attendeeItemsMap[selectedAttendee!]}");
     if (attendeeItemsMap[selectedAttendee!].length == 0) {
       attendeeItemsMap[selectedAttendee!] = [tliItem];
     } else {
