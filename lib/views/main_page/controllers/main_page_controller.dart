@@ -89,7 +89,7 @@ class MainPageController extends GetxController {
   //Instance of Models which
   TliCustomers? tliCustomers;
   TliCustomers? tliCustomerById;
-  TliItems? tliItems;
+  TliItems? tliItem;
 
 // Reactive variable for Customers
   RxString customerNo = ''.obs;
@@ -205,9 +205,9 @@ class MainPageController extends GetxController {
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliItemsQuery.tliItemsQuery(no),
       onSuccessGraph: (response) {
-        addTliItemsModel(response.data!["tliItems"]);
+        addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
-        log('******* On SUCCESS ******** \n $tliItems');
+        log('******* On SUCCESS ******** \n $tliItem');
       },
       onLoading: () {
         isLoading.value = true;
@@ -274,12 +274,16 @@ class MainPageController extends GetxController {
     isLoading.value = false;
   }
 
-  addTliItemsModel(response) {
-    tliItems = TliItems.fromJson(response);
+  addTliItemModel(response) {
+    log('******* TliItems Body before*****');
+    tliItem = TliItems.fromJson(response);
+    log('******* TliItems Body After *******');
+    log('Selected Attandee: $selectedAttendee ');
+    log("Attandee ${attendeeItemsMap[selectedAttendee!]}");
     if (attendeeItemsMap[selectedAttendee!].length == 0) {
-      attendeeItemsMap[selectedAttendee!][tliItems];
+      attendeeItemsMap[selectedAttendee!] = [tliItem];
     } else {
-      attendeeItemsMap[selectedAttendee!].add(tliItems);
+      attendeeItemsMap[selectedAttendee!].add(tliItem);
     }
     log('================${attendeeItemsMap.toString()}==============');
     isLoading.value = false;
@@ -291,15 +295,12 @@ class MainPageController extends GetxController {
       selectedAttendees.add(customersContacts[index]);
       for (String attendeeName in selectedAttendees) {
         attendeeItemsMap[attendeeName] = '';
-
-        // log(attendeeItemsMap.toString());
       }
     } else {
       selectedAttendees.remove(customersContacts[index]);
       attendeeItemsMap.remove(customersContacts[index]);
     }
     Preferences().setAttendeesData(attendeeItemsMap);
-    // log('============${Preferences().getAttendeesData()}===================');
     attandeeController.text = selectedAttendees.join(',');
   }
 
@@ -313,12 +314,11 @@ class MainPageController extends GetxController {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (barcodeScanRes != 'Failed to get platform version.') {
-      await getSingleItemFromGraphQL('S10082-002');
+      await getSingleItemFromGraphQL(barcodeScanRes);
       barcodeScanned.value = true;
     }
   }
 
-  Map<String, dynamic> data = {};
   void showCommentDialog(BuildContext context) {
     final TextEditingController commentController = TextEditingController();
 
@@ -362,27 +362,6 @@ class MainPageController extends GetxController {
       },
     );
   }
-
-  Map<String, dynamic> attandeeList = {
-    "Anna": [
-      {
-        'description': 'name',
-        'unitPrice': '20.0',
-      },
-      {
-        'description': 'name',
-        'unitPrice': '20.0',
-      },
-      {
-        'description': 'name',
-        'unitPrice': '20.0',
-      }
-    ],
-    "gill": {
-      'description': 'name',
-      'unitPrice': '20.0',
-    }
-  };
 
   // **************************** CONTACT PAGE PORTION ************************ //
   // CONTACT PAGE's TEXTFIELD CONTROLLERS

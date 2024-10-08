@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
+import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/components/custom_header_row.dart';
 import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
@@ -529,61 +532,15 @@ class CustomerPageScreen extends GetView<MainPageController> {
               ),
               Obx(
                 () => controller.selectedAttendees.isNotEmpty
-                    ?
-                    // SizedBox(
-                    //     height: Sizes.HEIGHT_40,
-                    //     child: ListView.builder(
-                    //         scrollDirection: Axis.horizontal,
-                    //         itemCount: controller.selectedAttendees.length + 1,
-                    //         itemBuilder: (context, index) {
-                    //           return GestureDetector(
-                    //             onTap: () {
-                    //               controller.attandeeSelectedIndex.value =
-                    //                   index;
-                    //             },
-                    //             child: Obx(
-                    //               () => Container(
-                    //                 padding: const EdgeInsets.symmetric(
-                    //                     horizontal: Sizes.PADDING_8,
-                    //                     vertical: Sizes.PADDING_10),
-                    //                 decoration: BoxDecoration(
-                    //                   border: Border.all(
-                    //                       color: LightTheme.borderColor),
-                    //                   color: controller.attandeeSelectedIndex
-                    //                               .value ==
-                    //                           index
-                    //                       ? LightTheme.buttonBackgroundColor2
-                    //                       : Colors.white,
-                    //                 ),
-                    //                 child: Text(
-                    //                   index == 0
-                    //                       ? 'General'
-                    //                       : controller
-                    //                           .selectedAttendees[index - 1],
-                    //                   style: TextStyle(
-                    //                     color: controller.attandeeSelectedIndex
-                    //                                 .value ==
-                    //                             index
-                    //                         ? Colors.white
-                    //                         : Colors.black,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           );
-                    //         }),
-                    //   )
-                    Wrap(
+                    ? Wrap(
                         spacing: 2,
                         runSpacing: 5,
                         children: List.generate(
-                          controller.selectedAttendees.isEmpty
-                              ? 1
-                              : (controller.selectedAttendees.length + 1),
+                          (controller.selectedAttendees.length),
                           (index) => GestureDetector(
                             onTap: () {
                               controller.selectedAttendee =
-                                  controller.selectedAttendees[index - 1];
+                                  controller.selectedAttendees[index];
                               controller.attandeeSelectedIndex.value = index;
                             },
                             child: Obx(
@@ -601,9 +558,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           : Colors.white,
                                 ),
                                 child: Text(
-                                  index == 0
-                                      ? 'General'
-                                      : controller.selectedAttendees[index - 1],
+                                  controller.selectedAttendees[index],
                                   style: TextStyle(
                                     color: controller
                                                 .attandeeSelectedIndex.value ==
@@ -639,16 +594,16 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               commentDialogBoxOnPressed: () {
                                 controller.showCommentDialog(context);
                               },
-                              itemName: controller.tliItems!.value.isNotEmpty
+                              itemName: controller.tliItem!.value.isNotEmpty
                                   ? controller
-                                      .tliItems!
+                                      .tliItem!
                                       .value[controller
                                           .attandeeSelectedIndex.value]
                                       .description
                                   : '',
-                              price: controller.tliItems!.value.isNotEmpty
+                              price: controller.tliItem!.value.isNotEmpty
                                   ? controller
-                                      .tliItems!
+                                      .tliItem!
                                       .value[controller
                                           .attandeeSelectedIndex.value]
                                       .unitPrice
@@ -669,7 +624,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                             CustomElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                log('**** PREFERENCES ********\n ${Preferences().getAttendeesData()}');
+                              },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,
                               minHeight: Sizes.HEIGHT_30,
