@@ -4,6 +4,7 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/themes/themes.dart';
+import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
@@ -20,8 +21,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
       child: Padding(
           padding: const EdgeInsets.only(
               top: Sizes.PADDING_10,
-              left: Sizes.PADDING_24,
-              right: Sizes.PADDING_24,
+              left: Sizes.PADDING_8,
+              right: Sizes.PADDING_8,
               bottom: Sizes.PADDING_10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -528,7 +529,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_10,
               ),
 
-
               //Wrap widget for generate contact buttons
               Obx(
                 () => controller.selectedAttendees.isNotEmpty
@@ -579,106 +579,99 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_10,
               ),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  children: [
-                    Obx(
-                      () => controller.selectedAttendees.isNotEmpty
-                          ? const CustomHeaderRow()
-                          : const SizedBox(),
-                    ),
-                    Obx(() {
-                      final selectedAttendee = controller.selectedAttendee.value;
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Obx(
+                    () => controller.selectedAttendees.isNotEmpty
+                        ? const CustomHeaderRow()
+                        : const SizedBox(),
+                  ),
+                  Obx(() {
+                    final selectedAttendee = controller.selectedAttendee.value;
 
-                      // Check if selectedAttendee is not empty or null
-                      if (selectedAttendee.isEmpty) {
-                        return const SizedBox();
-                      }
+                    // Check if selectedAttendee is not empty or null
+                    if (selectedAttendee.isEmpty) {
+                      return const SizedBox();
+                    }
 
-                      // Get the list of attendee data from Preferences
-                      final attendeeData = Preferences().getAttendee(selectedAttendee) ?? [];
+                    // Get the list of attendee data from Preferences
+                    final attendeeData =
+                        Preferences().getAttendee(selectedAttendee) ?? [];
 
-                      return SizedBox(
-                        height: Sizes.HEIGHT_200,
-                        width: Sizes.WIDTH_300,
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: attendeeData.length, // Safe item count
-                          itemBuilder: (context, index) {
-                            // Fetch the item at the current index
-                            final itemData = attendeeData[index];
+                    return !controller.itemsListRefresh.value
+                        ? SizedBox(
+                            height: Sizes.HEIGHT_200,
+                            width: double.infinity,
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: attendeeData.length, // Safe item count
+                              itemBuilder: (context, index) {
+                                // Fetch the item at the current index
+                                final itemData = attendeeData[index];
 
-                            return Row(
-                              children: [
-                                Text(itemData?.description ?? 'No description'),
-                                Text(itemData?.unitPrice.toString()?? '0'),
+                                return CustomRowCells(
+                                  commentDialogBoxOnPressed: () {
+                                    controller.showCommentDialog(context);
+                                  },
+                                  qntyController: itemData.qntyController,
+                                  itemName: itemData.description,
+                                  price: itemData.unitPrice.toString(),
+                                  notesController: itemData.notesController,
+                                );
+                              },
+                            ),
+                          )
+                        : const CircularProgressIndicator();
+                  }),
 
-                              ],
-                            );
+                  // Obx(()=>controller.selectedAttendee.value==''? const SizedBox():SizedBox(
+                  //   height: Sizes.HEIGHT_200,
+                  //   width: Sizes.WIDTH_300,
+                  //   child: ListView.builder(
+                  //       scrollDirection: Axis.vertical,
+                  //       itemCount: Preferences()
+                  //           .getAttendee(controller.selectedAttendee.value)
+                  //           .length?? 0,
+                  //       itemBuilder: (context, index) {
+                  //         ItemValue itemData = Preferences().getAttendee(
+                  //             controller.selectedAttendee.value)[index];
+                  //         return Row(
+                  //           children: [
+                  //             Center(
+                  //               child: Text("${itemData.description}"),
+                  //             )
+                  //           ],
+                  //         );
+                  //       }),
+                  // )),
 
-                            // Assuming itemData has the 'description' field, display it
-                            return Row(
-                              children: [
-
-                                   Center(
-                                    child: Text("${itemData.description}"), // Display the description
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      );
-                    }),
-
-                    // Obx(()=>controller.selectedAttendee.value==''? const SizedBox():SizedBox(
-                    //   height: Sizes.HEIGHT_200,
-                    //   width: Sizes.WIDTH_300,
-                    //   child: ListView.builder(
-                    //       scrollDirection: Axis.vertical,
-                    //       itemCount: Preferences()
-                    //           .getAttendee(controller.selectedAttendee.value)
-                    //           .length?? 0,
-                    //       itemBuilder: (context, index) {
-                    //         ItemValue itemData = Preferences().getAttendee(
-                    //             controller.selectedAttendee.value)[index];
-                    //         return Row(
-                    //           children: [
-                    //             Center(
-                    //               child: Text("${itemData.description}"),
-                    //             )
-                    //           ],
-                    //         );
-                    //       }),
-                    // )),
-
-                    // Obx(
-                    //   () =>
-                    //controller.selectedAttendees.isNotEmpty &&
-                    //           controller.barcodeScanned.value
-                    //       ? CustomRowCells(
-                    //           commentDialogBoxOnPressed: () {
-                    //             controller.showCommentDialog(context);
-                    //           },
-                    //           itemName: controller.tliItem!.value.isNotEmpty
-                    //               ? controller
-                    //                   .tliItem!
-                    //                   .value[controller
-                    //                       .attandeeSelectedIndex.value]
-                    //                   .description
-                    //               : '',
-                    //           price: controller.tliItem!.value.isNotEmpty
-                    //               ? controller
-                    //                   .tliItem!
-                    //                   .value[controller
-                    //                       .attandeeSelectedIndex.value]
-                    //                   .unitPrice
-                    //                   .toString()
-                    //               : '')
-                    //       : const SizedBox(),
-                    // ),
-                  ],
-                ),
+                  // Obx(
+                  //   () =>
+                  //controller.selectedAttendees.isNotEmpty &&
+                  //           controller.barcodeScanned.value
+                  //       ? CustomRowCells(
+                  //           commentDialogBoxOnPressed: () {
+                  //             controller.showCommentDialog(context);
+                  //           },
+                  //           itemName: controller.tliItem!.value.isNotEmpty
+                  //               ? controller
+                  //                   .tliItem!
+                  //                   .value[controller
+                  //                       .attandeeSelectedIndex.value]
+                  //                   .description
+                  //               : '',
+                  //           price: controller.tliItem!.value.isNotEmpty
+                  //               ? controller
+                  //                   .tliItem!
+                  //                   .value[controller
+                  //                       .attandeeSelectedIndex.value]
+                  //                   .unitPrice
+                  //                   .toString()
+                  //               : '')
+                  //       : const SizedBox(),
+                  // ),
+                ],
               ),
 
               const SizedBox(

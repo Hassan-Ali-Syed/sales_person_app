@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class TliItems {
   String? message;
   int? status;
@@ -39,13 +41,16 @@ class ItemValue {
   String? description;
   int? unitPrice;
   String? no;
+  TextEditingController? qntyController;
+  TextEditingController? notesController;
 
-  ItemValue({
-    this.systemId,
-    this.description,
-    this.unitPrice,
-    this.no,
-  });
+  ItemValue(
+      {this.systemId,
+      this.description,
+      this.unitPrice,
+      this.no,
+      this.qntyController,
+      this.notesController});
 
   // fromJson method
   factory ItemValue.fromJson(Map<String, dynamic> json) {
@@ -54,6 +59,8 @@ class ItemValue {
       description: json['description'] as String?,
       unitPrice: json['unitPrice'] as int?,
       no: json['no'] as String?,
+      qntyController: TextEditingController(text: '1'),
+      notesController: TextEditingController(text: ''),
     );
   }
 
