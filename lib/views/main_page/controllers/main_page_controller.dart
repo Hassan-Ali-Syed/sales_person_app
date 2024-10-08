@@ -206,9 +206,10 @@ class MainPageController extends GetxController {
       query: TliItemsQuery.tliItemsQuery(no),
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
+        log("=================${response.data}==============");
+
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
-        log('******* On SUCCESS ******** \n $tliItem');
       },
       onLoading: () {
         isLoading.value = true;
@@ -277,12 +278,21 @@ class MainPageController extends GetxController {
 
   addTliItemModel(response) {
     tliItem = TliItems.fromJson(response);
+    log('============After Parse================');
     if (attendeeItemsMap[selectedAttendee!].length == 0) {
-      attendeeItemsMap[selectedAttendee!] = [tliItem];
+      log('============If Block================');
+      attendeeItemsMap[selectedAttendee!] = [tliItem!.value.first];
     } else {
-      attendeeItemsMap[selectedAttendee!].add(tliItem);
+      log('============ELSE Block================');
+      attendeeItemsMap[selectedAttendee!].add(tliItem!.value.first);
     }
-    log('================${attendeeItemsMap.toString()}==============');
+    Preferences().setAttendeesData(attendeeItemsMap);
+    log('=============attendee data===${attendeeItemsMap.toString()}==============');
+    List item = Preferences().getAttendee(selectedAttendee!);
+    log(' =====List of Items :  $item ===========');
+    for (var description in item) {
+      log("===========${description.description}================");
+    }
     isLoading.value = false;
   }
 
@@ -311,7 +321,7 @@ class MainPageController extends GetxController {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (barcodeScanRes != 'Failed to get platform version.') {
-      await getSingleItemFromGraphQL(barcodeScanRes);
+      await getSingleItemFromGraphQL('S10082-002');
       barcodeScanned.value = true;
     }
   }
