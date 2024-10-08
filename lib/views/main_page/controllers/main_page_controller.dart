@@ -224,6 +224,42 @@ class MainPageController extends GetxController {
     );
   }
 
+  // Future<void> createSalesOrderRest({
+  //   required String sellToCustomerNo,
+  //   required String contact,
+  //   required String externalDocumentNo,
+  //   required TliSalesLine? tliSalesLines;
+    
+  // }) async {
+  //   await BaseClient.safeApiCall(
+  //       ApiConstants.CREATE_SALES_ORDER, RequestType.post,
+  //       headers: BaseClient.generateHeadersWithTokenForGraphQL(),
+  //       data: {
+  //         "no": "",
+  //         "sellToCustomerNo": $sellToCustomerNo,
+  //         "contact": $contact,
+  //         "externalDocumentNo": $externalDocumentNo,
+  //         "locationCode": "SYOSSET",
+  //         "tliSalesLines": $tliSalesLines, 
+  //         // [
+  //         //   {
+  //         //     "lineNo": $lineNo,
+  //         //     "type": "Item",
+  //         //     "no": $itemNo,
+  //         //     "quantity": $quantity,
+  //         //     "unitPrice": $unitPrice
+  //         //   },
+  //         //   {
+  //         //     "lineNo": 20000,
+  //         //     "type": "Item",
+  //         //     "no": "I10732-108",
+  //         //     "quantity": 50,
+  //         //     "unitPrice": 12.75
+  //         //   }
+  //         // ]
+  //       });
+  // }
+
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
     customerAddress.value =
@@ -277,27 +313,6 @@ class MainPageController extends GetxController {
     tliCustomerById = TliCustomers.fromJson(response);
     isLoading.value = false;
   }
-
-  // addTliItemModel(response) {
-  //   tliItem = TliItems.fromJson(response);
-  //   log('============After Parse================');
-  //   log('********Attandee Map********* $attendeeItemsMap');
-  //   if (attendeeItemsMap[selectedAttendee.value] == null) {
-  //     log('============If Block================');
-  //     attendeeItemsMap[selectedAttendee.value] = [tliItem!.value.first];
-  //   } else {
-  //     log('============ELSE Block================');
-  //     attendeeItemsMap[selectedAttendee.value]!.add(tliItem!.value.first);
-  //   }
-  //   Preferences().setAttendeesData(attendeeItemsMap);
-  //   log('=============attendee data===${attendeeItemsMap.toString()}==============');
-  //   List item = Preferences().getAttendee(selectedAttendee.value);
-  //   log(' =====List of Items :  $item ===========');
-  //   for (var description in item) {
-  //     log("===========${description.description}================");
-  //   }
-  //   isLoading.value = false;
-  // }
 
   addTliItemModel(response) {
     itemsListRefresh.value = true;
@@ -371,7 +386,7 @@ class MainPageController extends GetxController {
       barcodeScanRes = 'Failed to get platform version.';
     }
     if (barcodeScanRes != 'Failed to get platform version.') {
-      await getSingleItemFromGraphQL('S10082-002');
+      await getSingleItemFromGraphQL(barcodeScanRes);
       barcodeScanned.value = true;
     }
   }
@@ -448,8 +463,8 @@ class MainPageController extends GetxController {
     required String name,
     required String customerNo,
     required String address,
-    String? email,
-    String? phoneNo,
+    required String email,
+    required String phoneNo,
   }) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
