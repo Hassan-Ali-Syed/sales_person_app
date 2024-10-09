@@ -39,7 +39,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             controller.isAddressFieldVisible.value = true;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Customer name',
+                            labelText: AppStrings.CUSTOMER_NAME,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 controller.isCustomerExpanded.value = true;
@@ -73,9 +73,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: TextField(
                                           controller: controller
                                               .searchCustomerController,
-                                          autofocus: true,
                                           decoration: InputDecoration(
-                                            labelText: 'Search customer',
+                                            labelText:
+                                                AppStrings.SEARCH_CUSTOMER,
                                             border:
                                                 const UnderlineInputBorder(),
                                             suffixIcon: IconButton(
@@ -91,7 +91,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         ),
                                       )
                                     : Text(
-                                        'Search customer',
+                                        AppStrings.SEARCH_CUSTOMER,
                                         style: context.bodyLarge,
                                       ),
                                 Row(
@@ -210,7 +210,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               controller: controller.shipToAddController,
                               textAlign: TextAlign.left,
                               decoration: InputDecoration(
-                                labelText: 'Ship to add',
+                                labelText: AppStrings.SHIP_TO_ADD,
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.isShipToAddExpanded.value = true;
@@ -245,15 +245,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             child: TextField(
                                               controller: controller
                                                   .searchCustomerController,
-                                              autofocus: true,
                                               decoration: InputDecoration(
                                                 labelText: AppStrings
                                                     .SEARCH_SHIP_TO_ADD,
                                                 border:
                                                     const UnderlineInputBorder(),
                                                 suffixIcon: IconButton(
-                                                    icon:
-                                                        const Icon(Icons.close),
+                                                    icon: const Icon(
+                                                        Icons.search),
                                                     onPressed: () {
                                                       controller
                                                           .isShipToAddSearch
@@ -329,7 +328,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         ),
                                       )
                                     : const Text(
-                                        'Ship to Address not available'),
+                                        AppStrings.SHIP_TO_ADD_NOT_AVAILABLE),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Row(
@@ -340,7 +339,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              'Add new ship to add',
+                                              AppStrings.ADD_NEW_SHIP_TO_ADD,
                                               style: context.bodyLarge,
                                             ),
                                             const Icon(Icons.add),
@@ -368,7 +367,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               controller: controller.attandeeController,
                               textAlign: TextAlign.left,
                               decoration: InputDecoration(
-                                labelText: 'Attandee',
+                                labelText: AppStrings.ATTANDEE,
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.isAttandeeExpanded.value = true;
@@ -403,14 +402,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             child: TextField(
                                               controller: controller
                                                   .searchAttandeeController,
-                                              autofocus: true,
                                               decoration: InputDecoration(
-                                                labelText: 'Search Attandee',
+                                                labelText:
+                                                    AppStrings.SEARCH_ATTANDEE,
                                                 border:
                                                     const UnderlineInputBorder(),
                                                 suffixIcon: IconButton(
-                                                    icon:
-                                                        const Icon(Icons.close),
+                                                    icon: const Icon(
+                                                        Icons.search),
                                                     onPressed: () {
                                                       controller
                                                           .isAttandeeSearch
@@ -423,7 +422,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             ),
                                           )
                                         : Text(
-                                            'Add new attandee',
+                                            AppStrings.ADD_ATTANDEE,
                                             style: context.bodyLarge,
                                           ),
                                     Row(
@@ -452,7 +451,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ),
                                   ],
                                 ),
-                                controller.customersContacts.isNotEmpty
+                                controller.customerContacts.isNotEmpty
                                     ? Expanded(
                                         child: Scrollbar(
                                           interactive: true,
@@ -464,10 +463,11 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             controller: controller
                                                 .attandeeScrollController,
                                             itemCount: controller
-                                                .customersContacts.length,
+                                                .customerContacts.length,
                                             itemBuilder: (context, index) {
                                               final filteredData = controller
-                                                  .customersContacts[index];
+                                                      .customerContacts[index]
+                                                  ['name'];
 
                                               return ListTile(
                                                 leading: Obx(
@@ -482,21 +482,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                   ),
                                                 ),
                                                 title: Text(filteredData),
-                                                onTap: () {
-                                                  controller.attandeeController
-                                                      .text = filteredData;
-                                                  controller.isAttandeeExpanded
-                                                      .value = false;
-                                                  // controller.attandeeController
-                                                  //     .clear();
-                                                },
                                               );
                                             },
                                           ),
                                         ),
                                       )
                                     : const Center(
-                                        child: Text('No Contacts Available'),
+                                        child: Text(
+                                            AppStrings.NO_CONTACTS_AVAILABLE),
                                       ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
@@ -508,7 +501,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              'Add new attandee',
+                                              AppStrings.ADD_ATTANDEE,
                                               style: context.bodyLarge,
                                             ),
                                             const Icon(Icons.add),
@@ -539,7 +532,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           (index) => GestureDetector(
                             onTap: () {
                               controller.selectedAttendee.value =
-                                  controller.selectedAttendees[index];
+                                  controller.selectedAttendees[index]['name'];
                               controller.attandeeSelectedIndex.value = index;
                             },
                             child: Obx(
@@ -557,7 +550,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           : Colors.white,
                                 ),
                                 child: Text(
-                                  controller.selectedAttendees[index],
+                                  controller.selectedAttendees[index]['name'],
                                   style: TextStyle(
                                     color: controller
                                                 .attandeeSelectedIndex.value ==

@@ -40,6 +40,7 @@ class TlicustomersQuery {
               no
             }
             tliShipToAdds {
+              code
               customerNo
               address
               address2

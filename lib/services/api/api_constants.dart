@@ -18,8 +18,13 @@ class ApiConstants {
 
   static const String BASE_URL_REST =
       'https://be2.rs74.net/api/v2/'; //TESTING SERVER
+
+  static const String BASE_URL_POSH = '${BASE_URL_REST}company({{$POSH_ID}})/';
   static const String CREATE_SALES_ORDER =
-      '${BASE_URL_REST}company({{$POSH_ID}})/tliCreateSalesOrder';
+      '${BASE_URL_POSH}tliCreateSalesOrder';
+  
+  static const String CREATE_SALES_LINES_COMMENT =
+      '${BASE_URL_POSH}tliSalesComments';
 
   static const String LOG_OUT = '${BASE_URL_REST}logout';
 }

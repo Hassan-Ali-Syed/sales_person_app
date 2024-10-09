@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
+import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
 import 'package:sales_person_app/views/main_page/queries/api_mutate/tlicontact_mutate.dart';
 import 'package:sales_person_app/views/main_page/queries/api_quries/tlicustomers_query.dart';
 import 'package:sales_person_app/views/main_page/queries/api_quries/tliitems_query.dart';
@@ -24,8 +26,7 @@ class MainPageController extends GetxController {
       GlobalKey<ScaffoldState>();
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
-  RxList<String> selectedAttendees = <String>[].obs;
-  Map<String, List> attendeeItemsMap = {};
+
   // flag for tracking API process
   var isLoading = false.obs;
   // Pages for bottom navigation
@@ -90,17 +91,21 @@ class MainPageController extends GetxController {
   TliCustomers? tliCustomers;
   TliCustomers? tliCustomerById;
   TliItems? tliItem;
+  TliSalesLine? tliSalesLine;
 
 // Reactive variable for Customers
   String customerNo = '';
-  String customerAddress = '';
+  String shipToCode = '';
+  RxString customerAddress = ''.obs;
+  String shipToAddCode = '';
 
   // Customer's Ship To Address
-  List<Map<String, dynamic>> customersShipToAdd = [];
-  String shipToAddCode = '';
-  List<String> customersContacts = [''].obs;
+  List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
+  // List<String> customersContacts = [''].obs;
+  RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
   List<Widget> attendeeButtons = [];
   RxString selectedAttendee = ''.obs;
+  List<Map<String, dynamic>> listOfTliItems = [];
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -127,6 +132,8 @@ class MainPageController extends GetxController {
   // attandee (Contact) selected index flag
   RxInt attandeeSelectedIndex = 0.obs;
   RxBool barcodeScanned = false.obs;
+  RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
+  Map<String, List> attendeeItemsMap = {};
 
   //Scroll Controller
   ScrollController customerScrollController = ScrollController();
@@ -148,6 +155,7 @@ class MainPageController extends GetxController {
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
 
+// GET ALL CUSTOMERS RECORDS
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -225,14 +233,59 @@ class MainPageController extends GetxController {
     );
   }
 
+//******* CREATE SALES ORDER *************/
+  Future<void> createSalesOrderRest({
+    required String sellToCustomerNo,
+    required String contact,
+    required String externalDocumentNo,
+    required List<Map<String, dynamic>>? tliSalesLines,
+  }) async {
+    await BaseClient.safeApiCall(
+        ApiConstants.CREATE_SALES_ORDER, RequestType.post,
+        headers: await BaseClient.generateHeadersWithToken(),
+        data: {
+          "no": "",
+          "sellToCustomerNo": sellToCustomerNo,
+          "contact": contact,
+          "externalDocumentNo": createExternalDocumentNo(contact),
+          "locationCode": "SYOSSET",
+          "tliSalesLines": tliSalesLines,
+        });
+  }
+
+// ******** CREATE SALES LINE COMMENT ************
+  Future<void> createSalesLineComment({
+    required List<Map<String, dynamic>>? tliSalesLines,
+  }) async {
+    await BaseClient.safeApiCall(
+        ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
+        headers: await BaseClient.generateHeadersWithToken(),
+        data: {
+          {
+            "no": "SO12693",
+            "documentLineNo": 10000,
+            "lineNo": 10000,
+            "date": "2023-03-14",
+            "comment": "Order Line One Comment"
+          }
+        });
+  }
+
+  String createExternalDocumentNo(String contactNo) {
+    String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
+    return "VISIT_${formattedDate}_$contactNo";
+    // return formattedDate;
+  }
+
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
-    customerAddress =
+    customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
-    addressController = TextEditingController(text: customerAddress);
+    addressController = TextEditingController(text: customerAddress.value);
     isAddressFieldVisible.value = true;
     customerNo = tliCustomers!.value[indexNo].no!;
-    log('*** Customer No: $customerNo');
+
+    log('Customer No: $customerNo');
     await getCustomerbyIdFromGraphQL(customerNo);
 
     shipToAddController = TextEditingController(text: '');
@@ -241,15 +294,26 @@ class MainPageController extends GetxController {
     setCustomerContacts();
   }
 
+// SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
+    // Clear the current list of ship-to addresses
     customersShipToAdd.clear();
+
+    // Retrieve customer data from tliCustomerById
     var instanceCustomerShipToAdd = tliCustomerById?.value;
+
+    // Check if there is any customer data to process
     if (instanceCustomerShipToAdd != null &&
         instanceCustomerShipToAdd.isNotEmpty) {
+      // Iterate through each customer
       for (var values in instanceCustomerShipToAdd) {
+        // Retrieve the list of ship-to addresses for each customer
         var tliShipToAddresses = values.tliShipToAdds;
+
+        // Ensure ship-to addresses are not null
         if (tliShipToAddresses != null) {
           for (var element in tliShipToAddresses) {
+            // Add each ship-to address to the customersShipToAdd list
             customersShipToAdd.add({
               'address':
                   '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
@@ -261,36 +325,37 @@ class MainPageController extends GetxController {
     }
   }
 
-// Set Selected Ship to Add
-  String setSelectedShipToAdd(int index) {
-    if (index < 0 || index >= customersShipToAdd.length) {
-      log('Invalid index: $index');
-      return 'Invalid index';
-    }
-
-    var address = customersShipToAdd[index]['address'] ?? 'Address not found';
-    shipToAddCode =
-        customersShipToAdd[index]['shipToAddsCode'] ?? 'Code not found';
-
-    log('**** Ship to Address: $address');
-    log('**** Ship to Code: $shipToAddCode');
-
-    return address;
-  }
-
+// SET CUSTOMER'S CONTACTS
   void setCustomerContacts() {
-    customersContacts.clear();
+    customerContacts.clear();
     var instanceCustomer = tliCustomerById!.value;
     if (instanceCustomer.isNotEmpty) {
       for (var values in instanceCustomer) {
         var tliContacts = values.tliContact;
         for (var element in tliContacts!) {
-          customersContacts.add('${element.name}');
+          customerContacts.add({
+            'name': element.name,
+            'contactNo': element.no,
+          });
         }
         checkBoxStates.value =
-            List.generate(customersContacts.length, (index) => false);
+            List.generate(customerContacts.length, (index) => false);
       }
     }
+  }
+
+  // Set Selected Ship to Add
+  String setSelectedShipToAdd(int index) {
+    if (index < 0 || index >= customersShipToAdd.length) {
+      log('Invalid index: $index');
+      return 'Invalid index';
+    }
+    var address = customersShipToAdd[index]['address'] ?? 'Address not found';
+    shipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
+    log('**** After selecting address from ship to add list ******');
+    log('**** Ship to Address: $address');
+    log('**** Ship to Code: $shipToAddCode');
+    return address;
   }
 
   addTliCustomerModel(response) {
@@ -309,21 +374,16 @@ class MainPageController extends GetxController {
     tliItem = TliItems.fromJson(response);
     log('============ After Parse ================');
     log('******** Attendee Map ********* $attendeeItemsMap');
-
-    // Check if selectedAttendee is valid
     String attendeeKey = selectedAttendee.value;
     if (attendeeKey.isEmpty) {
       log('Error: Selected Attendee is empty.');
       return;
     }
 
-    // Ensure that the tliItem has a valid value list
     if (tliItem == null || tliItem!.value.isEmpty) {
       log('Error: No items found in the response.');
       return;
     }
-
-    // Check if this attendee already has items in the map
     if (attendeeItemsMap[attendeeKey] == null) {
       log('============ If Block (Adding New Attendee) ================');
       attendeeItemsMap[attendeeKey] = [tliItem!.value.first];
@@ -331,39 +391,68 @@ class MainPageController extends GetxController {
       log('============ ELSE Block (Appending to Existing Attendee) ================');
       attendeeItemsMap[attendeeKey]!.add(tliItem!.value.first);
     }
-
-    // Save updated data to preferences
     Preferences().setAttendeesData(attendeeItemsMap);
     log('============= Updated Attendee Data: ${attendeeItemsMap.toString()} ==============');
 
     itemsListRefresh.value = false;
-    // Set the loading indicator to false
     isLoading.value = false;
-
-    // Fetch the updated attendee list to verify
     List item = Preferences().getAttendee(attendeeKey) ?? [];
     log(' ===== List of Items:  $item ===========');
-
-    // Log the descriptions of the items for the attendee
     for (var description in item) {
       log("=========== Item Description: ${description.description} ================");
     }
   }
 
   void onCheckboxChanged(bool? value, int index) {
-    checkBoxStates[index] = value!;
-    if (value) {
-      selectedAttendees.add(customersContacts[index]);
-      for (String attendeeName in selectedAttendees) {
-        attendeeItemsMap[attendeeName] = [];
-      }
+    if (value == true) {
+      checkBoxStates[index] = true;
+      selectedAttendees.add({
+        'name': customerContacts[index]['name'],
+        'contactNo': customerContacts[index]['contactNo'],
+      });
+      log('**** SELECTED ATTANDEES $selectedAttendees ******');
+      attendeeItemsMap[customerContacts[index]['name']] = [];
     } else {
-      selectedAttendees.remove(customersContacts[index]);
-      attendeeItemsMap.remove(customersContacts[index]);
+      checkBoxStates[index] = false;
+      selectedAttendees.removeWhere((attendee) =>
+          attendee['name'] == customerContacts[index]['name'] &&
+          attendee['contactNo'] == customerContacts[index]['contactNo']);
+      log('**** SELECTED ATTANDEES $selectedAttendees ******');
+      attendeeItemsMap.remove(customerContacts[index]['name']);
     }
+    log("*** AttandeeItemsMap: $attendeeItemsMap **********");
     Preferences().setAttendeesData(attendeeItemsMap);
-    attandeeController.text = selectedAttendees.join(',');
+
+    // Update text in attandeeController
+    attandeeController.text =
+        selectedAttendees.map((attendee) => attendee['name']).join(',');
   }
+
+  // void onCheckboxChanged(bool? value, int index) {
+  //   checkBoxStates[index] = value!;
+  //   if (value) {
+  //     selectedAttendees.add(
+  //       {
+  //         'name': customerContacts[index]['name'],
+  //         'contactNo': customerContacts[index]['contactNo'],
+  //       },
+  //     );
+  //     for (Map<String, dynamic> attendeeData in selectedAttendees) {
+  //       attendeeItemsMap[attendeeData['name']] = [];
+  //       log('=====if block========$attendeeItemsMap===================');
+  //     }
+  //   } else {
+  //     selectedAttendees.remove(customerContacts[index]);
+  //     attendeeItemsMap.remove(customerContacts[index]['name']);
+  //     // attendeeItemsMap.remove(customerContacts[index]['contactNo']);
+  //     log('=====else block========$selectedAttendees===================');
+  //   }
+  //   Preferences().setAttendeesData(attendeeItemsMap);
+  //   log('=====GET PREFERENCES==========${Preferences().getAttendeesData()}=======================');
+  //   // attandeeController.text = selectedAttendees.join(',');
+  //   attandeeController.text =
+  //       selectedAttendees.map((attendee) => attendee['name']).join(',');
+  // }
 
 // Method for scanning barcode
   Future<void> scanBarcodeNormal() async {
