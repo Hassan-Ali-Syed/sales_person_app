@@ -47,6 +47,7 @@ class MainPageController extends GetxController {
 
   // Initialize the list to hold customer data
   List<Map<String, dynamic>> customersData = [];
+  RxList<String?> customerNames=<String?>[].obs;
 
   // reactive variable for scanning result
   RxString scanBarcode = ''.obs;
@@ -142,7 +143,7 @@ class MainPageController extends GetxController {
   ScrollController contactScrollController = ScrollController();
 
   // Customer's TextFields
-  late TextEditingController customerController;
+  
   TextEditingController customerTextFieldController = TextEditingController();
   TextEditingController searchCustomerController = TextEditingController();
   // Customer's Bill to Address TextField
@@ -285,7 +286,7 @@ class MainPageController extends GetxController {
 
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
-
+   
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);

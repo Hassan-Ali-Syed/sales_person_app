@@ -1,10 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
-import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/themes/themes.dart';
-import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import '../components/custom_header_row.dart';
@@ -83,10 +82,30 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                 onPressed: () {
                                                   controller.isCustomerSearch
                                                       .value = false;
-                                                  // controller.searchQuery(items, item, controller)
+                                                  controller.searchQuery(
+                                                      controller.customerNames,
+                                                      controller
+                                                          .searchCustomerController
+                                                          .text,
+                                                      controller
+                                                          .customerTextFieldController);
                                                   controller
                                                       .searchCustomerController
                                                       .clear();
+
+                                                  controller.searchAttandeeController
+                                                              .text !=
+                                                          ''
+                                                      ? controller
+                                                              .customerTextFieldController
+                                                              .text =
+                                                          controller
+                                                              .searchCustomerController
+                                                              .text
+                                                      : controller
+                                                              .customerTextFieldController =
+                                                          controller
+                                                              .customerTextFieldController;
                                                 }),
                                           ),
                                         ),
@@ -138,6 +157,10 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         itemBuilder: (context, index) {
                                           final filteredData = controller
                                               .tliCustomers?.value[index].name;
+                                          controller.customerNames.add(
+                                              controller.tliCustomers
+                                                  ?.value[index].name);
+                                          log('==CUSTOMER NAMESSS===${controller.customerNames}=======');
                                           return ListTile(
                                             title: Text(filteredData!),
                                             onTap: () {
@@ -145,11 +168,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                               controller
                                                   .customerTextFieldController
                                                   .text = filteredData;
+
                                               controller.isCustomerExpanded
                                                   .value = false;
                                               controller
                                                   .searchCustomerController
                                                   .clear();
+
+                                              log('=========${controller.customerNames}===============');
                                             },
                                           );
                                         },
@@ -328,8 +354,12 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           ),
                                         ),
                                       )
-                                    : const Text(
-                                        AppStrings.SHIP_TO_ADD_NOT_AVAILABLE),
+                                    : const Expanded(
+                                        child: Center(
+                                          child: Text(AppStrings
+                                              .SHIP_TO_ADD_NOT_AVAILABLE),
+                                        ),
+                                      ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Row(
@@ -488,9 +518,11 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           ),
                                         ),
                                       )
-                                    : const Center(
-                                        child: Text(
-                                            AppStrings.NO_CONTACTS_AVAILABLE),
+                                    : const Expanded(
+                                        child: Center(
+                                          child: Text(
+                                              AppStrings.NO_CONTACTS_AVAILABLE),
+                                        ),
                                       ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
