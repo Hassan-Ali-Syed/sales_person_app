@@ -25,78 +25,36 @@ class TliSalesLine {
 
 class TliSalesLineElement {
   int lineNo;
+  String itemDescription;
   String type;
   String no;
   num quantity;
   num unitPrice;
 
-  TliSalesLineElement({
-    required this.lineNo,
-    required this.type,
-    required this.no,
-    required this.quantity,
-    required this.unitPrice,
-  });
+  TliSalesLineElement(
+      {required this.lineNo,
+      required this.type,
+      required this.no,
+      required this.quantity,
+      required this.unitPrice,
+      required this.itemDescription});
 
   factory TliSalesLineElement.fromJson(Map<String, dynamic> json) =>
       TliSalesLineElement(
         lineNo: json["lineNo"],
-        type: json["type"],
+        type: 'Item',
         no: json["no"],
         quantity: json["quantity"],
         unitPrice: json["unitPrice"],
+        itemDescription: json['itemDescription'],
       );
 
   Map<String, dynamic> toJson() => {
         "lineNo": lineNo,
-        "type": type,
+        "type": 'Item',
         "no": no,
         "quantity": quantity,
         "unitPrice": unitPrice,
+        'itemDescription':itemDescription
       };
 }
-
-
-
-// class TliSalesLine {
-//   String? lineNo;
-//   String? type;
-//   String? no;
-//   num? quantity;
-//   num? unitPrice;
-
-//   TliSalesLine({
-//     this.lineNo,
-//     this.type,
-//     this.no,
-//     this.quantity,
-//     this.unitPrice,
-//   });
-
-// // From JSON
-//   factory TliSalesLine.fromJson(Map<String, dynamic> json) {
-//     return TliSalesLine(
-//       lineNo: json['lineNo'],
-//       type: json['type'],
-//       no: json['no'],
-//       quantity: json['quantity'],
-//       unitPrice: json['unitPrice'],
-//     );
-//   }
-
-//   // To JSON
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'lineNo': lineNo.toString(),
-//       'type': type,
-//       'no': no,
-//       'quantity': quantity,
-//       'unitPrice': unitPrice,
-//     };
-//   }
-// }
-
-// To parse this JSON data, do
-//
-//     final tliSalesLine = tliSalesLineFromJson(jsonString);
-

@@ -182,6 +182,12 @@ class MainPageController extends GetxController {
     );
   }
 
+  void searchQuery(List items, String item, TextEditingController controller) {
+    if (items.contains(item)) {
+      controller.text = item;
+    }
+  }
+
   Future<void> getCustomerbyIdFromGraphQL(String no) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -279,6 +285,7 @@ class MainPageController extends GetxController {
 
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
+
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
@@ -336,6 +343,7 @@ class MainPageController extends GetxController {
           customerContacts.add({
             'name': element.name,
             'contactNo': element.no,
+            'tliSalesLine': []
           });
         }
         checkBoxStates.value =
@@ -373,34 +381,40 @@ class MainPageController extends GetxController {
     // Parse the response into a TliItems object
     tliItem = TliItems.fromJson(response);
     log('============ After Parse ================');
-    log('******** Attendee Map ********* $attendeeItemsMap');
-    String attendeeKey = selectedAttendee.value;
-    if (attendeeKey.isEmpty) {
-      log('Error: Selected Attendee is empty.');
-      return;
-    }
+    // log('******** Attendee Map ********* $attendeeItemsMap');
 
-    if (tliItem == null || tliItem!.value.isEmpty) {
-      log('Error: No items found in the response.');
-      return;
-    }
-    if (attendeeItemsMap[attendeeKey] == null) {
-      log('============ If Block (Adding New Attendee) ================');
-      attendeeItemsMap[attendeeKey] = [tliItem!.value.first];
+//find attendee name in the list
+    if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] == []) {
+      selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] = [
+        TliSalesLineElement(
+          lineNo: 10000,
+          type: 'Item',
+          no: tliItem!.value[0].no!,
+          quantity: num.parse(tliItem!.value[0].qntyController!.text),
+          unitPrice: num.parse(
+            tliItem!.value[0].unitPrice.toString(),
+          ),
+          itemDescription: tliItem!.value[0].description!,
+        )
+      ];
     } else {
-      log('============ ELSE Block (Appending to Existing Attendee) ================');
-      attendeeItemsMap[attendeeKey]!.add(tliItem!.value.first);
+      selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'].add(
+        TliSalesLineElement(
+          itemDescription: tliItem!.value[0].description!,
+          lineNo: 20000,
+          type: 'Item',
+          no: tliItem!.value[0].no!,
+          quantity: num.parse(tliItem!.value[0].qntyController!.text),
+          unitPrice: num.parse(
+            tliItem!.value[0].unitPrice.toString(),
+          ),
+        ),
+      );
     }
-    Preferences().setAttendeesData(attendeeItemsMap);
-    log('============= Updated Attendee Data: ${attendeeItemsMap.toString()} ==============');
+    log('==========${selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'][1].quantity}============================');
 
     itemsListRefresh.value = false;
     isLoading.value = false;
-    List item = Preferences().getAttendee(attendeeKey) ?? [];
-    log(' ===== List of Items:  $item ===========');
-    for (var description in item) {
-      log("=========== Item Description: ${description.description} ================");
-    }
   }
 
   void onCheckboxChanged(bool? value, int index) {
@@ -409,50 +423,27 @@ class MainPageController extends GetxController {
       selectedAttendees.add({
         'name': customerContacts[index]['name'],
         'contactNo': customerContacts[index]['contactNo'],
+        'tliSalesLine': customerContacts[index]['tliSalesLine']
       });
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
-      attendeeItemsMap[customerContacts[index]['name']] = [];
+      // attendeeItemsMap[customerContacts[index]['name']] = [];
     } else {
       checkBoxStates[index] = false;
       selectedAttendees.removeWhere((attendee) =>
           attendee['name'] == customerContacts[index]['name'] &&
-          attendee['contactNo'] == customerContacts[index]['contactNo']);
+          attendee['contactNo'] == customerContacts[index]['contactNo'] &&
+          attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
+
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
-      attendeeItemsMap.remove(customerContacts[index]['name']);
+      // attendeeItemsMap.remove(customerContacts[index]['name']);
     }
-    log("*** AttandeeItemsMap: $attendeeItemsMap **********");
-    Preferences().setAttendeesData(attendeeItemsMap);
+    // log("*** AttandeeItemsMap: $attendeeItemsMap **********");
+    // Preferences().setAttendeesData(attendeeItemsMap);
 
     // Update text in attandeeController
     attandeeController.text =
         selectedAttendees.map((attendee) => attendee['name']).join(',');
   }
-
-  // void onCheckboxChanged(bool? value, int index) {
-  //   checkBoxStates[index] = value!;
-  //   if (value) {
-  //     selectedAttendees.add(
-  //       {
-  //         'name': customerContacts[index]['name'],
-  //         'contactNo': customerContacts[index]['contactNo'],
-  //       },
-  //     );
-  //     for (Map<String, dynamic> attendeeData in selectedAttendees) {
-  //       attendeeItemsMap[attendeeData['name']] = [];
-  //       log('=====if block========$attendeeItemsMap===================');
-  //     }
-  //   } else {
-  //     selectedAttendees.remove(customerContacts[index]);
-  //     attendeeItemsMap.remove(customerContacts[index]['name']);
-  //     // attendeeItemsMap.remove(customerContacts[index]['contactNo']);
-  //     log('=====else block========$selectedAttendees===================');
-  //   }
-  //   Preferences().setAttendeesData(attendeeItemsMap);
-  //   log('=====GET PREFERENCES==========${Preferences().getAttendeesData()}=======================');
-  //   // attandeeController.text = selectedAttendees.join(',');
-  //   attandeeController.text =
-  //       selectedAttendees.map((attendee) => attendee['name']).join(',');
-  // }
 
 // Method for scanning barcode
   Future<void> scanBarcodeNormal() async {

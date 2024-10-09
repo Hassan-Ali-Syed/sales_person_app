@@ -81,11 +81,12 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             suffixIcon: IconButton(
                                                 icon: const Icon(Icons.search),
                                                 onPressed: () {
-                                                  // controller.isCustomerSearch
-                                                  //     .value = false;
-                                                  // controller
-                                                  //     .searchCustomerController
-                                                  //     .clear();
+                                                  controller.isCustomerSearch
+                                                      .value = false;
+                                                  // controller.searchQuery(items, item, controller)
+                                                  controller
+                                                      .searchCustomerController
+                                                      .clear();
                                                 }),
                                           ),
                                         ),
@@ -579,43 +580,51 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         ? const CustomHeaderRow()
                         : const SizedBox(),
                   ),
-                  Obx(() {
-                    final selectedAttendee = controller.selectedAttendee.value;
+                  // Obx(() {
+                  //   final selectedAttendee = controller.selectedAttendee.value;
 
-                    // Check if selectedAttendee is not empty or null
-                    if (selectedAttendee.isEmpty) {
-                      return const SizedBox();
-                    }
+                  //   // Check if selectedAttendee is not empty or null
+                  //   if (selectedAttendee.isEmpty) {
+                  //     return const SizedBox();
+                  //   }
 
-                    // Get the list of attendee data from Preferences
-                    final attendeeData =
-                        Preferences().getAttendee(selectedAttendee) ?? [];
+                  //   // Get the list of attendee data from Preferences
+                  //   final attendeeData = controller.selectedAttendees[
+                  //           controller.attandeeSelectedIndex.value] ??
+                  //       {};
 
-                    return !controller.itemsListRefresh.value
-                        ? SizedBox(
-                            height: Sizes.HEIGHT_200,
-                            width: double.infinity,
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: attendeeData.length, // Safe item count
-                              itemBuilder: (context, index) {
-                                // Fetch the item at the current index
-                                final itemData = attendeeData[index];
+                  //   return !controller.itemsListRefresh.value
+                  //       ? SizedBox(
+                  //           height: Sizes.HEIGHT_200,
+                  //           width: double.infinity,
+                  //           child: ListView.builder(
+                  //             scrollDirection: Axis.vertical,
+                  //             itemCount: attendeeData['tliSalesLine']
+                  //                 .length, // Safe item count
+                  //             itemBuilder: (context, index) {
+                  //               // Fetch the item at the current index
 
-                                return CustomRowCells(
-                                  commentDialogBoxOnPressed: () {
-                                    controller.showCommentDialog(context);
-                                  },
-                                  qntyController: itemData.qntyController,
-                                  itemName: itemData.description,
-                                  price: itemData.unitPrice.toString(),
-                                  notesController: itemData.notesController,
-                                );
-                              },
-                            ),
-                          )
-                        : const CircularProgressIndicator();
-                  }),
+                  //               return CustomRowCells(
+                  //                 commentDialogBoxOnPressed: () {
+                  //                   controller.showCommentDialog(context);
+                  //                 },
+                  //                 qntyController: attendeeData['tliSalesLine']
+                  //                         [index]
+                  //                     .quantity,
+                  //                 itemName: attendeeData['tliSalesLine'][index]
+                  //                     .description,
+                  //                 price: attendeeData['tliSalesLine'][index]
+                  //                     .unitPrice
+                  //                     .toString(),
+                  //                 notesController: attendeeData['tliSalesLine']
+                  //                         [index]
+                  //                     .notesController,
+                  //               );
+                  //             },
+                  //           ),
+                  //         )
+                  //       : const SizedBox();
+                  // }),
                 ],
               ),
 
@@ -629,8 +638,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         children: [
                             CustomElevatedButton(
                               onPressed: () {
-                                // controller
-                                //     .getSingleItemFromGraphQL('S10082-002');
+                                controller
+                                    .getSingleItemFromGraphQL('S10082-002');
                               },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,
