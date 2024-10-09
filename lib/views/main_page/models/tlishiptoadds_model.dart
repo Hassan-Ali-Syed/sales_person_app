@@ -4,7 +4,7 @@ class TliShipToAddress {
   String? address2;
   String? customerNo;
   String? name;
-  String? contact;
+  String? code;
 
   TliShipToAddress({
     this.systemId,
@@ -12,7 +12,7 @@ class TliShipToAddress {
     this.address2,
     this.customerNo,
     this.name,
-    this.contact,
+    this.code,
   });
 
   // From JSON
@@ -23,7 +23,7 @@ class TliShipToAddress {
       address2: json['address2'],
       customerNo: json['customerNo'],
       name: json['name'],
-      contact: json['contact'],
+      code: json['code'],
     );
   }
 
@@ -35,7 +35,7 @@ class TliShipToAddress {
       'address2': address2,
       'customerNo': customerNo,
       'name': name,
-      'contact': contact,
+      'code': code,
     };
   }
 }

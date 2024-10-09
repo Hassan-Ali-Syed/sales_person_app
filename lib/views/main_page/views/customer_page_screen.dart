@@ -308,7 +308,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                 .customersShipToAdd.length,
                                             itemBuilder: (context, index) {
                                               final filteredData = controller
-                                                  .customersShipToAdd[index];
+                                                  .setSelectedShipToAdd(index);
                                               return ListTile(
                                                 title: Text(filteredData),
                                                 onTap: () {

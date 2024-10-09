@@ -92,11 +92,12 @@ class MainPageController extends GetxController {
   TliItems? tliItem;
 
 // Reactive variable for Customers
-  RxString customerNo = ''.obs;
-  RxString customerAddress = ''.obs;
+  String customerNo = '';
+  String customerAddress = '';
 
   // Customer's Ship To Address
-  List<String> customersShipToAdd = [''].obs;
+  List<Map<String, dynamic>> customersShipToAdd = [];
+  String shipToAddCode = '';
   List<String> customersContacts = [''].obs;
   List<Widget> attendeeButtons = [];
   RxString selectedAttendee = ''.obs;
@@ -224,69 +225,57 @@ class MainPageController extends GetxController {
     );
   }
 
-  // Future<void> createSalesOrderRest({
-  //   required String sellToCustomerNo,
-  //   required String contact,
-  //   required String externalDocumentNo,
-  //   required TliSalesLine? tliSalesLines;
-    
-  // }) async {
-  //   await BaseClient.safeApiCall(
-  //       ApiConstants.CREATE_SALES_ORDER, RequestType.post,
-  //       headers: BaseClient.generateHeadersWithTokenForGraphQL(),
-  //       data: {
-  //         "no": "",
-  //         "sellToCustomerNo": $sellToCustomerNo,
-  //         "contact": $contact,
-  //         "externalDocumentNo": $externalDocumentNo,
-  //         "locationCode": "SYOSSET",
-  //         "tliSalesLines": $tliSalesLines, 
-  //         // [
-  //         //   {
-  //         //     "lineNo": $lineNo,
-  //         //     "type": "Item",
-  //         //     "no": $itemNo,
-  //         //     "quantity": $quantity,
-  //         //     "unitPrice": $unitPrice
-  //         //   },
-  //         //   {
-  //         //     "lineNo": 20000,
-  //         //     "type": "Item",
-  //         //     "no": "I10732-108",
-  //         //     "quantity": 50,
-  //         //     "unitPrice": 12.75
-  //         //   }
-  //         // ]
-  //       });
-  // }
-
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
-    customerAddress.value =
+    customerAddress =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
-    addressController = TextEditingController(text: customerAddress.value);
+    addressController = TextEditingController(text: customerAddress);
     isAddressFieldVisible.value = true;
-    customerNo.value = tliCustomers!.value[indexNo].no!;
-    log(customerNo.value);
-    await getCustomerbyIdFromGraphQL(customerNo.value);
+    customerNo = tliCustomers!.value[indexNo].no!;
+    log('*** Customer No: $customerNo');
+    await getCustomerbyIdFromGraphQL(customerNo);
 
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
-    setCustomerContacts();
     setCustomerShipToAdd();
+    setCustomerContacts();
   }
 
   void setCustomerShipToAdd() {
     customersShipToAdd.clear();
-    var instanceCustomerShipToAdd = tliCustomerById!.value;
-    if (instanceCustomerShipToAdd.isNotEmpty) {
+    var instanceCustomerShipToAdd = tliCustomerById?.value;
+    if (instanceCustomerShipToAdd != null &&
+        instanceCustomerShipToAdd.isNotEmpty) {
       for (var values in instanceCustomerShipToAdd) {
         var tliShipToAddresses = values.tliShipToAdds;
-        for (var element in tliShipToAddresses!) {
-          customersShipToAdd.add('${element.address!}.${element.address2!}');
+        if (tliShipToAddresses != null) {
+          for (var element in tliShipToAddresses) {
+            customersShipToAdd.add({
+              'address':
+                  '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
+              'shipToAddsCode': element.code ?? '',
+            });
+          }
         }
       }
     }
+  }
+
+// Set Selected Ship to Add
+  String setSelectedShipToAdd(int index) {
+    if (index < 0 || index >= customersShipToAdd.length) {
+      log('Invalid index: $index');
+      return 'Invalid index';
+    }
+
+    var address = customersShipToAdd[index]['address'] ?? 'Address not found';
+    shipToAddCode =
+        customersShipToAdd[index]['shipToAddsCode'] ?? 'Code not found';
+
+    log('**** Ship to Address: $address');
+    log('**** Ship to Code: $shipToAddCode');
+
+    return address;
   }
 
   void setCustomerContacts() {
