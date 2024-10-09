@@ -46,15 +46,22 @@ class AppStrings {
   static const String ADDRESS = 'Address';
 
   static const String SEARCH_CUSTOMER = 'Search customer';
+  static const String CUSTOMER_NAME = 'Customer name';
   static const String SEARCH_ADDRESS = 'Search address';
   static const String NO_CUST_AVAIL = 'No customers available';
   static const String SEARCH_SHIP_TO_ADD = 'Search Ship to Address';
-  static const String SEARCH_ATTANDEE = 'Search attandee';
   static const String ADD_CUSTOMER = 'Add new customer';
   static const String ADD_ADDRESS = 'Add new address';
   static const String ADD_SHIP_TO_ADD = 'Add new ship to address';
   static const String ADD_ATTANDEE = 'Add new attandee';
   static const String ATTANDEE_F_NAME = 'Attendee Full Name';
+  static const String SHIP_TO_ADD_NOT_AVAILABLE =
+      'Ship to Address not available';
+  static const String SHIP_TO_ADD = 'Ship to add';
+  static const String ADD_NEW_SHIP_TO_ADD = 'Add new ship to add';
+  static const String ATTANDEE = 'Attandee';
+  static const String SEARCH_ATTANDEE = 'Search attandee';
+  static const String NO_CONTACTS_AVAILABLE = 'No Contacts Available';
 
   //ELEVATED BUTTONS CONST STRING
   static const String CANCEL = 'Cancel';
