@@ -5,26 +5,27 @@ class TliShipToAddress {
   String? customerNo;
   String? name;
   String? contact;
+  String? code;
 
-  TliShipToAddress({
-    this.systemId,
-    this.address,
-    this.address2,
-    this.customerNo,
-    this.name,
-    this.contact,
-  });
+  TliShipToAddress(
+      {this.systemId,
+      this.address,
+      this.address2,
+      this.customerNo,
+      this.name,
+      this.contact,
+      this.code});
 
   // From JSON
   factory TliShipToAddress.fromJson(Map<String, dynamic> json) {
     return TliShipToAddress(
-      systemId: json['systemId'],
-      address: json['address'],
-      address2: json['address2'],
-      customerNo: json['customerNo'],
-      name: json['name'],
-      contact: json['contact'],
-    );
+        systemId: json['systemId'],
+        address: json['address'],
+        address2: json['address2'],
+        customerNo: json['customerNo'],
+        name: json['name'],
+        contact: json['contact'],
+        code: json['code']);
   }
 
   // To JSON
@@ -36,6 +37,7 @@ class TliShipToAddress {
       'customerNo': customerNo,
       'name': name,
       'contact': contact,
+      'code': code
     };
   }
 }
