@@ -24,7 +24,7 @@ class MainPageController extends GetxController {
       GlobalKey<ScaffoldState>();
   // Observable for selecte Index from NavBar
   var selectedIndex = 1.obs;
-  RxList<String> selectedAttendees = <String>[].obs;
+  RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
   Map<String, List> attendeeItemsMap = {};
   // flag for tracking API process
   var isLoading = false.obs;
@@ -92,14 +92,17 @@ class MainPageController extends GetxController {
   TliItems? tliItem;
 
 // Reactive variable for Customers
-  RxString customerNo = ''.obs;
+  String customerNo = '';
+  String shipToCode = '';
   RxString customerAddress = ''.obs;
 
   // Customer's Ship To Address
-  List<String> customersShipToAdd = [''].obs;
-  List<String> customersContacts = [''].obs;
+  List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
+  // List<String> customersContacts = [''].obs;
+  RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
   List<Widget> attendeeButtons = [];
   RxString selectedAttendee = ''.obs;
+  List<Map<String, dynamic>> listOfTliItems = [];
 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
@@ -146,6 +149,8 @@ class MainPageController extends GetxController {
   // Contacts textField
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
+
+//==============================GET ALL CUSTOMERS RECORDS=============================================================================//
 
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
@@ -224,41 +229,40 @@ class MainPageController extends GetxController {
     );
   }
 
-  // Future<void> createSalesOrderRest({
-  //   required String sellToCustomerNo,
-  //   required String contact,
-  //   required String externalDocumentNo,
-  //   required TliSalesLine? tliSalesLines;
-    
-  // }) async {
-  //   await BaseClient.safeApiCall(
-  //       ApiConstants.CREATE_SALES_ORDER, RequestType.post,
-  //       headers: BaseClient.generateHeadersWithTokenForGraphQL(),
-  //       data: {
-  //         "no": "",
-  //         "sellToCustomerNo": $sellToCustomerNo,
-  //         "contact": $contact,
-  //         "externalDocumentNo": $externalDocumentNo,
-  //         "locationCode": "SYOSSET",
-  //         "tliSalesLines": $tliSalesLines, 
-  //         // [
-  //         //   {
-  //         //     "lineNo": $lineNo,
-  //         //     "type": "Item",
-  //         //     "no": $itemNo,
-  //         //     "quantity": $quantity,
-  //         //     "unitPrice": $unitPrice
-  //         //   },
-  //         //   {
-  //         //     "lineNo": 20000,
-  //         //     "type": "Item",
-  //         //     "no": "I10732-108",
-  //         //     "quantity": 50,
-  //         //     "unitPrice": 12.75
-  //         //   }
-  //         // ]
-  //       });
-  // }
+  Future<void> createSalesOrderRest({
+    required String sellToCustomerNo,
+    required String contact,
+    required String externalDocumentNo,
+    required List<Map<String, dynamic>>? tliSalesLines,
+  }) async {
+    await BaseClient.safeApiCall(
+        ApiConstants.CREATE_SALES_ORDER, RequestType.post,
+        headers: await BaseClient.generateHeadersWithToken(),
+        data: {
+          "no": "",
+          "sellToCustomerNo": sellToCustomerNo,
+          "contact": contact,
+          "externalDocumentNo": externalDocumentNo,
+          "locationCode": "SYOSSET",
+          "tliSalesLines": tliSalesLines,
+          // [
+          //   {
+          //     "lineNo": $lineNo,
+          //     "type": "Item",
+          //     "no": $itemNo,
+          //     "quantity": $quantity,
+          //     "unitPrice": $unitPrice
+          //   },
+          //   {
+          //     "lineNo": 20000,
+          //     "type": "Item",
+          //     "no": "I10732-108",
+          //     "quantity": 50,
+          //     "unitPrice": 12.75
+          //   }
+          // ]
+        });
+  }
 
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
@@ -266,9 +270,10 @@ class MainPageController extends GetxController {
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
     isAddressFieldVisible.value = true;
-    customerNo.value = tliCustomers!.value[indexNo].no!;
-    log(customerNo.value);
-    await getCustomerbyIdFromGraphQL(customerNo.value);
+    customerNo = tliCustomers!.value[indexNo].no!;
+
+    log(customerNo);
+    await getCustomerbyIdFromGraphQL(customerNo);
 
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
@@ -276,6 +281,7 @@ class MainPageController extends GetxController {
     setCustomerShipToAdd();
   }
 
+//====================SET CUSTOMER'S SHIP TO ADDRESSES========================================================
   void setCustomerShipToAdd() {
     customersShipToAdd.clear();
     var instanceCustomerShipToAdd = tliCustomerById!.value;
@@ -283,23 +289,27 @@ class MainPageController extends GetxController {
       for (var values in instanceCustomerShipToAdd) {
         var tliShipToAddresses = values.tliShipToAdds;
         for (var element in tliShipToAddresses!) {
-          customersShipToAdd.add('${element.address!}.${element.address2!}');
+          customersShipToAdd.add({
+            'address': '${element.address!}.${element.address2!}',
+            'shipToAddsCode': element.code
+          });
         }
       }
     }
   }
 
+//====================SET CUSTOMER'S CONTACTS========================================================
   void setCustomerContacts() {
-    customersContacts.clear();
+    customerContacts.clear();
     var instanceCustomer = tliCustomerById!.value;
     if (instanceCustomer.isNotEmpty) {
       for (var values in instanceCustomer) {
         var tliContacts = values.tliContact;
         for (var element in tliContacts!) {
-          customersContacts.add('${element.name}');
+          customerContacts.add({'name': element.name, 'contactNo': element.no});
         }
         checkBoxStates.value =
-            List.generate(customersContacts.length, (index) => false);
+            List.generate(customerContacts.length, (index) => false);
       }
     }
   }
@@ -364,15 +374,21 @@ class MainPageController extends GetxController {
   void onCheckboxChanged(bool? value, int index) {
     checkBoxStates[index] = value!;
     if (value) {
-      selectedAttendees.add(customersContacts[index]);
-      for (String attendeeName in selectedAttendees) {
-        attendeeItemsMap[attendeeName] = [];
+      selectedAttendees.add(customerContacts[index]);
+      for (Map<String, dynamic> attendeeData in selectedAttendees) {
+        attendeeItemsMap[attendeeData['name']] = [];
+
+        log('=====if block========$attendeeItemsMap===================');
       }
     } else {
-      selectedAttendees.remove(customersContacts[index]);
-      attendeeItemsMap.remove(customersContacts[index]);
+      selectedAttendees.remove(customerContacts[index]);
+      attendeeItemsMap.remove(customerContacts[index]['name']);
+      // attendeeItemsMap.remove(customerContacts[index]['contactNo']);
+
+      log('=====else block========$selectedAttendees===================');
     }
     Preferences().setAttendeesData(attendeeItemsMap);
+    log('=====GET PREFERENCES==========${Preferences().getAttendeesData()}=======================');
     attandeeController.text = selectedAttendees.join(',');
   }
 

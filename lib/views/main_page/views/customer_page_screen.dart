@@ -307,8 +307,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             itemCount: controller
                                                 .customersShipToAdd.length,
                                             itemBuilder: (context, index) {
-                                              final filteredData = controller
-                                                  .customersShipToAdd[index];
+                                              final filteredData =
+                                                  controller.customersShipToAdd[
+                                                          index]['address'] ;
                                               return ListTile(
                                                 title: Text(filteredData),
                                                 onTap: () {
@@ -452,7 +453,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ),
                                   ],
                                 ),
-                                controller.customersContacts.isNotEmpty
+                                controller.customerContacts.isNotEmpty
                                     ? Expanded(
                                         child: Scrollbar(
                                           interactive: true,
@@ -464,10 +465,11 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             controller: controller
                                                 .attandeeScrollController,
                                             itemCount: controller
-                                                .customersContacts.length,
+                                                .customerContacts.length,
                                             itemBuilder: (context, index) {
                                               final filteredData = controller
-                                                  .customersContacts[index];
+                                                      .customerContacts[index]
+                                                  ['name'];
 
                                               return ListTile(
                                                 leading: Obx(
@@ -539,7 +541,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           (index) => GestureDetector(
                             onTap: () {
                               controller.selectedAttendee.value =
-                                  controller.selectedAttendees[index];
+                                  controller.selectedAttendees[index]['name'];
                               controller.attandeeSelectedIndex.value = index;
                             },
                             child: Obx(
@@ -557,7 +559,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           : Colors.white,
                                 ),
                                 child: Text(
-                                  controller.selectedAttendees[index],
+                                  controller.selectedAttendees[index]['name'],
                                   style: TextStyle(
                                     color: controller
                                                 .attandeeSelectedIndex.value ==
