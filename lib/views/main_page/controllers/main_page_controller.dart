@@ -378,41 +378,44 @@ class MainPageController extends GetxController {
 
   addTliItemModel(response) {
     itemsListRefresh.value = true;
-    // Parse the response into a TliItems object
+
     tliItem = TliItems.fromJson(response);
-    log('============ After Parse ================');
-    // log('******** Attendee Map ********* $attendeeItemsMap');
+    log('============ After Parse ${tliItem!.value}================');
 
-//find attendee name in the list
-    if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] == []) {
-      selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] = [
-        TliSalesLineElement(
-          lineNo: 10000,
-          type: 'Item',
-          no: tliItem!.value[0].no!,
-          quantity: num.parse(tliItem!.value[0].qntyController!.text),
-          unitPrice: num.parse(
-            tliItem!.value[0].unitPrice.toString(),
-          ),
-          itemDescription: tliItem!.value[0].description!,
-        )
-      ];
+    List<dynamic> currentSalesLines =
+        selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] ?? [];
+
+    currentSalesLines.add(
+      TliSalesLineElement(
+        lineNo: currentSalesLines.isNotEmpty
+            ? (currentSalesLines.length + 1) * 10000
+            : 10000,
+        type: 'Item',
+        no: tliItem!.value[0].no!,
+        quantity: num.parse(tliItem!.value[0].qntyController!.text),
+        unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
+        itemDescription: tliItem!.value[0].description!,
+      ),
+    );
+    var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
+        ['tliSalesLine'] = currentSalesLines;
+    if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
+        .isNotEmpty) {
+      for (var salesLine in tliSalesLineList) {
+        if (salesLine is TliSalesLineElement) {
+          log('Line No: ${salesLine.lineNo}');
+          log('Type: ${salesLine.type}');
+          log('No: ${salesLine.no}');
+          log('Quantity: ${salesLine.quantity}');
+          log('Unit Price: ${salesLine.unitPrice}');
+          log('Description: ${salesLine.itemDescription}');
+        } else {
+          log('Invalid sales line element.');
+        }
+      }
     } else {
-      selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'].add(
-        TliSalesLineElement(
-          itemDescription: tliItem!.value[0].description!,
-          lineNo: 20000,
-          type: 'Item',
-          no: tliItem!.value[0].no!,
-          quantity: num.parse(tliItem!.value[0].qntyController!.text),
-          unitPrice: num.parse(
-            tliItem!.value[0].unitPrice.toString(),
-          ),
-        ),
-      );
+      log('No sales line data available.');
     }
-    log('==========${selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'][1].quantity}============================');
-
     itemsListRefresh.value = false;
     isLoading.value = false;
   }
@@ -426,21 +429,15 @@ class MainPageController extends GetxController {
         'tliSalesLine': customerContacts[index]['tliSalesLine']
       });
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
-      // attendeeItemsMap[customerContacts[index]['name']] = [];
     } else {
       checkBoxStates[index] = false;
       selectedAttendees.removeWhere((attendee) =>
           attendee['name'] == customerContacts[index]['name'] &&
           attendee['contactNo'] == customerContacts[index]['contactNo'] &&
           attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
-
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
-      // attendeeItemsMap.remove(customerContacts[index]['name']);
     }
-    // log("*** AttandeeItemsMap: $attendeeItemsMap **********");
-    // Preferences().setAttendeesData(attendeeItemsMap);
 
-    // Update text in attandeeController
     attandeeController.text =
         selectedAttendees.map((attendee) => attendee['name']).join(',');
   }

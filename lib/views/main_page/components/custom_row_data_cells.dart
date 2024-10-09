@@ -1,22 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
 
 class CustomRowCells extends StatelessWidget {
   final String? itemName;
-
   final String? price;
-
   final void Function()? commentDialogBoxOnPressed;
+  final String? qty;
+  final void Function()? qtyOnTap;
+  final void Function(String)? qtyOnChanged;
+  final bool isQtyPressed;
   final TextEditingController qntyController;
+  final String? notes;
+  final void Function()? notesOnTap;
+  final void Function(String)? notesOnChanged;
+  final bool isNotesPressed;
+
   final TextEditingController notesController;
 
   const CustomRowCells({
     super.key,
     this.itemName,
     this.price,
+    this.qty,
     this.commentDialogBoxOnPressed,
+    this.qtyOnTap,
+    this.qtyOnChanged,
+    this.isQtyPressed = false,
     required this.qntyController,
+    this.notes,
+    this.notesOnTap,
+    this.notesOnChanged,
+    this.isNotesPressed = false,
     required this.notesController,
   });
 
@@ -25,61 +41,100 @@ class CustomRowCells extends StatelessWidget {
     return Row(
       children: [
         _buildCell(itemName ?? '', Sizes.WIDTH_118),
-        SizedBox(
-          width: Sizes.WIDTH_60,
-          height: Sizes.HEIGHT_50,
-          child: TextField(
-            controller: qntyController,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ), // Or use t ,
-            textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.top,
-            decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+        !isQtyPressed
+            ? GestureDetector(
+                onTap: qtyOnTap,
+                child: Container(
+                    width: Sizes.WIDTH_60,
+                    height: Sizes.HEIGHT_50,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: LightTheme.grayColorShade5,
+                        width: 2,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        qty!,
+                        style: context.bodyMedium,
+                      ),
+                    )),
+              )
+            : SizedBox(
+                width: Sizes.WIDTH_60,
+                height: Sizes.HEIGHT_50,
+                child: TextField(
+                  controller: qntyController,
+                  onChanged: qtyOnChanged,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ), // Or use t ,
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: LightTheme.grayColorShade5, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: LightTheme.grayColorShade5, width: 2),
+                    ),
+                  ),
+                ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
-              ),
-            ),
-          ),
-        ),
         _buildCell(price ?? '', Sizes.WIDTH_80),
-        SizedBox(
-          width: Sizes.WIDTH_118,
-          height: Sizes.HEIGHT_50,
-          child: TextField(
-            controller: notesController,
-            onChanged: (text) {
-              if (text.length > 6) {}
-            },
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ), // Or use t ,
-            textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.top,
-            decoration: InputDecoration(
-              suffixIcon: IconButton(
-                  onPressed: commentDialogBoxOnPressed,
-                  icon: const Icon(Icons.edit)),
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+        !isNotesPressed
+            ? GestureDetector(
+                onTap: notesOnTap,
+                child: Container(
+                    width: Sizes.WIDTH_118,
+                    height: Sizes.HEIGHT_50,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: LightTheme.grayColorShade5,
+                        width: 2,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        notes!,
+                        style: context.bodyMedium,
+                      ),
+                    )),
+              )
+            : SizedBox(
+                width: Sizes.WIDTH_118,
+                height: Sizes.HEIGHT_50,
+                child: TextField(
+                  controller: notesController,
+                  onChanged: (text) {
+                    if (text.length > 6) {}
+                  },
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ), // Or use t ,
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: commentDialogBoxOnPressed,
+                        icon: const Icon(Icons.edit)),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: LightTheme.grayColorShade5, width: 2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: LightTheme.grayColorShade5, width: 2),
+                    ),
+                  ),
+                ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
