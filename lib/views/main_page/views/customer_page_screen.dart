@@ -81,11 +81,12 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             suffixIcon: IconButton(
                                                 icon: const Icon(Icons.search),
                                                 onPressed: () {
-                                                  // controller.isCustomerSearch
-                                                  //     .value = false;
-                                                  // controller
-                                                  //     .searchCustomerController
-                                                  //     .clear();
+                                                  controller.isCustomerSearch
+                                                      .value = false;
+                                                      // controller.searchQuery(items, item, controller)
+                                                  controller
+                                                      .searchCustomerController
+                                                      .clear();
                                                 }),
                                           ),
                                         ),
@@ -307,9 +308,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             itemCount: controller
                                                 .customersShipToAdd.length,
                                             itemBuilder: (context, index) {
-                                              final filteredData =
-                                                  controller.customersShipToAdd[
-                                                          index]['address'] ;
+                                              final filteredData = controller
+                                                      .customersShipToAdd[index]
+                                                  ['address'];
                                               return ListTile(
                                                 title: Text(filteredData),
                                                 onTap: () {

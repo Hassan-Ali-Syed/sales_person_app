@@ -178,6 +178,12 @@ class MainPageController extends GetxController {
     );
   }
 
+  void searchQuery(List items, String item, TextEditingController controller) {
+    if (items.contains(item)) {
+      controller.text = item;
+    }
+  }
+
   Future<void> getCustomerbyIdFromGraphQL(String no) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -266,6 +272,7 @@ class MainPageController extends GetxController {
 
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
+    
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
