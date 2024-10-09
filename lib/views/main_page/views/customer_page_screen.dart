@@ -39,7 +39,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             controller.isAddressFieldVisible.value = true;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Customer name',
+                            labelText: AppStrings.CUSTOMER_NAME,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 controller.isCustomerExpanded.value = true;
@@ -73,9 +73,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: TextField(
                                           controller: controller
                                               .searchCustomerController,
-                                          autofocus: true,
                                           decoration: InputDecoration(
-                                            labelText: 'Search customer',
+                                            labelText:
+                                                AppStrings.SEARCH_CUSTOMER,
                                             border:
                                                 const UnderlineInputBorder(),
                                             suffixIcon: IconButton(
@@ -83,7 +83,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                 onPressed: () {
                                                   controller.isCustomerSearch
                                                       .value = false;
-                                                      // controller.searchQuery(items, item, controller)
+                                                  // controller.searchQuery(items, item, controller)
                                                   controller
                                                       .searchCustomerController
                                                       .clear();
@@ -92,7 +92,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         ),
                                       )
                                     : Text(
-                                        'Search customer',
+                                        AppStrings.SEARCH_CUSTOMER,
                                         style: context.bodyLarge,
                                       ),
                                 Row(
@@ -211,7 +211,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               controller: controller.shipToAddController,
                               textAlign: TextAlign.left,
                               decoration: InputDecoration(
-                                labelText: 'Ship to add',
+                                labelText: AppStrings.SHIP_TO_ADD,
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.isShipToAddExpanded.value = true;
@@ -246,15 +246,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             child: TextField(
                                               controller: controller
                                                   .searchCustomerController,
-                                              autofocus: true,
                                               decoration: InputDecoration(
                                                 labelText: AppStrings
                                                     .SEARCH_SHIP_TO_ADD,
                                                 border:
                                                     const UnderlineInputBorder(),
                                                 suffixIcon: IconButton(
-                                                    icon:
-                                                        const Icon(Icons.close),
+                                                    icon: const Icon(
+                                                        Icons.search),
                                                     onPressed: () {
                                                       controller
                                                           .isShipToAddSearch
@@ -309,8 +308,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                 .customersShipToAdd.length,
                                             itemBuilder: (context, index) {
                                               final filteredData = controller
-                                                      .customersShipToAdd[index]
-                                                  ['address'];
+                                                  .setSelectedShipToAdd(index);
                                               return ListTile(
                                                 title: Text(filteredData),
                                                 onTap: () {
@@ -331,7 +329,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         ),
                                       )
                                     : const Text(
-                                        'Ship to Address not available'),
+                                        AppStrings.SHIP_TO_ADD_NOT_AVAILABLE),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Row(
@@ -342,7 +340,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              'Add new ship to add',
+                                              AppStrings.ADD_NEW_SHIP_TO_ADD,
                                               style: context.bodyLarge,
                                             ),
                                             const Icon(Icons.add),
@@ -370,7 +368,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               controller: controller.attandeeController,
                               textAlign: TextAlign.left,
                               decoration: InputDecoration(
-                                labelText: 'Attandee',
+                                labelText: AppStrings.ATTANDEE,
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.isAttandeeExpanded.value = true;
@@ -405,14 +403,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             child: TextField(
                                               controller: controller
                                                   .searchAttandeeController,
-                                              autofocus: true,
                                               decoration: InputDecoration(
-                                                labelText: 'Search Attandee',
+                                                labelText:
+                                                    AppStrings.SEARCH_ATTANDEE,
                                                 border:
                                                     const UnderlineInputBorder(),
                                                 suffixIcon: IconButton(
-                                                    icon:
-                                                        const Icon(Icons.close),
+                                                    icon: const Icon(
+                                                        Icons.search),
                                                     onPressed: () {
                                                       controller
                                                           .isAttandeeSearch
@@ -425,7 +423,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                             ),
                                           )
                                         : Text(
-                                            'Add new attandee',
+                                            AppStrings.ADD_ATTANDEE,
                                             style: context.bodyLarge,
                                           ),
                                     Row(
@@ -485,21 +483,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                   ),
                                                 ),
                                                 title: Text(filteredData),
-                                                onTap: () {
-                                                  controller.attandeeController
-                                                      .text = filteredData;
-                                                  controller.isAttandeeExpanded
-                                                      .value = false;
-                                                  // controller.attandeeController
-                                                  //     .clear();
-                                                },
                                               );
                                             },
                                           ),
                                         ),
                                       )
                                     : const Center(
-                                        child: Text('No Contacts Available'),
+                                        child: Text(
+                                            AppStrings.NO_CONTACTS_AVAILABLE),
                                       ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
@@ -511,7 +502,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              'Add new attandee',
+                                              AppStrings.ADD_ATTANDEE,
                                               style: context.bodyLarge,
                                             ),
                                             const Icon(Icons.add),
@@ -589,43 +580,51 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         ? const CustomHeaderRow()
                         : const SizedBox(),
                   ),
-                  Obx(() {
-                    final selectedAttendee = controller.selectedAttendee.value;
+                  // Obx(() {
+                  //   final selectedAttendee = controller.selectedAttendee.value;
 
-                    // Check if selectedAttendee is not empty or null
-                    if (selectedAttendee.isEmpty) {
-                      return const SizedBox();
-                    }
+                  //   // Check if selectedAttendee is not empty or null
+                  //   if (selectedAttendee.isEmpty) {
+                  //     return const SizedBox();
+                  //   }
 
-                    // Get the list of attendee data from Preferences
-                    final attendeeData =
-                        Preferences().getAttendee(selectedAttendee) ?? [];
+                  //   // Get the list of attendee data from Preferences
+                  //   final attendeeData = controller.selectedAttendees[
+                  //           controller.attandeeSelectedIndex.value] ??
+                  //       {};
 
-                    return !controller.itemsListRefresh.value
-                        ? SizedBox(
-                            height: Sizes.HEIGHT_200,
-                            width: double.infinity,
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: attendeeData.length, // Safe item count
-                              itemBuilder: (context, index) {
-                                // Fetch the item at the current index
-                                final itemData = attendeeData[index];
+                  //   return !controller.itemsListRefresh.value
+                  //       ? SizedBox(
+                  //           height: Sizes.HEIGHT_200,
+                  //           width: double.infinity,
+                  //           child: ListView.builder(
+                  //             scrollDirection: Axis.vertical,
+                  //             itemCount: attendeeData['tliSalesLine']
+                  //                 .length, // Safe item count
+                  //             itemBuilder: (context, index) {
+                  //               // Fetch the item at the current index
 
-                                return CustomRowCells(
-                                  commentDialogBoxOnPressed: () {
-                                    controller.showCommentDialog(context);
-                                  },
-                                  qntyController: itemData.qntyController,
-                                  itemName: itemData.description,
-                                  price: itemData.unitPrice.toString(),
-                                  notesController: itemData.notesController,
-                                );
-                              },
-                            ),
-                          )
-                        : const CircularProgressIndicator();
-                  }),
+                  //               return CustomRowCells(
+                  //                 commentDialogBoxOnPressed: () {
+                  //                   controller.showCommentDialog(context);
+                  //                 },
+                  //                 qntyController: attendeeData['tliSalesLine']
+                  //                         [index]
+                  //                     .quantity,
+                  //                 itemName: attendeeData['tliSalesLine'][index]
+                  //                     .description,
+                  //                 price: attendeeData['tliSalesLine'][index]
+                  //                     .unitPrice
+                  //                     .toString(),
+                  //                 notesController: attendeeData['tliSalesLine']
+                  //                         [index]
+                  //                     .notesController,
+                  //               );
+                  //             },
+                  //           ),
+                  //         )
+                  //       : const SizedBox();
+                  // }),
                 ],
               ),
 
@@ -639,8 +638,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         children: [
                             CustomElevatedButton(
                               onPressed: () {
-                                // controller
-                                //     .getSingleItemFromGraphQL('S10082-002');
+                                controller
+                                    .getSingleItemFromGraphQL('S10082-002');
                               },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,
