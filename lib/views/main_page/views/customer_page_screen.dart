@@ -611,74 +611,79 @@ class CustomerPageScreen extends GetView<MainPageController> {
                   Obx(() {
                     return controller.userItemListReferesh.value
                         ? const Center(child: CircularProgressIndicator())
-                        : SizedBox(
-                            height: Sizes.HEIGHT_200,
-                            width: double.infinity,
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: controller
-                                  .selectedAttendees[controller
-                                      .attandeeSelectedIndex
-                                      .value]['tliSalesLine']
-                                  .length,
-                              itemBuilder: (context, index) {
-                                TliSalesLineElement salesLineItem =
-                                    controller.selectedAttendees[controller
-                                        .attandeeSelectedIndex
-                                        .value]['tliSalesLine'][index];
+                        : controller.selectedAttendees.isEmpty
+                            ? const SizedBox()
+                            : SizedBox(
+                                height: Sizes.HEIGHT_200,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: controller
+                                      .selectedAttendees[controller
+                                          .attandeeSelectedIndex
+                                          .value]['tliSalesLine']
+                                      .length,
+                                  itemBuilder: (context, index) {
+                                    TliSalesLineElement salesLineItem =
+                                        controller.selectedAttendees[controller
+                                            .attandeeSelectedIndex
+                                            .value]['tliSalesLine'][index];
 
-                                log("***** Description *********${salesLineItem.itemDescription}");
-                                return CustomRowCells(
-                                  rowIndex: index,
-                                  selectedIndex: controller.itemIndex.value,
-                                  commentDialogBoxOnPressed: () {
-                                    controller.showCommentDialog(context);
-                                  },
-                                  qtyOnChanged: (p0) {
-                                    controller.userItemListReferesh.value =
-                                        true;
-                                    if (p0.isNotEmpty) {
-                                      salesLineItem.quantity = num.parse(p0);
-                                      controller
-                                          .selectedAttendees[controller
-                                              .attandeeSelectedIndex
-                                              .value]['tliSalesLine'][index]
-                                          .quantity = num.parse(p0);
-                                    } else {
-                                      salesLineItem.quantity = 1;
-                                      controller
-                                          .selectedAttendees[controller
-                                              .attandeeSelectedIndex
-                                              .value]['tliSalesLine'][index]
-                                          .quantity = 1;
-                                    }
+                                    log("***** Description *********${salesLineItem.itemDescription}");
+                                    return CustomRowCells(
+                                      rowIndex: index,
+                                      selectedIndex: controller.itemIndex.value,
+                                      commentDialogBoxOnPressed: () {
+                                        controller.showCommentDialog(context);
+                                      },
+                                      qtyOnChanged: (p0) {
+                                        controller.userItemListReferesh.value =
+                                            true;
+                                        if (p0.isNotEmpty) {
+                                          salesLineItem.quantity =
+                                              num.parse(p0);
+                                          controller
+                                              .selectedAttendees[controller
+                                                  .attandeeSelectedIndex
+                                                  .value]['tliSalesLine'][index]
+                                              .quantity = num.parse(p0);
+                                        } else {
+                                          salesLineItem.quantity = 1;
+                                          controller
+                                              .selectedAttendees[controller
+                                                  .attandeeSelectedIndex
+                                                  .value]['tliSalesLine'][index]
+                                              .quantity = 1;
+                                        }
 
-                                    controller.userItemListReferesh.value =
-                                        false;
-                                    log('===Attendee Indeex ON CHANGED  ${controller.attandeeSelectedIndex.value}============');
+                                        controller.userItemListReferesh.value =
+                                            false;
+                                        log('===Attendee Indeex ON CHANGED  ${controller.attandeeSelectedIndex.value}============');
+                                      },
+                                      qtyOnTap: () {
+                                        controller.userItemListReferesh.value =
+                                            true;
+                                        controller.itemQntyController.clear();
+                                        controller.itemQntyController.text =
+                                            salesLineItem.quantity.toString();
+                                        controller.isQtyPressed.value = true;
+                                        controller.itemIndex.value = index;
+                                        controller.userItemListReferesh.value =
+                                            false;
+                                        log('===Attendee Indeex ON TAP  ${controller.attandeeSelectedIndex.value}============');
+                                      },
+                                      isQtyPressed:
+                                          controller.isQtyPressed.value,
+                                      qntyController:
+                                          controller.itemQntyController,
+                                      qty: salesLineItem.quantity.toString(),
+                                      itemName: salesLineItem.itemDescription,
+                                      price: salesLineItem.unitPrice.toString(),
+                                      notesController: TextEditingController(),
+                                    );
                                   },
-                                  qtyOnTap: () {
-                                    controller.userItemListReferesh.value =
-                                        true;
-                                    controller.itemQntyController.clear();
-                                    controller.itemQntyController.text =
-                                        salesLineItem.quantity.toString();
-                                    controller.isQtyPressed.value = true;
-                                    controller.itemIndex.value = index;
-                                    controller.userItemListReferesh.value =
-                                        false;
-                                    log('===Attendee Indeex ON TAP  ${controller.attandeeSelectedIndex.value}============');
-                                  },
-                                  isQtyPressed: controller.isQtyPressed.value,
-                                  qntyController: controller.itemQntyController,
-                                  qty: salesLineItem.quantity.toString(),
-                                  itemName: salesLineItem.itemDescription,
-                                  price: salesLineItem.unitPrice.toString(),
-                                  notesController: TextEditingController(),
-                                );
-                              },
-                            ),
-                          );
+                                ),
+                              );
                   }),
                 ],
               ),
@@ -693,32 +698,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         children: [
                             CustomElevatedButton(
                               onPressed: () async {
-                                var attendeesData =
-                                    controller.selectedAttendees;
-                                for (var attendeeData in attendeesData) {
-                                  List<Map<String, dynamic>>
-                                      listOfTliSalesLineMaps = [];
-                                  List<dynamic> tliSalesLineElement =
-                                      attendeeData['tliSalesLine'];
-                                  for (var tliSalesLineMap
-                                      in tliSalesLineElement) {
-                                    listOfTliSalesLineMaps.add(
-                                      tliSalesLineMap.toJson(),
-                                    );
-                                  }
-
-                                  for (var i in listOfTliSalesLineMaps) {
-                                    i.remove('itemDescription');
-                                  }
-
-                                  await controller.createSalesOrderRest(
-                                      sellToCustomerNo: controller.customerNo,
-                                      contact: attendeeData['contactNo'],
-                                      tliSalesLines: listOfTliSalesLineMaps);
-                                  log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
-                                  log('==attendeeData in FOR LOOP   ${attendeeData}==========');
-                                  // log('==instance of tlisalesline in FOR LOOP   ${tliSalesLineElement.toJson()}==========');
-                                }
+                                await controller
+                                    .createSalesOrdersOfSelectedAttandees();
                               },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,
@@ -734,9 +715,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             ),
                             CustomElevatedButton(
                               onPressed: () {
-                                // controller.scanBarcodeNormal();
-                                controller
-                                    .getSingleItemFromGraphQL('S10082-002');
+                                controller.scanBarcodeNormal();
+                                // controller
+                                //     .getSingleItemFromGraphQL('S10082-002');
                               },
                               title: 'Scan',
                               minWidht: Sizes.WIDTH_120,

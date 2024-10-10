@@ -115,7 +115,7 @@ class MainPageController extends GetxController {
   //flags for ship to Address text fields
   RxBool isShipToAddExpanded = false.obs;
   RxBool isShipToAddSearch = false.obs;
-  RxBool userItemListReferesh = true.obs;
+  RxBool userItemListReferesh = false.obs;
 
 // flags for Textfields visibility
   RxBool isAddressFieldVisible = false.obs;
@@ -184,6 +184,27 @@ class MainPageController extends GetxController {
         log('*** onError *** \n ${e.message}');
       },
     );
+  }
+
+  Future<void> createSalesOrdersOfSelectedAttandees() async {
+    var attendeesData = selectedAttendees;
+    for (var attendeeData in attendeesData) {
+      List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
+      List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
+      for (var tliSalesLineMap in tliSalesLineElement) {
+        listOfTliSalesLineMaps.add(
+          tliSalesLineMap.toJson(),
+        );
+      }
+      for (var i in listOfTliSalesLineMaps) {
+        i.remove('itemDescription');
+      }
+      await createSalesOrderRest(
+          sellToCustomerNo: customerNo,
+          contact: attendeeData['contactNo'],
+          tliSalesLines: listOfTliSalesLineMaps);
+      log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
+    }
   }
 
   void searchQuery(List items, String item, TextEditingController controller) {
@@ -259,15 +280,6 @@ class MainPageController extends GetxController {
           "externalDocumentNo": createExternalDocumentNo(contact),
           "locationCode": "SYOSSET",
           "tliSalesLines": tliSalesLines,
-          // 'tliSalesLines': [
-          //   {
-          //     'lineNo': 10000,
-          //     'type': 'Item',
-          //     'no': 'S10082-002',
-          //     'quantity': 1,
-          //     'unitPrice': 65
-          //   }
-          // ]
         },
         onLoading: () => isLoading.value = true,
         onSuccess: (response) {
@@ -406,37 +418,39 @@ class MainPageController extends GetxController {
     List<dynamic> currentSalesLines =
         selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] ?? [];
 
-    currentSalesLines.add(
-      TliSalesLineElement(
-        lineNo: currentSalesLines.isNotEmpty
-            ? (currentSalesLines.length + 1) * 10000
-            : 10000,
-        type: 'Item',
-        no: tliItem!.value[0].no!,
-        quantity: num.parse(tliItem!.value[0].qntyController!.text),
-        unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
-        itemDescription: tliItem!.value[0].description!,
-      ),
-    );
-    var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
-        ['tliSalesLine'] = currentSalesLines;
-    if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
-        .isNotEmpty) {
-      for (var salesLine in tliSalesLineList) {
-        if (salesLine is TliSalesLineElement) {
-          log('Line No: ${salesLine.lineNo}');
-          log('Type: ${salesLine.type}');
-          log('No: ${salesLine.no}');
-          log('Quantity: ${salesLine.quantity}');
-          log('Unit Price: ${salesLine.unitPrice}');
-          log('Description: ${salesLine.itemDescription}');
-        } else {
-          log('Invalid sales line element.');
-        }
-      }
-    } else {
-      log('No sales line data available.');
+    if (tliItem!.value.isNotEmpty) {
+      currentSalesLines.add(
+        TliSalesLineElement(
+          lineNo: currentSalesLines.isNotEmpty
+              ? (currentSalesLines.length + 1) * 10000
+              : 10000,
+          type: 'Item',
+          no: tliItem!.value[0].no!,
+          quantity: num.parse(tliItem!.value[0].qntyController!.text),
+          unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
+          itemDescription: tliItem!.value[0].description!,
+        ),
+      );
     }
+    // var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
+    //     ['tliSalesLine'] = currentSalesLines;
+    // if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
+    //     .isNotEmpty) {
+    //   for (var salesLine in tliSalesLineList) {
+    //     if (salesLine is TliSalesLineElement) {
+    //       log('Line No: ${salesLine.lineNo}');
+    //       log('Type: ${salesLine.type}');
+    //       log('No: ${salesLine.no}');
+    //       log('Quantity: ${salesLine.quantity}');
+    //       log('Unit Price: ${salesLine.unitPrice}');
+    //       log('Description: ${salesLine.itemDescription}');
+    //     } else {
+    //       log('Invalid sales line element.');
+    //     }
+    //   }
+    // } else {
+    //   log('No sales line data available.');
+    // }
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
