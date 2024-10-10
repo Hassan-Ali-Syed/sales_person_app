@@ -30,7 +30,7 @@ class TliSalesCommentElement {
   String no;
   int documentLineNo;
   int lineNo;
-  DateTime date;
+  String date;
   String comment;
 
   TliSalesCommentElement({
@@ -46,7 +46,7 @@ class TliSalesCommentElement {
         no: json["no"],
         documentLineNo: json["documentLineNo"],
         lineNo: json["lineNo"],
-        date: DateTime.parse(json["date"]),
+        date: json["date"],
         comment: json["comment"],
       );
 
@@ -54,8 +54,7 @@ class TliSalesCommentElement {
         "no": no,
         "documentLineNo": documentLineNo,
         "lineNo": lineNo,
-        "date":
-            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "date": date,
         "comment": comment,
       };
 }

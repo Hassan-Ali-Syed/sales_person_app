@@ -115,7 +115,7 @@ class MainPageController extends GetxController {
   //flags for ship to Address text fields
   RxBool isShipToAddExpanded = false.obs;
   RxBool isShipToAddSearch = false.obs;
-  RxBool userItemListReferesh = true.obs;
+  RxBool userItemListReferesh = false.obs;
 
 // flags for Textfields visibility
   RxBool isAddressFieldVisible = false.obs;
@@ -186,6 +186,27 @@ class MainPageController extends GetxController {
     );
   }
 
+  Future<void> createSalesOrdersOfSelectedAttandees() async {
+    var attendeesData = selectedAttendees;
+    for (var attendeeData in attendeesData) {
+      List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
+      List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
+      for (var tliSalesLineMap in tliSalesLineElement) {
+        listOfTliSalesLineMaps.add(
+          tliSalesLineMap.toJson(),
+        );
+      }
+      for (var i in listOfTliSalesLineMaps) {
+        i.remove('itemDescription');
+      }
+      await createSalesOrderRest(
+          sellToCustomerNo: customerNo,
+          contact: attendeeData['contactNo'],
+          tliSalesLines: listOfTliSalesLineMaps);
+      log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
+    }
+  }
+
   void searchQuery(List items, String item, TextEditingController controller) {
     if (items.contains(item)) {
       controller.text = item;
@@ -225,17 +246,17 @@ class MainPageController extends GetxController {
       RequestType.query,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliItemsQuery.tliItemsQuery(no),
+      onLoading: () {
+        userItemListReferesh.value = true;
+        isLoading.value = true;
+        log('******* LOADING ********');
+      },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
         log("=================${response.data}==============");
 
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
-      },
-      onLoading: () {
-        userItemListReferesh.value = true;
-        isLoading.value = true;
-        log('******* LOADING ********');
       },
       onError: (e) {
         isLoading.value = false;
@@ -244,7 +265,6 @@ class MainPageController extends GetxController {
     );
   }
 
-//******* CREATE SALES ORDER *************/
   Future<void> createSalesOrderRest({
     required String sellToCustomerNo,
     required String contact,
@@ -260,14 +280,23 @@ class MainPageController extends GetxController {
           "externalDocumentNo": createExternalDocumentNo(contact),
           "locationCode": "SYOSSET",
           "tliSalesLines": tliSalesLines,
+        },
+        onLoading: () => isLoading.value = true,
+        onSuccess: (response) {
+          log('******* ON SUCCESS ${response.data}');
+          isLoading.value = false;
+        },
+        onError: (e) {
+          isLoading.value = false;
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Error',
+            message: e.message,
+            duration: const Duration(seconds: 2),
+          );
+          log('******* ON ERROR******** \n ${e.message}');
         });
-        
-
-
-
   }
 
-// ******** CREATE SALES LINE COMMENT ************
   Future<void> createSalesLineComment({
     required List<Map<String, dynamic>>? tliSalesLines,
   }) async {
@@ -275,20 +304,26 @@ class MainPageController extends GetxController {
         ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
         headers: await BaseClient.generateHeadersWithToken(),
         data: {
-          {
-            "no": "SO12693",
-            "documentLineNo": 10000,
-            "lineNo": 10000,
-            "date": "2023-03-14",
-            "comment": "Order Line One Comment"
-          }
+          "no": "SO12693",
+          "documentLineNo": 10000,
+          "lineNo": 10000,
+          "date": "2023-03-14",
+          "comment": "Order Line One Comment"
+        },
+        onLoading: () => isLoading.value = true,
+        onSuccess: (response) {
+          log('******* ON SUCCESS ${response.data}');
+          isLoading.value = false;
+        },
+        onError: (e) {
+          isLoading.value = false;
+          log('******* ON ERROR******** \n ${e.message}');
         });
   }
 
   String createExternalDocumentNo(String contactNo) {
     String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
     return "VISIT_${formattedDate}_$contactNo";
-    // return formattedDate;
   }
 
   void setCustomerData(var indexNo) async {
@@ -311,24 +346,14 @@ class MainPageController extends GetxController {
 
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
-    // Clear the current list of ship-to addresses
     customersShipToAdd.clear();
-
-    // Retrieve customer data from tliCustomerById
     var instanceCustomerShipToAdd = tliCustomerById?.value;
-
-    // Check if there is any customer data to process
     if (instanceCustomerShipToAdd != null &&
         instanceCustomerShipToAdd.isNotEmpty) {
-      // Iterate through each customer
       for (var values in instanceCustomerShipToAdd) {
-        // Retrieve the list of ship-to addresses for each customer
         var tliShipToAddresses = values.tliShipToAdds;
-
-        // Ensure ship-to addresses are not null
         if (tliShipToAddresses != null) {
           for (var element in tliShipToAddresses) {
-            // Add each ship-to address to the customersShipToAdd list
             customersShipToAdd.add({
               'address':
                   '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
@@ -393,37 +418,39 @@ class MainPageController extends GetxController {
     List<dynamic> currentSalesLines =
         selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] ?? [];
 
-    currentSalesLines.add(
-      TliSalesLineElement(
-        lineNo: currentSalesLines.isNotEmpty
-            ? (currentSalesLines.length + 1) * 10000
-            : 10000,
-        type: 'Item',
-        no: tliItem!.value[0].no!,
-        quantity: num.parse(tliItem!.value[0].qntyController!.text),
-        unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
-        itemDescription: tliItem!.value[0].description!,
-      ),
-    );
-    var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
-        ['tliSalesLine'] = currentSalesLines;
-    if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
-        .isNotEmpty) {
-      for (var salesLine in tliSalesLineList) {
-        if (salesLine is TliSalesLineElement) {
-          log('Line No: ${salesLine.lineNo}');
-          log('Type: ${salesLine.type}');
-          log('No: ${salesLine.no}');
-          log('Quantity: ${salesLine.quantity}');
-          log('Unit Price: ${salesLine.unitPrice}');
-          log('Description: ${salesLine.itemDescription}');
-        } else {
-          log('Invalid sales line element.');
-        }
-      }
-    } else {
-      log('No sales line data available.');
+    if (tliItem!.value.isNotEmpty) {
+      currentSalesLines.add(
+        TliSalesLineElement(
+          lineNo: currentSalesLines.isNotEmpty
+              ? (currentSalesLines.length + 1) * 10000
+              : 10000,
+          type: 'Item',
+          no: tliItem!.value[0].no!,
+          quantity: num.parse(tliItem!.value[0].qntyController!.text),
+          unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
+          itemDescription: tliItem!.value[0].description!,
+        ),
+      );
     }
+    // var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
+    //     ['tliSalesLine'] = currentSalesLines;
+    // if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
+    //     .isNotEmpty) {
+    //   for (var salesLine in tliSalesLineList) {
+    //     if (salesLine is TliSalesLineElement) {
+    //       log('Line No: ${salesLine.lineNo}');
+    //       log('Type: ${salesLine.type}');
+    //       log('No: ${salesLine.no}');
+    //       log('Quantity: ${salesLine.quantity}');
+    //       log('Unit Price: ${salesLine.unitPrice}');
+    //       log('Description: ${salesLine.itemDescription}');
+    //     } else {
+    //       log('Invalid sales line element.');
+    //     }
+    //   }
+    // } else {
+    //   log('No sales line data available.');
+    // }
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
