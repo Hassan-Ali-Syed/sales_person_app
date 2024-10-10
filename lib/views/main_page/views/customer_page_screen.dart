@@ -559,7 +559,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                               controller.selectedAttendee.value =
                                   controller.selectedAttendees[index]['name'];
                               controller.attandeeSelectedIndex.value = index;
-                  
+
                               controller.itemIndex.value = -1;
                               log(' Index: ${controller.attandeeSelectedIndex.value}');
                               controller.userItemListReferesh.value = false;
@@ -608,11 +608,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         ? const CustomHeaderRow()
                         : const SizedBox(),
                   ),
-
-                 
                   Obx(() {
-                    
-
                     return controller.userItemListReferesh.value
                         ? const Center(child: CircularProgressIndicator())
                         : SizedBox(
@@ -696,9 +692,30 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                             CustomElevatedButton(
-                              onPressed: () {
-                                controller
-                                    .getSingleItemFromGraphQL('S10082-002');
+                              onPressed: () async {
+                                var attendeesData =
+                                    controller.selectedAttendees;
+                                for (var attendeeData in attendeesData) {
+                                  List<Map<String, dynamic>>
+                                      listOfTliSalesLineMaps = [];
+                                  List<dynamic> tliSalesLineElement =
+                                      attendeeData['tliSalesLine'];
+                                  for (var tliSalesLineMap
+                                      in tliSalesLineElement) {
+                                    listOfTliSalesLineMaps.add(
+                                      tliSalesLineMap.toJson(),
+                                    );
+                                  }
+
+                                  await controller.createSalesOrderRest(
+                                      sellToCustomerNo: controller.customerNo,
+                                      contact: attendeeData['contactNo'],
+                                      tliSalesLines: listOfTliSalesLineMaps);
+                                  log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
+
+                                  log('==attendeeData in FOR LOOP   ${attendeeData}==========');
+                                  // log('==instance of tlisalesline in FOR LOOP   ${tliSalesLineElement.toJson()}==========');
+                                }
                               },
                               title: 'Finish',
                               minWidht: Sizes.WIDTH_120,
@@ -714,7 +731,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             ),
                             CustomElevatedButton(
                               onPressed: () {
-                                controller.scanBarcodeNormal();
+                                // controller.scanBarcodeNormal();
+                                controller
+                                    .getSingleItemFromGraphQL('S10082-002');
                               },
                               title: 'Scan',
                               minWidht: Sizes.WIDTH_120,
