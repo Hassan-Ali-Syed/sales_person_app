@@ -248,7 +248,6 @@ class MainPageController extends GetxController {
   Future<void> createSalesOrderRest({
     required String sellToCustomerNo,
     required String contact,
-    required String externalDocumentNo,
     required List<Map<String, dynamic>>? tliSalesLines,
   }) async {
     await BaseClient.safeApiCall(
@@ -262,6 +261,10 @@ class MainPageController extends GetxController {
           "locationCode": "SYOSSET",
           "tliSalesLines": tliSalesLines,
         });
+        
+
+
+
   }
 
 // ******** CREATE SALES LINE COMMENT ************
