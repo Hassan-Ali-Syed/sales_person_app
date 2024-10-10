@@ -435,6 +435,7 @@ class MainPageController extends GetxController {
           attendee['name'] == customerContacts[index]['name'] &&
           attendee['contactNo'] == customerContacts[index]['contactNo'] &&
           attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
+          
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
     }
 

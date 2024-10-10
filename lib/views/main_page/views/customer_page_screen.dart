@@ -524,7 +524,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_10,
               ),
 
-              //Wrap widget for generate contact buttons
               Obx(
                 () => controller.selectedAttendees.isNotEmpty
                     ? Wrap(
