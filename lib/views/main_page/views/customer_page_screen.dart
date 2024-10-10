@@ -85,6 +85,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                 onPressed: () {
                                                   controller.isCustomerSearch
                                                       .value = false;
+
                                                   // controller.searchQuery(items, item, controller)
                                                   controller
                                                       .searchCustomerController
@@ -471,7 +472,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                               final filteredData = controller
                                                       .customerContacts[index]
                                                   ['name'];
-
                                               return ListTile(
                                                 leading: Obx(
                                                   () => Checkbox(
@@ -524,7 +524,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_10,
               ),
 
-              //Wrap widget for generate contact buttons
               Obx(
                 () => controller.selectedAttendees.isNotEmpty
                     ? Wrap(
@@ -584,52 +583,139 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         ? const CustomHeaderRow()
                         : const SizedBox(),
                   ),
+
                   Obx(() {
-                    // final selectedAttendee = controller.selectedAttendee.value;
+                    // Safeguard and Debug: Log the refresh state
+                    log("Items List Refresh State: ${controller.itemsListRefresh.value}");
 
-                    // if (selectedAttendee.isEmpty) {
-                    //   return const SizedBox();
-                    // }
+                    // Show CircularProgressIndicator when refreshing
+                    if (controller.itemsListRefresh.value) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                    // final attendeeData = controller.selectedAttendees[
-                    //         controller.attandeeSelectedIndex.value] ??
-                    //     {};
+                    // Safeguard: Ensure selectedAttendee is not null or empty
+                    final selectedAttendee = controller.selectedAttendee.value;
+                    log("Selected Attendee: $selectedAttendee");
 
-                    // final List<TliSalesLineElement> tliSalesLineList =
-                    //     attendeeData['tliSalesLine'] ?? [];
+                    if (selectedAttendee == null || selectedAttendee.isEmpty) {
+                      return const SizedBox(); // If it's null or empty, show nothing.
+                    }
 
-                    return !controller.itemsListRefresh.value
-                        ? SizedBox(
-                            height: Sizes.HEIGHT_200,
-                            width: double.infinity,
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: controller
-                                  .selectedAttendees[controller
-                                      .attandeeSelectedIndex
-                                      .value]['tliSalesLine']
-                                  .length,
-                              itemBuilder: (context, index) {
-                                TliSalesLineElement salesLineItem =
-                                    controller.selectedAttendees[0]
-                                        ['tliSalesLine'][index];
-                                log("***** Description *********${salesLineItem.itemDescription}");
-                                return CustomRowCells(
-                                  commentDialogBoxOnPressed: () {
-                                    controller.showCommentDialog(context);
-                                  },
-                                  qntyController: TextEditingController(
-                                      text: salesLineItem.quantity.toString()),
-                                  qty: salesLineItem.quantity.toString(),
-                                  itemName: salesLineItem.itemDescription,
-                                  price: salesLineItem.unitPrice.toString(),
-                                  notesController: TextEditingController(),
-                                );
-                              },
+                    // Safely retrieve the attendee data
+                    final attendeeData = controller.selectedAttendees[
+                            controller.attandeeSelectedIndex.value] ??
+                        {};
+
+                    // Safeguard: Log and safely retrieve the sales line list
+                    final List<dynamic> tliSalesLineList =
+                        attendeeData['tliSalesLine'] ?? [];
+
+                    log("Sales Line List Length: ${tliSalesLineList.length}");
+
+                    if (tliSalesLineList.isEmpty) {
+                      return const Center(
+                        child: Text("No sales data available"),
+                      );
+                    }
+
+                    return SizedBox(
+                      height: Sizes.HEIGHT_200,
+                      width: double.infinity,
+                      child: ListView.builder(
+                        itemCount: tliSalesLineList.length,
+                        itemBuilder: (context, index) {
+                          // Safeguard: Ensure salesLineItem is valid
+                          final salesLineItem = tliSalesLineList[index];
+
+                          // Check if salesLineItem is null
+                          if (salesLineItem == null) {
+                            log("Sales Line Item at Index $index is null!");
+                            return const SizedBox();
+                          }
+
+                          // Cast it as TliSalesLineElement and safeguard its fields
+                          final TliSalesLineElement? validSalesLineItem =
+                              salesLineItem as TliSalesLineElement?;
+
+                          if (validSalesLineItem == null) {
+                            log("Failed to cast item at index $index to TliSalesLineElement");
+                            return const SizedBox();
+                          }
+
+                          // Safeguard: Ensure all necessary fields are available
+                          final description =
+                              validSalesLineItem.itemDescription ??
+                                  'Unknown Item';
+                          final quantity =
+                              validSalesLineItem.quantity?.toString() ?? '0';
+                          final price =
+                              validSalesLineItem.unitPrice?.toString() ?? '0';
+
+                          log("Sales Line Item at Index $index: $description");
+
+                          return CustomRowCells(
+                            commentDialogBoxOnPressed: () {
+                              controller.showCommentDialog(context);
+                            },
+                            qntyController: TextEditingController(
+                              text: quantity,
                             ),
-                          )
-                        : const SizedBox();
-                  }),
+                            qty: quantity,
+                            itemName: description,
+                            price: price,
+                            notesController: TextEditingController(),
+                          );
+                        },
+                      ),
+                    );
+                  })
+
+                  // Obx(() {
+                  //   final selectedAttendee = controller.selectedAttendee.value;
+
+                  //   if (selectedAttendee.isEmpty) {
+                  //     return const SizedBox();
+                  //   }
+
+                  //   final attendeeData = controller.selectedAttendees[
+                  //           controller.attandeeSelectedIndex.value] ??
+                  //       {};
+
+                  //   final List<dynamic> tliSalesLineList =
+                  //       attendeeData['tliSalesLine'] ?? [];
+
+                  //   // return !controller.itemsListRefresh.value
+                  //   //     ?
+                  //   return SizedBox(
+                  //     height: Sizes.HEIGHT_200,
+                  //     width: double.infinity,
+                  //     child: ListView.builder(
+                  //       scrollDirection: Axis.vertical,
+                  //       itemCount: tliSalesLineList.length,
+                  //       itemBuilder: (context, index) {
+                  //         TliSalesLineElement salesLineItem =
+                  //             tliSalesLineList[index];
+                  //         // controller
+                  //         //     .selectedAttendees[0]['tliSalesLine'][index];
+                  //         log("***** Description *********${salesLineItem.itemDescription}");
+                  //         return CustomRowCells(
+                  //           commentDialogBoxOnPressed: () {
+                  //             controller.showCommentDialog(context);
+                  //           },
+                  //           qntyController: TextEditingController(
+                  //               text: salesLineItem.quantity.toString()),
+                  //           qty: salesLineItem.quantity.toString(),
+                  //           itemName: salesLineItem.itemDescription,
+                  //           price: salesLineItem.unitPrice.toString(),
+                  //           notesController: TextEditingController(),
+                  //         );
+                  //       },
+                  //     ),
+                  //   );
+                  //   // : const SizedBox();
+                  // }),
                 ],
               ),
 
