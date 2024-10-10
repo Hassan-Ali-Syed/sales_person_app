@@ -707,12 +707,15 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     );
                                   }
 
+                                  for (var i in listOfTliSalesLineMaps) {
+                                    i.remove('itemDescription');
+                                  }
+
                                   await controller.createSalesOrderRest(
                                       sellToCustomerNo: controller.customerNo,
                                       contact: attendeeData['contactNo'],
                                       tliSalesLines: listOfTliSalesLineMaps);
                                   log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
-
                                   log('==attendeeData in FOR LOOP   ${attendeeData}==========');
                                   // log('==instance of tlisalesline in FOR LOOP   ${tliSalesLineElement.toJson()}==========');
                                 }

@@ -225,17 +225,17 @@ class MainPageController extends GetxController {
       RequestType.query,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliItemsQuery.tliItemsQuery(no),
+      onLoading: () {
+        userItemListReferesh.value = true;
+        isLoading.value = true;
+        log('******* LOADING ********');
+      },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
         log("=================${response.data}==============");
 
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
-      },
-      onLoading: () {
-        userItemListReferesh.value = true;
-        isLoading.value = true;
-        log('******* LOADING ********');
       },
       onError: (e) {
         isLoading.value = false;
@@ -244,7 +244,6 @@ class MainPageController extends GetxController {
     );
   }
 
-//******* CREATE SALES ORDER *************/
   Future<void> createSalesOrderRest({
     required String sellToCustomerNo,
     required String contact,
@@ -260,14 +259,32 @@ class MainPageController extends GetxController {
           "externalDocumentNo": createExternalDocumentNo(contact),
           "locationCode": "SYOSSET",
           "tliSalesLines": tliSalesLines,
+          // 'tliSalesLines': [
+          //   {
+          //     'lineNo': 10000,
+          //     'type': 'Item',
+          //     'no': 'S10082-002',
+          //     'quantity': 1,
+          //     'unitPrice': 65
+          //   }
+          // ]
+        },
+        onLoading: () => isLoading.value = true,
+        onSuccess: (response) {
+          log('******* ON SUCCESS ${response.data}');
+          isLoading.value = false;
+        },
+        onError: (e) {
+          isLoading.value = false;
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Error',
+            message: e.message,
+            duration: const Duration(seconds: 2),
+          );
+          log('******* ON ERROR******** \n ${e.message}');
         });
-        
-
-
-
   }
 
-// ******** CREATE SALES LINE COMMENT ************
   Future<void> createSalesLineComment({
     required List<Map<String, dynamic>>? tliSalesLines,
   }) async {
@@ -275,20 +292,26 @@ class MainPageController extends GetxController {
         ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
         headers: await BaseClient.generateHeadersWithToken(),
         data: {
-          {
-            "no": "SO12693",
-            "documentLineNo": 10000,
-            "lineNo": 10000,
-            "date": "2023-03-14",
-            "comment": "Order Line One Comment"
-          }
+          "no": "SO12693",
+          "documentLineNo": 10000,
+          "lineNo": 10000,
+          "date": "2023-03-14",
+          "comment": "Order Line One Comment"
+        },
+        onLoading: () => isLoading.value = true,
+        onSuccess: (response) {
+          log('******* ON SUCCESS ${response.data}');
+          isLoading.value = false;
+        },
+        onError: (e) {
+          isLoading.value = false;
+          log('******* ON ERROR******** \n ${e.message}');
         });
   }
 
   String createExternalDocumentNo(String contactNo) {
     String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
     return "VISIT_${formattedDate}_$contactNo";
-    // return formattedDate;
   }
 
   void setCustomerData(var indexNo) async {
@@ -311,24 +334,14 @@ class MainPageController extends GetxController {
 
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
-    // Clear the current list of ship-to addresses
     customersShipToAdd.clear();
-
-    // Retrieve customer data from tliCustomerById
     var instanceCustomerShipToAdd = tliCustomerById?.value;
-
-    // Check if there is any customer data to process
     if (instanceCustomerShipToAdd != null &&
         instanceCustomerShipToAdd.isNotEmpty) {
-      // Iterate through each customer
       for (var values in instanceCustomerShipToAdd) {
-        // Retrieve the list of ship-to addresses for each customer
         var tliShipToAddresses = values.tliShipToAdds;
-
-        // Ensure ship-to addresses are not null
         if (tliShipToAddresses != null) {
           for (var element in tliShipToAddresses) {
-            // Add each ship-to address to the customersShipToAdd list
             customersShipToAdd.add({
               'address':
                   '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
