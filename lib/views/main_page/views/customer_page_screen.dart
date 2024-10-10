@@ -90,6 +90,20 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                   controller
                                                       .searchCustomerController
                                                       .clear();
+
+                                                  controller.searchAttandeeController
+                                                              .text !=
+                                                          ''
+                                                      ? controller
+                                                              .customerTextFieldController
+                                                              .text =
+                                                          controller
+                                                              .searchCustomerController
+                                                              .text
+                                                      : controller
+                                                              .customerTextFieldController =
+                                                          controller
+                                                              .customerTextFieldController;
                                                 }),
                                           ),
                                         ),
@@ -148,6 +162,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                               controller
                                                   .customerTextFieldController
                                                   .text = filteredData;
+
                                               controller.isCustomerExpanded
                                                   .value = false;
                                               controller
@@ -331,8 +346,12 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           ),
                                         ),
                                       )
-                                    : const Text(
-                                        AppStrings.SHIP_TO_ADD_NOT_AVAILABLE),
+                                    : const Expanded(
+                                        child: Center(
+                                          child: Text(AppStrings
+                                              .SHIP_TO_ADD_NOT_AVAILABLE),
+                                        ),
+                                      ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Row(
@@ -490,9 +509,11 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                           ),
                                         ),
                                       )
-                                    : const Center(
-                                        child: Text(
-                                            AppStrings.NO_CONTACTS_AVAILABLE),
+                                    : const Expanded(
+                                        child: Center(
+                                          child: Text(
+                                              AppStrings.NO_CONTACTS_AVAILABLE),
+                                        ),
                                       ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
@@ -533,11 +554,15 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           (controller.selectedAttendees.length),
                           (index) => GestureDetector(
                             onTap: () {
+                              controller.userItemListReferesh.value = true;
+                              controller.itemQntyController.clear();
                               controller.selectedAttendee.value =
                                   controller.selectedAttendees[index]['name'];
                               controller.attandeeSelectedIndex.value = index;
-                              print(
-                                  ' Index: ${controller.attandeeSelectedIndex.value}');
+                  
+                              controller.itemIndex.value = -1;
+                              log(' Index: ${controller.attandeeSelectedIndex.value}');
+                              controller.userItemListReferesh.value = false;
                             },
                             child: Obx(
                               () => Container(
@@ -584,138 +609,81 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         : const SizedBox(),
                   ),
 
+                 
                   Obx(() {
-                    // Safeguard and Debug: Log the refresh state
-                    log("Items List Refresh State: ${controller.itemsListRefresh.value}");
+                    
 
-                    // Show CircularProgressIndicator when refreshing
-                    if (controller.itemsListRefresh.value) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+                    return controller.userItemListReferesh.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            height: Sizes.HEIGHT_200,
+                            width: double.infinity,
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: controller
+                                  .selectedAttendees[controller
+                                      .attandeeSelectedIndex
+                                      .value]['tliSalesLine']
+                                  .length,
+                              itemBuilder: (context, index) {
+                                TliSalesLineElement salesLineItem =
+                                    controller.selectedAttendees[controller
+                                        .attandeeSelectedIndex
+                                        .value]['tliSalesLine'][index];
 
-                    // Safeguard: Ensure selectedAttendee is not null or empty
-                    final selectedAttendee = controller.selectedAttendee.value;
-                    log("Selected Attendee: $selectedAttendee");
+                                log("***** Description *********${salesLineItem.itemDescription}");
+                                return CustomRowCells(
+                                  rowIndex: index,
+                                  selectedIndex: controller.itemIndex.value,
+                                  commentDialogBoxOnPressed: () {
+                                    controller.showCommentDialog(context);
+                                  },
+                                  qtyOnChanged: (p0) {
+                                    controller.userItemListReferesh.value =
+                                        true;
+                                    if (p0.isNotEmpty) {
+                                      salesLineItem.quantity = num.parse(p0);
+                                      controller
+                                          .selectedAttendees[controller
+                                              .attandeeSelectedIndex
+                                              .value]['tliSalesLine'][index]
+                                          .quantity = num.parse(p0);
+                                    } else {
+                                      salesLineItem.quantity = 1;
+                                      controller
+                                          .selectedAttendees[controller
+                                              .attandeeSelectedIndex
+                                              .value]['tliSalesLine'][index]
+                                          .quantity = 1;
+                                    }
 
-                    if (selectedAttendee == null || selectedAttendee.isEmpty) {
-                      return const SizedBox(); // If it's null or empty, show nothing.
-                    }
-
-                    // Safely retrieve the attendee data
-                    final attendeeData = controller.selectedAttendees[
-                            controller.attandeeSelectedIndex.value] ??
-                        {};
-
-                    // Safeguard: Log and safely retrieve the sales line list
-                    final List<dynamic> tliSalesLineList =
-                        attendeeData['tliSalesLine'] ?? [];
-
-                    log("Sales Line List Length: ${tliSalesLineList.length}");
-
-                    if (tliSalesLineList.isEmpty) {
-                      return const Center(
-                        child: Text("No sales data available"),
-                      );
-                    }
-
-                    return SizedBox(
-                      height: Sizes.HEIGHT_200,
-                      width: double.infinity,
-                      child: ListView.builder(
-                        itemCount: tliSalesLineList.length,
-                        itemBuilder: (context, index) {
-                          // Safeguard: Ensure salesLineItem is valid
-                          final salesLineItem = tliSalesLineList[index];
-
-                          // Check if salesLineItem is null
-                          if (salesLineItem == null) {
-                            log("Sales Line Item at Index $index is null!");
-                            return const SizedBox();
-                          }
-
-                          // Cast it as TliSalesLineElement and safeguard its fields
-                          final TliSalesLineElement? validSalesLineItem =
-                              salesLineItem as TliSalesLineElement?;
-
-                          if (validSalesLineItem == null) {
-                            log("Failed to cast item at index $index to TliSalesLineElement");
-                            return const SizedBox();
-                          }
-
-                          // Safeguard: Ensure all necessary fields are available
-                          final description =
-                              validSalesLineItem.itemDescription ??
-                                  'Unknown Item';
-                          final quantity =
-                              validSalesLineItem.quantity?.toString() ?? '0';
-                          final price =
-                              validSalesLineItem.unitPrice?.toString() ?? '0';
-
-                          log("Sales Line Item at Index $index: $description");
-
-                          return CustomRowCells(
-                            commentDialogBoxOnPressed: () {
-                              controller.showCommentDialog(context);
-                            },
-                            qntyController: TextEditingController(
-                              text: quantity,
+                                    controller.userItemListReferesh.value =
+                                        false;
+                                    log('===Attendee Indeex ON CHANGED  ${controller.attandeeSelectedIndex.value}============');
+                                  },
+                                  qtyOnTap: () {
+                                    controller.userItemListReferesh.value =
+                                        true;
+                                    controller.itemQntyController.clear();
+                                    controller.itemQntyController.text =
+                                        salesLineItem.quantity.toString();
+                                    controller.isQtyPressed.value = true;
+                                    controller.itemIndex.value = index;
+                                    controller.userItemListReferesh.value =
+                                        false;
+                                    log('===Attendee Indeex ON TAP  ${controller.attandeeSelectedIndex.value}============');
+                                  },
+                                  isQtyPressed: controller.isQtyPressed.value,
+                                  qntyController: controller.itemQntyController,
+                                  qty: salesLineItem.quantity.toString(),
+                                  itemName: salesLineItem.itemDescription,
+                                  price: salesLineItem.unitPrice.toString(),
+                                  notesController: TextEditingController(),
+                                );
+                              },
                             ),
-                            qty: quantity,
-                            itemName: description,
-                            price: price,
-                            notesController: TextEditingController(),
                           );
-                        },
-                      ),
-                    );
-                  })
-
-                  // Obx(() {
-                  //   final selectedAttendee = controller.selectedAttendee.value;
-
-                  //   if (selectedAttendee.isEmpty) {
-                  //     return const SizedBox();
-                  //   }
-
-                  //   final attendeeData = controller.selectedAttendees[
-                  //           controller.attandeeSelectedIndex.value] ??
-                  //       {};
-
-                  //   final List<dynamic> tliSalesLineList =
-                  //       attendeeData['tliSalesLine'] ?? [];
-
-                  //   // return !controller.itemsListRefresh.value
-                  //   //     ?
-                  //   return SizedBox(
-                  //     height: Sizes.HEIGHT_200,
-                  //     width: double.infinity,
-                  //     child: ListView.builder(
-                  //       scrollDirection: Axis.vertical,
-                  //       itemCount: tliSalesLineList.length,
-                  //       itemBuilder: (context, index) {
-                  //         TliSalesLineElement salesLineItem =
-                  //             tliSalesLineList[index];
-                  //         // controller
-                  //         //     .selectedAttendees[0]['tliSalesLine'][index];
-                  //         log("***** Description *********${salesLineItem.itemDescription}");
-                  //         return CustomRowCells(
-                  //           commentDialogBoxOnPressed: () {
-                  //             controller.showCommentDialog(context);
-                  //           },
-                  //           qntyController: TextEditingController(
-                  //               text: salesLineItem.quantity.toString()),
-                  //           qty: salesLineItem.quantity.toString(),
-                  //           itemName: salesLineItem.itemDescription,
-                  //           price: salesLineItem.unitPrice.toString(),
-                  //           notesController: TextEditingController(),
-                  //         );
-                  //       },
-                  //     ),
-                  //   );
-                  //   // : const SizedBox();
-                  // }),
+                  }),
                 ],
               ),
 
