@@ -85,13 +85,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                 onPressed: () {
                                                   controller.isCustomerSearch
                                                       .value = false;
-                                                  controller.searchQuery(
-                                                      controller.customerNames,
-                                                      controller
-                                                          .searchCustomerController
-                                                          .text,
-                                                      controller
-                                                          .customerTextFieldController);
+
+                                                  // controller.searchQuery(items, item, controller)
                                                   controller
                                                       .searchCustomerController
                                                       .clear();
@@ -496,7 +491,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                               final filteredData = controller
                                                       .customerContacts[index]
                                                   ['name'];
-
                                               return ListTile(
                                                 leading: Obx(
                                                   () => Checkbox(
@@ -551,7 +545,6 @@ class CustomerPageScreen extends GetView<MainPageController> {
                 height: Sizes.HEIGHT_10,
               ),
 
-              //Wrap widget for generate contact buttons
               Obx(
                 () => controller.selectedAttendees.isNotEmpty
                     ? Wrap(
@@ -561,11 +554,15 @@ class CustomerPageScreen extends GetView<MainPageController> {
                           (controller.selectedAttendees.length),
                           (index) => GestureDetector(
                             onTap: () {
+                              controller.userItemListReferesh.value = true;
+                              controller.itemQntyController.clear();
                               controller.selectedAttendee.value =
                                   controller.selectedAttendees[index]['name'];
                               controller.attandeeSelectedIndex.value = index;
-                              print(
-                                  ' Index: ${controller.attandeeSelectedIndex.value}');
+                  
+                              controller.itemIndex.value = -1;
+                              log(' Index: ${controller.attandeeSelectedIndex.value}');
+                              controller.userItemListReferesh.value = false;
                             },
                             child: Obx(
                               () => Container(
@@ -611,58 +608,81 @@ class CustomerPageScreen extends GetView<MainPageController> {
                         ? const CustomHeaderRow()
                         : const SizedBox(),
                   ),
+
+                 
                   Obx(() {
-                    // final selectedAttendee = controller.selectedAttendee.value;
+                    
 
-                    // if (selectedAttendee.isEmpty) {
-                    //   return const SizedBox();
-                    // }
+                    return controller.userItemListReferesh.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            height: Sizes.HEIGHT_200,
+                            width: double.infinity,
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: controller
+                                  .selectedAttendees[controller
+                                      .attandeeSelectedIndex
+                                      .value]['tliSalesLine']
+                                  .length,
+                              itemBuilder: (context, index) {
+                                TliSalesLineElement salesLineItem =
+                                    controller.selectedAttendees[controller
+                                        .attandeeSelectedIndex
+                                        .value]['tliSalesLine'][index];
 
-                    // final attendeeData = controller.selectedAttendees[
-                    //         controller.attandeeSelectedIndex.value] ??
-                    //     {};
-
-                    // final List<TliSalesLineElement> tliSalesLineList =
-                    //     attendeeData['tliSalesLine'] ?? [];
-
-                    return !controller.itemsListRefresh.value
-                        ? controller.selectedAttendees.isEmpty
-                            ? const SizedBox()
-                            : SizedBox(
-                                height: Sizes.HEIGHT_200,
-                                width: double.infinity,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: controller
+                                log("***** Description *********${salesLineItem.itemDescription}");
+                                return CustomRowCells(
+                                  rowIndex: index,
+                                  selectedIndex: controller.itemIndex.value,
+                                  commentDialogBoxOnPressed: () {
+                                    controller.showCommentDialog(context);
+                                  },
+                                  qtyOnChanged: (p0) {
+                                    controller.userItemListReferesh.value =
+                                        true;
+                                    if (p0.isNotEmpty) {
+                                      salesLineItem.quantity = num.parse(p0);
+                                      controller
                                           .selectedAttendees[controller
                                               .attandeeSelectedIndex
-                                              .value]['tliSalesLine']
-                                          .length ??
-                                      0,
-                                  itemBuilder: (context, index) {
-                                    TliSalesLineElement salesLineItem =
-                                        controller.selectedAttendees[controller
-                                                    .selectedIndex.value]
-                                                ['tliSalesLine'][index] ??
-                                            [];
-                                    log("***** Description *********${salesLineItem.itemDescription}");
-                                    return CustomRowCells(
-                                      qtyOnTap: () {},
-                                      commentDialogBoxOnPressed: () {
-                                        controller.showCommentDialog(context);
-                                      },
-                                      qntyController: TextEditingController(
-                                          text: salesLineItem.quantity
-                                              .toString()),
-                                      qty: salesLineItem.quantity.toString(),
-                                      itemName: salesLineItem.itemDescription,
-                                      price: salesLineItem.unitPrice.toString(),
-                                      notesController: TextEditingController(),
-                                    );
+                                              .value]['tliSalesLine'][index]
+                                          .quantity = num.parse(p0);
+                                    } else {
+                                      salesLineItem.quantity = 1;
+                                      controller
+                                          .selectedAttendees[controller
+                                              .attandeeSelectedIndex
+                                              .value]['tliSalesLine'][index]
+                                          .quantity = 1;
+                                    }
+
+                                    controller.userItemListReferesh.value =
+                                        false;
+                                    log('===Attendee Indeex ON CHANGED  ${controller.attandeeSelectedIndex.value}============');
                                   },
-                                ),
-                              )
-                        : const SizedBox();
+                                  qtyOnTap: () {
+                                    controller.userItemListReferesh.value =
+                                        true;
+                                    controller.itemQntyController.clear();
+                                    controller.itemQntyController.text =
+                                        salesLineItem.quantity.toString();
+                                    controller.isQtyPressed.value = true;
+                                    controller.itemIndex.value = index;
+                                    controller.userItemListReferesh.value =
+                                        false;
+                                    log('===Attendee Indeex ON TAP  ${controller.attandeeSelectedIndex.value}============');
+                                  },
+                                  isQtyPressed: controller.isQtyPressed.value,
+                                  qntyController: controller.itemQntyController,
+                                  qty: salesLineItem.quantity.toString(),
+                                  itemName: salesLineItem.itemDescription,
+                                  price: salesLineItem.unitPrice.toString(),
+                                  notesController: TextEditingController(),
+                                );
+                              },
+                            ),
+                          );
                   }),
                 ],
               ),

@@ -36,7 +36,7 @@ class MainPageController extends GetxController {
     const ContactPageScreen(),
     const MorePageScreen()
   ];
-
+  RxInt itemIndex = 0.obs;
   // AppBar title
   final List<String> appBarTitle = [
     AppStrings.HOME_TITLE,
@@ -47,7 +47,7 @@ class MainPageController extends GetxController {
 
   // Initialize the list to hold customer data
   List<Map<String, dynamic>> customersData = [];
-  RxList<String?> customerNames=<String?>[].obs;
+  RxList<String?> customerNames = <String?>[].obs;
 
   // reactive variable for scanning result
   RxString scanBarcode = ''.obs;
@@ -115,6 +115,7 @@ class MainPageController extends GetxController {
   //flags for ship to Address text fields
   RxBool isShipToAddExpanded = false.obs;
   RxBool isShipToAddSearch = false.obs;
+  RxBool userItemListReferesh = true.obs;
 
 // flags for Textfields visibility
   RxBool isAddressFieldVisible = false.obs;
@@ -126,6 +127,7 @@ class MainPageController extends GetxController {
   RxBool isAttandeeExpanded = false.obs;
   RxBool isAttandeeSearch = false.obs;
   RxBool itemsListRefresh = false.obs;
+  RxBool isQtyPressed = false.obs;
 
   //attandee List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
@@ -143,7 +145,7 @@ class MainPageController extends GetxController {
   ScrollController contactScrollController = ScrollController();
 
   // Customer's TextFields
-  
+
   TextEditingController customerTextFieldController = TextEditingController();
   TextEditingController searchCustomerController = TextEditingController();
   // Customer's Bill to Address TextField
@@ -155,6 +157,7 @@ class MainPageController extends GetxController {
   // Contacts textField
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
+  TextEditingController itemQntyController = TextEditingController();
 
 // GET ALL CUSTOMERS RECORDS
   Future<void> getCustomersFromGraphQL() async {
@@ -230,6 +233,7 @@ class MainPageController extends GetxController {
         isLoading.value = false;
       },
       onLoading: () {
+        userItemListReferesh.value = true;
         isLoading.value = true;
         log('******* LOADING ********');
       },
@@ -286,7 +290,7 @@ class MainPageController extends GetxController {
 
   void setCustomerData(var indexNo) async {
     isAddressFieldVisible.value = false;
-   
+
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
@@ -418,7 +422,10 @@ class MainPageController extends GetxController {
       log('No sales line data available.');
     }
     itemsListRefresh.value = false;
+    userItemListReferesh.value = false;
     isLoading.value = false;
+    log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]['tliSalesLine'].length}=========================');
+    log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]['tliSalesLine'][0].itemDescription}=========================');
   }
 
   void onCheckboxChanged(bool? value, int index) {
@@ -432,10 +439,12 @@ class MainPageController extends GetxController {
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
     } else {
       checkBoxStates[index] = false;
+
       selectedAttendees.removeWhere((attendee) =>
           attendee['name'] == customerContacts[index]['name'] &&
           attendee['contactNo'] == customerContacts[index]['contactNo'] &&
           attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
+
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
     }
 
