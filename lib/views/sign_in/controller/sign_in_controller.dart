@@ -26,10 +26,10 @@ class SignInController extends GetxController {
   void onInit() {
     super.onInit();
     Preferences().clearAll();
-    // emailController = TextEditingController(text: 'mansoor.messo@gmail.com');
-    // passwordController = TextEditingController(text: 'messo123');
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
+    emailController = TextEditingController(text: 'hassan@gmail.com');
+    passwordController = TextEditingController(text: 'hassan123');
+    // emailController = TextEditingController();
+    // passwordController = TextEditingController();
   }
 
   @override
@@ -68,12 +68,24 @@ class SignInController extends GetxController {
       },
       onError: (e) {
         isServerError.value = true;
-        CustomSnackBar.showCustomErrorSnackBar(
-            title: 'Error',
-            message: e.message,
-            duration: const Duration(seconds: 3));
+        // CustomSnackBar.showCustomErrorSnackBar(
+        //     title: 'Error',
+        //     message: e.message,
+        //     duration: const Duration(seconds: 3));
       },
     );
+  }
+
+  void signInMethod() {
+    if (emailController.text != '' && passwordController.text != '') {
+      userLoginGraph();
+    } else {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Invalid Input',
+        message: 'Enter All Fields',
+        duration: const Duration(seconds: 3),
+      );
+    }
   }
 
 // Initially password is obscured
