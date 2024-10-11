@@ -76,6 +76,18 @@ class SignInController extends GetxController {
     );
   }
 
+  void signInMethod() {
+    if (emailController.text != '' && passwordController.text != '') {
+      userLoginGraph();
+    } else {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Invalid Input',
+        message: 'Enter All Fields',
+        duration: const Duration(seconds: 3),
+      );
+    }
+  }
+
 // Initially password is obscured
   void toggleObscure() {
     isObscure.value = !isObscure.value;

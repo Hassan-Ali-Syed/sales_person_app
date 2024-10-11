@@ -11,7 +11,6 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
-import 'package:sales_person_app/views/main_page/queries/api_mutate/tlicontact_mutate.dart';
 import 'package:sales_person_app/views/main_page/queries/api_quries/tlicustomers_query.dart';
 import 'package:sales_person_app/views/main_page/queries/api_quries/tliitems_query.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
@@ -352,6 +351,20 @@ class MainPageController extends GetxController {
     setCustomerContacts();
   }
 
+// search query list and Method
+  var filteredCustomers = [].obs;
+  void filterCustomerList(String query) {
+    if (tliCustomers?.value == null) return;
+    if (query.isEmpty) {
+      filteredCustomers.value = List.from(tliCustomers!.value);
+    } else {
+      filteredCustomers.value = tliCustomers!.value
+          .where((customer) =>
+              customer.name!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+  }
+
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
     customersShipToAdd.clear();
@@ -531,7 +544,6 @@ class MainPageController extends GetxController {
   }
 
   // **************************** CONTACT PAGE PORTION ************************ //
-  // CONTACT PAGE's TEXTFIELD CONTROLLERS
- 
+
   //MORE PAGE
 }

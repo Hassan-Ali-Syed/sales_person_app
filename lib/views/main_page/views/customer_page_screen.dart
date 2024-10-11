@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
@@ -150,6 +151,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     ? ListView.builder(
                                         controller:
                                             controller.customerScrollController,
+                                        // itemCount:
+                                        //     controller.filteredCustomers.length,
                                         itemCount: controller
                                             .tliCustomers?.value.length,
                                         itemBuilder: (context, index) {
@@ -161,6 +164,8 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                                     b.name!.toLowerCase()));
                                           final filteredData =
                                               sortedCustomers[index].name;
+                                          // final filteredData = controller
+                                          //     .filteredCustomers[index].name;
                                           return ListTile(
                                             title: Text(filteredData!),
                                             onTap: () {
@@ -214,6 +219,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                     ? SizedBox(
                         child: TextField(
                           controller: controller.addressController,
+                          readOnly: true,
                           decoration: const InputDecoration(
                             labelText: AppStrings.ADDRESS,
                             border: UnderlineInputBorder(),
@@ -233,6 +239,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             ),
                             child: TextField(
                               controller: controller.shipToAddController,
+                              readOnly: true,
                               textAlign: TextAlign.left,
                               decoration: InputDecoration(
                                 labelText: AppStrings.SHIP_TO_ADD,
@@ -394,6 +401,7 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             ),
                             child: TextField(
                               controller: controller.attandeeController,
+                              readOnly: true,
                               textAlign: TextAlign.left,
                               decoration: InputDecoration(
                                 labelText: AppStrings.ATTANDEE,
@@ -527,7 +535,10 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       GestureDetector(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Get.toNamed(
+                                              AppRoutes.ADD_ATTENDEE_PAGE);
+                                        },
                                         child: Row(
                                           children: [
                                             Text(

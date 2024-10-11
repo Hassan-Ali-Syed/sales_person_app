@@ -5,6 +5,7 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
+import 'package:sales_person_app/widgets/custom_drawer.dart';
 
 class MainPage extends GetView<MainPageController> {
   const MainPage({super.key});
@@ -63,36 +64,8 @@ class MainPage extends GetView<MainPageController> {
             ],
           ),
         ),
-        endDrawer: SafeArea(
-          child: Drawer(
-            backgroundColor: AppColors.backgroundColor,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                const DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: AppColors.grey,
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Drawer Header',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                      ),
-                    ),
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text('Log Out'),
-                  onTap: () {
-                    controller.userLogOut();
-                  },
-                ),
-              ],
-            ),
-          ),
+        endDrawer: CustomDrawer(
+          logOutOnTap: () => controller.userLogOut(),
         ),
         body: Obx(() => controller.pages[controller.selectedIndex.value]));
   }

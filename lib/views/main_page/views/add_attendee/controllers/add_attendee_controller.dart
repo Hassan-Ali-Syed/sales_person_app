@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/preferences/preferences.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
@@ -132,7 +134,6 @@ class AddAttendeeController extends GetxController {
 
   void filterCustomerList(String query) {
     if (tliCustomers?.value == null) return;
-
     if (query.isEmpty) {
       filteredCustomers.value = List.from(tliCustomers!.value);
     } else {
@@ -145,5 +146,29 @@ class AddAttendeeController extends GetxController {
 
   void clearFilteredCustomers() {
     filteredCustomers.value = List.from(tliCustomers!.value);
+  }
+
+  Future<void> userLogOut() async {
+    await BaseClient.safeApiCall(
+      ApiConstants.LOG_OUT,
+      RequestType.post,
+      headers: await BaseClient.generateHeadersForLogout(),
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccess: (response) {
+        Preferences().removeToken();
+        isLoading.value = false;
+        Get.offAllNamed(AppRoutes.SIGN_IN);
+      },
+      onError: (p0) {
+        isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Error',
+          message: p0.message,
+          duration: const Duration(seconds: 2),
+        );
+      },
+    );
   }
 }

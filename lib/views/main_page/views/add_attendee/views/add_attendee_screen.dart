@@ -6,6 +6,7 @@ import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/components/contact_page_textfield.dart';
 import 'package:sales_person_app/views/main_page/views/add_attendee/controllers/add_attendee_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
+import 'package:sales_person_app/widgets/custom_drawer.dart';
 
 // import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
@@ -20,8 +21,11 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
       appBar: customAppBar(
         context: context,
         automaticallyImplyLeading: true,
-        title: const Text(AppStrings.CUSTOMER_TITLE),
+        title: const Text(AppStrings.ADD_CONTACT),
         isDrawerIcon: true,
+      ),
+      endDrawer: CustomDrawer(
+        logOutOnTap: () => controller.userLogOut(),
       ),
       body: Obx(
         () => controller.isLoading.value
@@ -96,9 +100,9 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                               ? Expanded(
                                                   child: TextField(
                                                     onChanged: (value) {
-                                                      // controller
-                                                      //     .filterCustomerList(
-                                                      //         value);
+                                                      controller
+                                                          .filterCustomerList(
+                                                              value);
                                                     },
                                                     controller: controller
                                                         .contactSearchTextFieldController,
@@ -174,10 +178,12 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                       Axis.vertical,
                                                   controller: controller
                                                       .contactCustomerScrollController,
+                                                  // itemCount: controller
+                                                  //     .filteredCustomers.length,
                                                   itemCount: controller
-                                                      .filteredCustomers.length,
-                                                  // controller
-                                                  //     .tliCustomers?.value.length,
+                                                      .tliCustomers
+                                                      ?.value
+                                                      .length,
                                                   itemBuilder:
                                                       (context, index) {
                                                     final sortedCustomers =
