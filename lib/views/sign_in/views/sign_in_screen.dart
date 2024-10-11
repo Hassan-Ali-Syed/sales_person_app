@@ -104,7 +104,7 @@ class SignInScreen extends GetView<SignInController> {
                 minWidht: double.maxFinite,
                 title: AppStrings.SIGN_IN,
                 onPressed: () {
-                  controller.userLoginGraph();
+                  controller.signInMethod();
                   // controller.getuserToken();
                 },
               ),
