@@ -329,7 +329,7 @@ class MainPageController extends GetxController {
 
   String createExternalDocumentNo(String contactNo) {
     String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
-    return "VISIT ${formattedDate} $contactNo";
+    return "VISIT $formattedDate $contactNo";
   }
 
   void setCustomerData(var indexNo) async {
@@ -438,25 +438,6 @@ class MainPageController extends GetxController {
         ),
       );
     }
-    // var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
-    //     ['tliSalesLine'] = currentSalesLines;
-    // if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
-    //     .isNotEmpty) {
-    //   for (var salesLine in tliSalesLineList) {
-    //     if (salesLine is TliSalesLineElement) {
-    //       log('Line No: ${salesLine.lineNo}');
-    //       log('Type: ${salesLine.type}');
-    //       log('No: ${salesLine.no}');
-    //       log('Quantity: ${salesLine.quantity}');
-    //       log('Unit Price: ${salesLine.unitPrice}');
-    //       log('Description: ${salesLine.itemDescription}');
-    //     } else {
-    //       log('Invalid sales line element.');
-    //     }
-    //   }
-    // } else {
-    //   log('No sales line data available.');
-    // }
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
@@ -574,7 +555,7 @@ class MainPageController extends GetxController {
   Future<void> createTliContacts({
     required String name,
     required String customerNo,
-    required String address,
+    // required String address,
     required String email,
     required String phoneNo,
   }) async {
@@ -585,7 +566,7 @@ class MainPageController extends GetxController {
       query: TlicontactMutate.tliContactMutate(
         name: name,
         customerNo: customerNo,
-        address: address,
+        // address: address,
         email: email,
         phoneNo: phoneNo,
       ),
@@ -626,7 +607,7 @@ class MainPageController extends GetxController {
     contactFullNameTextFieldController.clear();
     // controller.contactCustomerNo.value,
     contactCustomerTextFieldController.clear();
-    contactAddressTextFieldController.clear();
+    // contactAddressTextFieldController.clear();
     contactEmailTextFieldController.clear();
     contactPhoneNoTextFieldController.clear();
   }
