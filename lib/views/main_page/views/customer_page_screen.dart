@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
@@ -732,9 +731,9 @@ class CustomerPageScreen extends GetView<MainPageController> {
                             ),
                             CustomElevatedButton(
                               onPressed: () {
-                                controller.scanBarcodeNormal();
-                                // controller
-                                //     .getSingleItemFromGraphQL('S10082-002');
+                                // controller.scanBarcodeNormal();
+                                controller
+                                    .getSingleItemFromGraphQL('S10082-002');
                               },
                               title: 'Scan',
                               minWidht: Sizes.WIDTH_120,

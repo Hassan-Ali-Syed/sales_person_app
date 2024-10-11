@@ -14,6 +14,7 @@ class MainPage extends GetView<MainPageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
         key: controller.mainPageScaffoldKey,
         appBar: customAppBar(
             onTap: () {
@@ -62,11 +63,17 @@ class MainPage extends GetView<MainPageController> {
                 isAssetsImage: false,
               ),
             ],
-          ),
-        ),
+
+
+      
         endDrawer: CustomDrawer(
           logOutOnTap: () => controller.userLogOut(),
+
         ),
-        body: Obx(() => controller.pages[controller.selectedIndex.value]));
+      ),
+      body: Obx(
+        () => controller.pages[controller.selectedIndex.value],
+      ),
+    );
   }
 }

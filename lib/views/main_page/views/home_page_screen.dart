@@ -4,6 +4,7 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
+import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
 
 class HomePageScreen extends GetView<MainPageController> {
   const HomePageScreen({super.key});
