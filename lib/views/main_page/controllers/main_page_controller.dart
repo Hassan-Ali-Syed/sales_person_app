@@ -196,10 +196,12 @@ class MainPageController extends GetxController {
           tliSalesLineMap.toJson(),
         );
       }
+
       for (var i in listOfTliSalesLineMaps) {
         i.remove('itemDescription');
       }
       await createSalesOrderRest(
+          shipToCode: shipToAddCode,
           sellToCustomerNo: customerNo,
           contact: attendeeData['contactNo'],
           tliSalesLines: listOfTliSalesLineMaps);
@@ -265,11 +267,11 @@ class MainPageController extends GetxController {
     );
   }
 
-  Future<void> createSalesOrderRest({
-    required String sellToCustomerNo,
-    required String contact,
-    required List<Map<String, dynamic>>? tliSalesLines,
-  }) async {
+  Future<void> createSalesOrderRest(
+      {required String sellToCustomerNo,
+      required String contact,
+      required List<Map<String, dynamic>>? tliSalesLines,
+      required String shipToCode}) async {
     await BaseClient.safeApiCall(
         ApiConstants.CREATE_SALES_ORDER, RequestType.post,
         headers: await BaseClient.generateHeadersWithToken(),
@@ -280,6 +282,7 @@ class MainPageController extends GetxController {
           "externalDocumentNo": createExternalDocumentNo(contact),
           "locationCode": "SYOSSET",
           "tliSalesLines": tliSalesLines,
+          'shipToCode': shipToCode
         },
         onLoading: () => isLoading.value = true,
         onSuccess: (response) {
