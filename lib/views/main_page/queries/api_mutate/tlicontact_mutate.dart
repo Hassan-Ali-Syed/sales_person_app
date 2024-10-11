@@ -4,7 +4,7 @@ class TlicontactMutate {
   static String tliContactMutate({
     required String name,
     required String customerNo,
-    required String address,
+    // required String address,
     String? email,
     String? phoneNo,
   }) {
@@ -16,7 +16,6 @@ class TlicontactMutate {
           name: "$name"
           no: ""
           customerNo: "$customerNo"
-          address: "$address"
           eMail: "$email"
           phoneNo: "$phoneNo"
           type: "Person"

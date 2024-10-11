@@ -244,8 +244,6 @@ class ContactPageScreen extends GetView<MainPageController> {
                                       .contactFullNameTextFieldController.text,
                                   customerNo:
                                       controller.contactCustomerNo.value,
-                                  address: controller
-                                      .contactAddressTextFieldController.text,
                                   email: controller
                                       .contactEmailTextFieldController.text,
                                   phoneNo: controller

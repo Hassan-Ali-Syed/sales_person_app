@@ -96,7 +96,7 @@ class MainPageController extends GetxController {
 
 // Reactive variable for Customers
   String customerNo = '';
-  String shipToCode = '';
+  // String shipToCode = '';
   RxString customerAddress = ''.obs;
   String shipToAddCode = '';
 
@@ -191,18 +191,22 @@ class MainPageController extends GetxController {
     for (var attendeeData in attendeesData) {
       List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
       List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
-      for (var tliSalesLineMap in tliSalesLineElement) {
-        listOfTliSalesLineMaps.add(
-          tliSalesLineMap.toJson(),
-        );
+      if (tliSalesLineElement.isNotEmpty) {
+        for (var tliSalesLineMap in tliSalesLineElement) {
+          listOfTliSalesLineMaps.add(
+            tliSalesLineMap.toJson(),
+          );
+        }
+        for (var i in listOfTliSalesLineMaps) {
+          i.remove('itemDescription');
+        }
+
+        await createSalesOrderRest(
+            sellToCustomerNo: customerNo,
+            contact: attendeeData['contactNo'],
+            // shipToCode: shipToAddCode,
+            tliSalesLines: listOfTliSalesLineMaps);
       }
-      for (var i in listOfTliSalesLineMaps) {
-        i.remove('itemDescription');
-      }
-      await createSalesOrderRest(
-          sellToCustomerNo: customerNo,
-          contact: attendeeData['contactNo'],
-          tliSalesLines: listOfTliSalesLineMaps);
       log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
     }
   }
@@ -269,6 +273,7 @@ class MainPageController extends GetxController {
     required String sellToCustomerNo,
     required String contact,
     required List<Map<String, dynamic>>? tliSalesLines,
+    // required String shipToCode,
   }) async {
     await BaseClient.safeApiCall(
         ApiConstants.CREATE_SALES_ORDER, RequestType.post,
@@ -279,6 +284,7 @@ class MainPageController extends GetxController {
           "contact": contact,
           "externalDocumentNo": createExternalDocumentNo(contact),
           "locationCode": "SYOSSET",
+          "shipToCode": shipToAddCode,
           "tliSalesLines": tliSalesLines,
         },
         onLoading: () => isLoading.value = true,
@@ -304,11 +310,11 @@ class MainPageController extends GetxController {
         ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
         headers: await BaseClient.generateHeadersWithToken(),
         data: {
-          "no": "SO12693",
-          "documentLineNo": 10000,
-          "lineNo": 10000,
+          "no": "SO12693", // SalesOrder No
+          "documentLineNo": 10000, // Sales Line No
+          "lineNo": 10000, // line no for multiple comments of sales Line
           "date": "2023-03-14",
-          "comment": "Order Line One Comment"
+          "comment": "Order Line One Comment" // comment limit 80 characters
         },
         onLoading: () => isLoading.value = true,
         onSuccess: (response) {
@@ -323,7 +329,7 @@ class MainPageController extends GetxController {
 
   String createExternalDocumentNo(String contactNo) {
     String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
-    return "VISIT_${formattedDate}_$contactNo";
+    return "VISIT $formattedDate $contactNo";
   }
 
   void setCustomerData(var indexNo) async {
@@ -432,25 +438,6 @@ class MainPageController extends GetxController {
         ),
       );
     }
-    // var tliSalesLineList = selectedAttendees[attandeeSelectedIndex.value]
-    //     ['tliSalesLine'] = currentSalesLines;
-    // if (selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine']
-    //     .isNotEmpty) {
-    //   for (var salesLine in tliSalesLineList) {
-    //     if (salesLine is TliSalesLineElement) {
-    //       log('Line No: ${salesLine.lineNo}');
-    //       log('Type: ${salesLine.type}');
-    //       log('No: ${salesLine.no}');
-    //       log('Quantity: ${salesLine.quantity}');
-    //       log('Unit Price: ${salesLine.unitPrice}');
-    //       log('Description: ${salesLine.itemDescription}');
-    //     } else {
-    //       log('Invalid sales line element.');
-    //     }
-    //   }
-    // } else {
-    //   log('No sales line data available.');
-    // }
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
@@ -568,7 +555,7 @@ class MainPageController extends GetxController {
   Future<void> createTliContacts({
     required String name,
     required String customerNo,
-    required String address,
+    // required String address,
     required String email,
     required String phoneNo,
   }) async {
@@ -579,7 +566,7 @@ class MainPageController extends GetxController {
       query: TlicontactMutate.tliContactMutate(
         name: name,
         customerNo: customerNo,
-        address: address,
+        // address: address,
         email: email,
         phoneNo: phoneNo,
       ),
@@ -620,7 +607,7 @@ class MainPageController extends GetxController {
     contactFullNameTextFieldController.clear();
     // controller.contactCustomerNo.value,
     contactCustomerTextFieldController.clear();
-    contactAddressTextFieldController.clear();
+    // contactAddressTextFieldController.clear();
     contactEmailTextFieldController.clear();
     contactPhoneNoTextFieldController.clear();
   }
