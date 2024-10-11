@@ -16,7 +16,7 @@ class MainPage extends GetView<MainPageController> {
         key: controller.mainPageScaffoldKey,
         appBar: customAppBar(
             onTap: () {
-              controller.mainPageScaffoldKey.currentState!.openDrawer();
+              controller.mainPageScaffoldKey.currentState!.openEndDrawer();
             },
             context: context,
             automaticallyImplyLeading: false,
@@ -63,33 +63,35 @@ class MainPage extends GetView<MainPageController> {
             ],
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey,
-                ),
-                child: Text(
-                  'Drawer Header',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
+        endDrawer: SafeArea(
+          child: Drawer(
+            backgroundColor: AppColors.backgroundColor,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                const DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: AppColors.grey,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Drawer Header',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Log Out'),
-
-                onTap: () {
-                  controller.userLogOut();
-                },
-
-              
-              ),
-            ],
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Log Out'),
+                  onTap: () {
+                    controller.userLogOut();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         body: Obx(() => controller.pages[controller.selectedIndex.value]));

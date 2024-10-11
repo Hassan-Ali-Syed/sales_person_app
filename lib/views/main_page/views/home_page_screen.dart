@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sales_person_app/constants/constants.dart';
 
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 
@@ -12,7 +13,7 @@ class HomePageScreen extends GetView<MainPageController> {
     return const SingleChildScrollView(
       child: Column(
         children: [
-          Text("data"),
+          Center(child: Text(AppStrings.COMING_SOON)),
         ],
       ),
     );

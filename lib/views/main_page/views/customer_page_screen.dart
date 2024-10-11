@@ -12,7 +12,7 @@ import '../components/custom_header_row.dart';
 import '../models/tli_sales_line.dart';
 
 class CustomerPageScreen extends GetView<MainPageController> {
-  static const String routeName = '/custome_page_screen';
+  static const String routeName = '/customer_page_screen';
   const CustomerPageScreen({super.key});
 
   @override
@@ -153,8 +153,14 @@ class CustomerPageScreen extends GetView<MainPageController> {
                                         itemCount: controller
                                             .tliCustomers?.value.length,
                                         itemBuilder: (context, index) {
-                                          final filteredData = controller
-                                              .tliCustomers?.value[index].name;
+                                          final sortedCustomers = controller
+                                              .tliCustomers!.value
+                                            ..sort((a, b) => a.name!
+                                                .toLowerCase()
+                                                .compareTo(
+                                                    b.name!.toLowerCase()));
+                                          final filteredData =
+                                              sortedCustomers[index].name;
                                           return ListTile(
                                             title: Text(filteredData!),
                                             onTap: () {

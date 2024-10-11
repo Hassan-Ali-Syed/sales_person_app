@@ -10,7 +10,7 @@ class MorePageScreen extends StatelessWidget {
     return const Column(
       children: [
         Center(
-          child: Text(AppStrings.MORE),
+          child: Text(AppStrings.COMING_SOON),
         )
       ],
     );

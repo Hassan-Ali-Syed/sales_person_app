@@ -31,8 +31,8 @@ class AppStrings {
 
 // App Bar title
   static const String HOME_TITLE = 'Home';
-  static const String CUSTOMER_TITLE = 'Customer';
-  static const String CONTACT_TITLE = 'Add Contact';
+  static const String CUSTOMER_TITLE = 'Customer visit';
+  static const String CONTACT_TITLE = 'Contact';
   static const String MORE_TITLE = 'More';
 
   // hint_text
@@ -62,6 +62,7 @@ class AppStrings {
   static const String ATTANDEE = 'Attandee';
   static const String SEARCH_ATTANDEE = 'Search attandee';
   static const String NO_CONTACTS_AVAILABLE = 'No Contacts Available';
+  static const String COMING_SOON = 'Coming soon..';
 
   //ELEVATED BUTTONS CONST STRING
   static const String CANCEL = 'Cancel';
