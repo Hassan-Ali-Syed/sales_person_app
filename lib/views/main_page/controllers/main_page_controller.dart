@@ -11,7 +11,6 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
-import 'package:sales_person_app/views/main_page/queries/api_mutate/tlicontact_mutate.dart';
 import 'package:sales_person_app/views/main_page/queries/api_quries/tlicustomers_query.dart';
 import 'package:sales_person_app/views/main_page/queries/api_quries/tliitems_query.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
@@ -29,6 +28,7 @@ class MainPageController extends GetxController {
 
   // flag for tracking API process
   var isLoading = false.obs;
+
   // Pages for bottom navigation
   List pages = [
     const HomePageScreen(),
@@ -37,6 +37,7 @@ class MainPageController extends GetxController {
     const MorePageScreen()
   ];
   RxInt itemIndex = 0.obs;
+
   // AppBar title
   final List<String> appBarTitle = [
     AppStrings.HOME_TITLE,
@@ -350,6 +351,20 @@ class MainPageController extends GetxController {
     setCustomerContacts();
   }
 
+// search query list and Method
+  var filteredCustomers = [].obs;
+  void filterCustomerList(String query) {
+    if (tliCustomers?.value == null) return;
+    if (query.isEmpty) {
+      filteredCustomers.value = List.from(tliCustomers!.value);
+    } else {
+      filteredCustomers.value = tliCustomers!.value
+          .where((customer) =>
+              customer.name!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+  }
+
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
     customersShipToAdd.clear();
@@ -529,88 +544,6 @@ class MainPageController extends GetxController {
   }
 
   // **************************** CONTACT PAGE PORTION ************************ //
-  // CONTACT PAGE's TEXTFIELD CONTROLLERS
-  TextEditingController contactFullNameTextFieldController =
-      TextEditingController();
-  TextEditingController contactSearchTextFieldController =
-      TextEditingController();
-  TextEditingController contactCustomerTextFieldController =
-      TextEditingController();
-  TextEditingController contactEmailTextFieldController =
-      TextEditingController();
-  TextEditingController contactAddressTextFieldController =
-      TextEditingController();
-  TextEditingController contactPhoneNoTextFieldController =
-      TextEditingController();
-
-  var contactCustomerNo = ''.obs;
-
-// CONTACT PAGE's SCROLL CONTROLLERS
-  ScrollController contactCustomerScrollController = ScrollController();
-
-  //FLAGS OF CUSTOMER's TEXTFIELD
-  RxBool isContactCustomerExpanded = false.obs;
-  RxBool isContactCustomerSearch = false.obs;
-
-  Future<void> createTliContacts({
-    required String name,
-    required String customerNo,
-    // required String address,
-    required String email,
-    required String phoneNo,
-  }) async {
-    await BaseClient.safeApiCall(
-      ApiConstants.BASE_URL_GRAPHQL,
-      RequestType.mutate,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-      query: TlicontactMutate.tliContactMutate(
-        name: name,
-        customerNo: customerNo,
-        // address: address,
-        email: email,
-        phoneNo: phoneNo,
-      ),
-      onLoading: () {
-        isLoading.value = true;
-      },
-      onSuccessGraph: (response) {
-        log("******* RESPONSE: *********\n ${response.data!['message']}");
-
-        if (response.data!['createtliContact']['status'] == 400) {
-          CustomSnackBar.showCustomToast(
-              message: '${response.data!['createtliContact']['success']}',
-              duration: const Duration(seconds: 3),
-              color: AppColors.redShade5);
-          isLoading.value = false;
-        } else {
-          CustomSnackBar.showCustomToast(
-            message: '${response.data!['createtliContact']['message']}',
-            duration: const Duration(seconds: 3),
-            color: Colors.green,
-          );
-          isLoading.value = false;
-        }
-      },
-      onError: (e) {
-        isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Error',
-          message: e.message,
-          duration: const Duration(seconds: 5),
-        );
-        log('*** onError *** \n ${e.message}');
-      },
-    );
-  }
-
-  void clearAllTextFieldsOfContactPage() {
-    contactFullNameTextFieldController.clear();
-    // controller.contactCustomerNo.value,
-    contactCustomerTextFieldController.clear();
-    // contactAddressTextFieldController.clear();
-    contactEmailTextFieldController.clear();
-    contactPhoneNoTextFieldController.clear();
-  }
 
   //MORE PAGE
 }

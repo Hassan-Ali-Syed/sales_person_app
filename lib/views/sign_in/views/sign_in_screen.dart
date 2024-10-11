@@ -105,7 +105,10 @@ class SignInScreen extends GetView<SignInController> {
                 title: AppStrings.SIGN_IN,
                 onPressed: () {
                   controller.signInMethod();
+
+
                   // controller.getuserToken();
+
                 },
               ),
               Padding(
