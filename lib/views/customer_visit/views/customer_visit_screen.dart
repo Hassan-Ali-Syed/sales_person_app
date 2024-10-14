@@ -79,12 +79,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // controller.isCustomerSearch.value
-                                  //     ?
                                   Expanded(
                                     child: TextField(
                                       controller:
                                           controller.searchCustomerController,
+                                      onChanged: (value) =>
+                                          controller.filterCustomerList(value),
+                                      onTapOutside: (event) {},
                                       decoration: InputDecoration(
                                         labelText: AppStrings.SEARCH_CUSTOMER,
                                         border: const UnderlineInputBorder(),

@@ -5,6 +5,7 @@ class TliContact {
   String? customerNo;
   String? name;
   String? no;
+  String? type;
 
   TliContact({
     this.systemId,
@@ -13,6 +14,7 @@ class TliContact {
     this.customerNo,
     this.name,
     this.no,
+    this.type,
   });
 
   // From JSON
@@ -24,6 +26,7 @@ class TliContact {
       customerNo: json['customerNo'],
       name: json['name'],
       no: json['no'],
+      type: json['type'],
     );
   }
 
@@ -36,6 +39,7 @@ class TliContact {
       'customerNo': customerNo,
       'name': name,
       'no': no,
+      'json': type
     };
   }
 }

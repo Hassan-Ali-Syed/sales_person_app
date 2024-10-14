@@ -38,6 +38,7 @@ class TlicustomersQuery {
               customerNo
               name
               no
+              type
             }
             tliShipToAdds {
               code

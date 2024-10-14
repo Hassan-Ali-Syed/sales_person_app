@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 
@@ -38,7 +39,7 @@ class HomePageScreen extends GetView<MainPageController> {
                       const Padding(
                         padding: EdgeInsets.only(left: Sizes.PADDING_24),
                         child: Text(
-                          'Home',
+                          AppStrings.HOME,
                           style: TextStyle(
                             fontSize: Sizes.TEXT_SIZE_20,
                             fontWeight: FontWeight.normal,
@@ -133,14 +134,14 @@ class HomePageScreen extends GetView<MainPageController> {
                 minTileHeight: Sizes.HEIGHT_60,
                 tileColor: LightTheme.appBarBackgroundColor,
                 title: Text(
-                  'Customer Visit',
+                  AppStrings.CUSTOMER_VISIT,
                   style: context.bodyLarge.copyWith(
                     color: const Color(0xff58595B),
                   ),
                 ),
                 trailing: GestureDetector(
                   onTap: () {
-                    controller.selectedIndex.value = 1;
+                    Get.toNamed(AppRoutes.CUSTOMER_VISIT);
                   },
                   child: const Icon(Icons.add_circle),
                 ),

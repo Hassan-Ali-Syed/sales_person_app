@@ -286,7 +286,7 @@ class CustomerVisitController extends GetxController {
   var filteredCustomers = [].obs;
   void filterCustomerList(String query) {
     if (tliCustomers?.value == null) return;
-    if (query.isEmpty) {
+    if (query.isEmpty || query == ' ') {
       filteredCustomers.value = List.from(tliCustomers!.value);
     } else {
       filteredCustomers.value = tliCustomers!.value
@@ -294,6 +294,7 @@ class CustomerVisitController extends GetxController {
               customer.name!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
+    log('List $filteredCustomers');
   }
 
 // SET CUSTOMER'S SHIP TO ADDRESSES
@@ -325,11 +326,13 @@ class CustomerVisitController extends GetxController {
       for (var values in instanceCustomer) {
         var tliContacts = values.tliContact;
         for (var element in tliContacts!) {
-          customerContacts.add({
-            'name': element.name,
-            'contactNo': element.no,
-            'tliSalesLine': []
-          });
+          if (element.type == 'Person' || element.type == 'person') {
+            customerContacts.add({
+              'name': element.name,
+              'contactNo': element.no,
+              'tliSalesLine': []
+            });
+          }
         }
         checkBoxStates.value =
             List.generate(customerContacts.length, (index) => false);
@@ -339,10 +342,10 @@ class CustomerVisitController extends GetxController {
 
   // Set Selected Ship to Add
   String setSelectedShipToAdd(int index) {
-    if (index < 0 || index >= customersShipToAdd.length) {
-      log('Invalid index: $index');
-      return 'Invalid index';
-    }
+    // if (index < 0 || index >= customersShipToAdd.length) {
+    //   log('Invalid index: $index');
+    //   return 'Invalid index';
+    // }
     var address = customersShipToAdd[index]['address'] ?? 'Address not found';
     shipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
     log('**** After selecting address from ship to add list ******');
@@ -388,7 +391,6 @@ class CustomerVisitController extends GetxController {
     userItemListReferesh.value = false;
     isLoading.value = false;
     log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]['tliSalesLine'].length}=========================');
-    log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]['tliSalesLine'][0].itemDescription}=========================');
   }
 
   void onCheckboxChanged(bool? value, int index) {
