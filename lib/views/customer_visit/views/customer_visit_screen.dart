@@ -23,7 +23,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
       appBar: customAppBar(
         context: context,
         automaticallyImplyLeading: true,
-        title: const Text(AppStrings.CUSTOMER_TITLE),
+        title: const Text(AppStrings.CUSTOMER_VISIT),
       ),
       body: SingleChildScrollView(
         child: Padding(

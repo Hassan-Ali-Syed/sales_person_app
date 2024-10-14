@@ -6,6 +6,7 @@ import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 
+
 class HomePageScreen extends GetView<MainPageController> {
   const HomePageScreen({super.key});
   static const String routeName = '/home_page_screen';

@@ -53,6 +53,7 @@ class CustomRowCells extends StatelessWidget {
                 width: Sizes.WIDTH_60,
                 height: Sizes.HEIGHT_50,
                 child: TextField(
+                  keyboardType: TextInputType.number,
                   controller: qntyController,
                   onChanged: qtyOnChanged,
                   style: const TextStyle(
