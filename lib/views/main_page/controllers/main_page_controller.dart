@@ -24,14 +24,14 @@ class MainPageController extends GetxController {
   final GlobalKey<ScaffoldState> mainPageScaffoldKey =
       GlobalKey<ScaffoldState>();
   // Observable for selecte Index from NavBar
-  var selectedIndex = 1.obs;
+  var selectedIndex = 0.obs;
 
   // flag for tracking API process
   var isLoading = false.obs;
 
   // Pages for bottom navigation
   List pages = [
-    const HomePageScreen(),
+    HomePageScreen(),
     const CustomerPageScreen(),
     const ContactPageScreen(),
     const MorePageScreen()

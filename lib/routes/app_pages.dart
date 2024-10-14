@@ -37,7 +37,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.HOME_PAGE,
-      page: () => const HomePageScreen(),
+      page: () => HomePageScreen(),
       binding: MainPageBinding(),
     ),
     GetPage(

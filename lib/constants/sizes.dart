@@ -110,6 +110,7 @@ class Sizes {
   static const double HEIGHT_144 = 144.0;
   static const double HEIGHT_140 = 140.0;
   static const double HEIGHT_130 = 130.0;
+    static const double HEIGHT_124 = 124.0;
   static const double HEIGHT_120 = 120.0;
   static const double HEIGHT_114 = 114.0;
   static const double HEIGHT_110 = 110.0;

@@ -13,20 +13,23 @@ class MainPage extends GetView<MainPageController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
+    return Obx(
+      () => Scaffold(
         key: controller.mainPageScaffoldKey,
-        appBar: customAppBar(
-            onTap: () {
-              controller.mainPageScaffoldKey.currentState!.openEndDrawer();
-            },
-            context: context,
-            automaticallyImplyLeading: false,
-            title: Obx(
-              () =>
-                  Text(controller.appBarTitle[controller.selectedIndex.value]),
-            ),
-            isDrawerIcon: true),
+        appBar: controller.selectedIndex.value == 0
+            ? null
+            : customAppBar(
+                customLeading: true,
+                onTap: () {
+                  controller.mainPageScaffoldKey.currentState!.openEndDrawer();
+                },
+                context: context,
+                automaticallyImplyLeading: false,
+                title: Obx(
+                  () => Text(
+                      controller.appBarTitle[controller.selectedIndex.value]),
+                ),
+                isDrawerIcon: true),
         bottomNavigationBar: Obx(
           () => CustomLineIndicatorBottomNavbar(
             selectedColor: const Color(0xff0A0A0B),
@@ -63,16 +66,14 @@ class MainPage extends GetView<MainPageController> {
                 isAssetsImage: false,
               ),
             ],
-
-
-      
+          ),
+        ),
         endDrawer: CustomDrawer(
           logOutOnTap: () => controller.userLogOut(),
-
         ),
-      ),
-      body: Obx(
-        () => controller.pages[controller.selectedIndex.value],
+        body: Obx(
+          () => controller.pages[controller.selectedIndex.value],
+        ),
       ),
     );
   }
