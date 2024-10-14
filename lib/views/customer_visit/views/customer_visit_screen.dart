@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
@@ -43,6 +42,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             top: Sizes.PADDING_8,
                           ),
                           child: TextField(
+                            readOnly: true,
                             controller: controller.customerTextFieldController,
                             textAlign: TextAlign.left,
                             onSubmitted: (value) {
@@ -83,6 +83,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   //     ?
                                   Expanded(
                                     child: TextField(
+                                      onChanged: (value) {
+                                        controller.filterCustomerList(value);
+                                      },
                                       controller:
                                           controller.searchCustomerController,
                                       decoration: InputDecoration(
@@ -161,24 +164,22 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       ? ListView.builder(
                                           controller: controller
                                               .customerScrollController,
-                                          // itemCount:
-                                          //     controller.filteredCustomers.length,
                                           itemCount: controller
-                                              .tliCustomers?.value.length,
+                                              .filteredCustomers.length,
+                                          // itemCount: controller
+                                          //     .tliCustomers?.value.length,
                                           itemBuilder: (context, index) {
-                                            final sortedCustomers = controller
-                                                .tliCustomers!.value
-                                              ..sort((a, b) => a.name!
-                                                  .toLowerCase()
-                                                  .compareTo(
-                                                      b.name!.toLowerCase()));
-                                            final filteredData =
-                                                sortedCustomers[index].name;
-                                            // final filteredData = controller
-                                            //     .filteredCustomers[index].name;
+                                            // final filteredData =
+                                            //     sortedCustomers[index].name;
+                                            final filteredData = controller
+                                                .filteredCustomers[index].name;
                                             return ListTile(
                                               title: Text(filteredData!),
                                               onTap: () {
+                                                controller.filteredCustomers
+                                                        .value =
+                                                    controller
+                                                        .tliCustomers!.value;
                                                 controller
                                                     .setCustomerData(index);
                                                 controller
@@ -310,30 +311,16 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       //     AppStrings.SEARCH_SHIP_TO_ADD,
                                       //     style: context.bodyLarge,
                                       //   ),
-                                      Row(
-                                        children: [
-                                          controller.isShipToAddSearch.value
-                                              ? const SizedBox.shrink()
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.isShipToAddSearch
-                                                        .value = true;
-                                                  },
-                                                  child:
-                                                      const Icon(Icons.search),
-                                                ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              controller.isShipToAddExpanded
-                                                  .value = false;
-                                            },
-                                            child: const Icon(
-                                              Icons.arrow_drop_up,
-                                              size: Sizes.WIDTH_40,
-                                              color: Color.fromRGBO(0, 0, 0, 1),
-                                            ),
-                                          ),
-                                        ],
+                                      GestureDetector(
+                                        onTap: () {
+                                          controller.isShipToAddExpanded.value =
+                                              false;
+                                        },
+                                        child: const Icon(
+                                          Icons.arrow_drop_up,
+                                          size: Sizes.WIDTH_40,
+                                          color: Color.fromRGBO(0, 0, 0, 1),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -478,16 +465,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       //   ),
                                       Row(
                                         children: [
-                                          controller.isAttandeeSearch.value
-                                              ? const SizedBox.shrink()
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    controller.isAttandeeSearch
-                                                        .value = true;
-                                                  },
-                                                  child:
-                                                      const Icon(Icons.search),
-                                                ),
                                           GestureDetector(
                                             onTap: () {
                                               controller.isAttandeeExpanded
@@ -670,7 +647,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                         selectedIndex:
                                             controller.itemIndex.value,
                                         commentDialogBoxOnPressed: () {
-                                          controller.showCommentDialog(context);
+                                          controller.showCommentDialog(context,
+                                              controller:
+                                                  controller.commentController);
                                         },
                                         qtyOnChanged: (p0) {
                                           controller.userItemListReferesh
@@ -718,8 +697,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                         itemName: salesLineItem.itemDescription,
                                         price:
                                             salesLineItem.unitPrice.toString(),
-                                        notesController:
-                                            TextEditingController(),
+                                        notesController: TextEditingController(
+                                            text: controller
+                                                .commentController.text),
                                       );
                                     },
                                   ),
@@ -729,7 +709,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                 ),
 
                 const SizedBox(
-                  height: Sizes.HEIGHT_100,
+                  height: Sizes.HEIGHT_20,
                 ),
                 Obx(
                   () => controller.selectedAttendees.isNotEmpty
@@ -755,9 +735,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               ),
                               CustomElevatedButton(
                                 onPressed: () {
-                                  controller.scanBarcodeNormal();
-                                  // controller
-                                  //     .getSingleItemFromGraphQL('S10082-002');
+                                  // controller.scanBarcodeNormal();
+                                  controller
+                                      .getSingleItemFromGraphQL('S10082-002');
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_120,

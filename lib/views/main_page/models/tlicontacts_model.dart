@@ -5,26 +5,27 @@ class TliContact {
   String? customerNo;
   String? name;
   String? no;
+  String? type;
 
-  TliContact({
-    this.systemId,
-    this.address,
-    this.address2,
-    this.customerNo,
-    this.name,
-    this.no,
-  });
+  TliContact(
+      {this.systemId,
+      this.address,
+      this.address2,
+      this.customerNo,
+      this.name,
+      this.no,
+      this.type});
 
   // From JSON
   factory TliContact.fromJson(Map<String, dynamic> json) {
     return TliContact(
-      systemId: json['systemId'],
-      address: json['address'],
-      address2: json['address2'],
-      customerNo: json['customerNo'],
-      name: json['name'],
-      no: json['no'],
-    );
+        systemId: json['systemId'],
+        address: json['address'],
+        address2: json['address2'],
+        customerNo: json['customerNo'],
+        name: json['name'],
+        no: json['no'],
+        type: json['type']);
   }
 
   // To JSON
@@ -36,6 +37,7 @@ class TliContact {
       'customerNo': customerNo,
       'name': name,
       'no': no,
+      'type': type
     };
   }
 }
