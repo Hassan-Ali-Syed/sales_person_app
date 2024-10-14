@@ -12,7 +12,7 @@ AppBar customAppBar({
   void Function()? onTap,
   void Function()? backOnTap,
   bool isDrawerIcon = false,
-  bool isBackButton = false,
+  // bool isBackButton = false,
 }) {
   return AppBar(
     automaticallyImplyLeading: automaticallyImplyLeading,

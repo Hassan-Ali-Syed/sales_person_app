@@ -9,8 +9,8 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
-import 'package:sales_person_app/views/main_page/queries/api_mutate/tlicontact_mutate.dart';
-import 'package:sales_person_app/views/main_page/queries/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/queries/api_mutate/tlicontact_mutate.dart';
+import 'package:sales_person_app/queries/api_quries/tlicustomers_query.dart';
 
 class AddAttendeeController extends GetxController {
   TliCustomers? tliCustomers;

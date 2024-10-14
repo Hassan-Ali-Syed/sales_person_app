@@ -8,10 +8,13 @@ class MorePageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Center(
-          child: Text(AppStrings.COMING_SOON),
-        )
+        SizedBox(
+          width: double.maxFinite,
+        ),
+        Text(AppStrings.COMING_SOON),
       ],
     );
   }

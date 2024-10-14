@@ -31,10 +31,11 @@ class AppStrings {
 
 // App Bar title
   static const String HOME_TITLE = 'Home';
-  static const String CUSTOMER_TITLE = 'Customer visit';
+  static const String CUSTOMER_TITLE = 'Customer';
   static const String CONTACT_TITLE = 'Contact';
   static const String MORE_TITLE = 'More';
   static const String ADD_CONTACT = 'Add contact';
+  static const String CUSTOMER_VISIT = 'Customer visit';
 
   // hint_text
   static const String FULL_NAME = 'Full Name';
@@ -70,6 +71,7 @@ class AppStrings {
   static const String SAVE = 'Save';
   static const String FINISH = 'Finish';
   static const String UPDATE = 'Update';
+  static const String SCAN = 'Scan';
 
   // Api Message Strings
   static const String LOADING = 'Loading';
