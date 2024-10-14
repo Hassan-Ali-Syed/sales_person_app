@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 
@@ -140,7 +141,7 @@ class HomePageScreen extends GetView<MainPageController> {
                 ),
                 trailing: GestureDetector(
                   onTap: () {
-                    controller.selectedIndex.value = 1;
+                    Get.toNamed(AppRoutes.CUSTOMER_VISIT);
                   },
                   child: const Icon(Icons.add_circle),
                 ),
