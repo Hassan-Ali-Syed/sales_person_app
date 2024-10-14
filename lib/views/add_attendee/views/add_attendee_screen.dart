@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
-import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/add_attendee/components/contact_page_textfield.dart';
 import 'package:sales_person_app/views/add_attendee/controllers/add_attendee_controller.dart';

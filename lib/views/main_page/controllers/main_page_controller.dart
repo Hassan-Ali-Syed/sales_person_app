@@ -22,7 +22,7 @@ class MainPageController extends GetxController {
 
   // Pages for bottom navigation
   List pages = [
-    const HomePageScreen(),
+    HomePageScreen(),
     const CustomerPageScreen(),
     const ContactPageScreen(),
     const MorePageScreen()
@@ -35,7 +35,6 @@ class MainPageController extends GetxController {
     AppStrings.CONTACT_TITLE,
     AppStrings.MORE_TITLE
   ];
-
 
   // Method to update selectedIndex of Bottom Navigation Bar
   void updateSelectedIndex(int index) {
