@@ -79,60 +79,59 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  controller.isCustomerSearch.value
-                                      ? Expanded(
-                                          child: TextField(
-                                            controller: controller
-                                                .searchCustomerController,
-                                            decoration: InputDecoration(
-                                              labelText:
-                                                  AppStrings.SEARCH_CUSTOMER,
-                                              border:
-                                                  const UnderlineInputBorder(),
-                                              suffixIcon: IconButton(
-                                                  icon:
-                                                      const Icon(Icons.search),
-                                                  onPressed: () {
-                                                    controller.isCustomerSearch
-                                                        .value = false;
+                                  // controller.isCustomerSearch.value
+                                  //     ?
+                                  Expanded(
+                                    child: TextField(
+                                      controller:
+                                          controller.searchCustomerController,
+                                      decoration: InputDecoration(
+                                        labelText: AppStrings.SEARCH_CUSTOMER,
+                                        border: const UnderlineInputBorder(),
+                                        suffixIcon: IconButton(
+                                            icon: const Icon(Icons.search),
+                                            onPressed: () {
+                                              controller.isCustomerSearch
+                                                  .value = false;
 
-                                                    // controller.searchQuery(items, item, controller)
-                                                    controller
-                                                        .searchCustomerController
-                                                        .clear();
+                                              // controller.searchQuery(items, item, controller)
+                                              controller
+                                                  .searchCustomerController
+                                                  .clear();
 
-                                                    controller.searchAttandeeController
-                                                                .text !=
-                                                            ''
-                                                        ? controller
-                                                                .customerTextFieldController
-                                                                .text =
-                                                            controller
-                                                                .searchCustomerController
-                                                                .text
-                                                        : controller
-                                                                .customerTextFieldController =
-                                                            controller
-                                                                .customerTextFieldController;
-                                                  }),
-                                            ),
-                                          ),
-                                        )
-                                      : Text(
-                                          AppStrings.SEARCH_CUSTOMER,
-                                          style: context.bodyLarge,
-                                        ),
+                                              controller.searchAttandeeController
+                                                          .text !=
+                                                      ''
+                                                  ? controller
+                                                          .customerTextFieldController
+                                                          .text =
+                                                      controller
+                                                          .searchCustomerController
+                                                          .text
+                                                  : controller
+                                                          .customerTextFieldController =
+                                                      controller
+                                                          .customerTextFieldController;
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  // :
+                                  // Text(
+                                  //     AppStrings.SEARCH_CUSTOMER,
+                                  //     style: context.bodyLarge,
+                                  //   ),
                                   Row(
                                     children: [
-                                      controller.isCustomerSearch.value
-                                          ? const SizedBox.shrink()
-                                          : GestureDetector(
-                                              onTap: () {
-                                                controller.isCustomerSearch
-                                                    .value = true;
-                                              },
-                                              child: const Icon(Icons.search),
-                                            ),
+                                      // controller.isCustomerSearch.value
+                                      //     ? const SizedBox.shrink()
+                                      //     : GestureDetector(
+                                      //         onTap: () {
+                                      //           controller.isCustomerSearch
+                                      //               .value = true;
+                                      //         },
+                                      //         child: const Icon(Icons.search),
+                                      //       ),
                                       GestureDetector(
                                         onTap: () {
                                           controller.isCustomerExpanded.value =
@@ -285,34 +284,32 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      controller.isShipToAddSearch.value
-                                          ? Expanded(
-                                              child: TextField(
-                                                controller: controller
-                                                    .searchCustomerController,
-                                                decoration: InputDecoration(
-                                                  labelText: AppStrings
-                                                      .SEARCH_SHIP_TO_ADD,
-                                                  border:
-                                                      const UnderlineInputBorder(),
-                                                  suffixIcon: IconButton(
-                                                      icon: const Icon(
-                                                          Icons.search),
-                                                      onPressed: () {
-                                                        controller
-                                                            .isShipToAddSearch
-                                                            .value = false;
-                                                        controller
-                                                            .shipToAddController
-                                                            .clear();
-                                                      }),
-                                                ),
-                                              ),
-                                            )
-                                          : Text(
-                                              AppStrings.SEARCH_SHIP_TO_ADD,
-                                              style: context.bodyLarge,
-                                            ),
+                                      // controller.isShipToAddSearch.value
+                                      //     ?
+                                      Expanded(
+                                        child: TextField(
+                                          controller: controller
+                                              .searchCustomerController,
+                                          decoration: InputDecoration(
+                                            labelText:
+                                                AppStrings.SEARCH_SHIP_TO_ADD,
+                                            border:
+                                                const UnderlineInputBorder(),
+                                            suffixIcon: IconButton(
+                                                icon: const Icon(Icons.search),
+                                                onPressed: () {
+                                                  controller.isShipToAddSearch
+                                                      .value = false;
+                                                  controller.shipToAddController
+                                                      .clear();
+                                                }),
+                                          ),
+                                        ),
+                                      ),
+                                      // : Text(
+                                      //     AppStrings.SEARCH_SHIP_TO_ADD,
+                                      //     style: context.bodyLarge,
+                                      //   ),
                                       Row(
                                         children: [
                                           controller.isShipToAddSearch.value
@@ -452,34 +449,33 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      controller.isAttandeeSearch.value
-                                          ? Expanded(
-                                              child: TextField(
-                                                controller: controller
-                                                    .searchAttandeeController,
-                                                decoration: InputDecoration(
-                                                  labelText: AppStrings
-                                                      .SEARCH_ATTANDEE,
-                                                  border:
-                                                      const UnderlineInputBorder(),
-                                                  suffixIcon: IconButton(
-                                                      icon: const Icon(
-                                                          Icons.search),
-                                                      onPressed: () {
-                                                        controller
-                                                            .isAttandeeSearch
-                                                            .value = false;
-                                                        controller
-                                                            .searchAttandeeController
-                                                            .clear();
-                                                      }),
-                                                ),
-                                              ),
-                                            )
-                                          : Text(
-                                              AppStrings.ADD_ATTANDEE,
-                                              style: context.bodyLarge,
-                                            ),
+                                      // controller.isAttandeeSearch.value
+                                      //     ?
+                                      Expanded(
+                                        child: TextField(
+                                          controller: controller
+                                              .searchAttandeeController,
+                                          decoration: InputDecoration(
+                                            labelText:
+                                                AppStrings.SEARCH_ATTANDEE,
+                                            border:
+                                                const UnderlineInputBorder(),
+                                            suffixIcon: IconButton(
+                                                icon: const Icon(Icons.search),
+                                                onPressed: () {
+                                                  controller.isAttandeeSearch
+                                                      .value = false;
+                                                  controller
+                                                      .searchAttandeeController
+                                                      .clear();
+                                                }),
+                                          ),
+                                        ),
+                                      ),
+                                      // : Text(
+                                      //     AppStrings.ADD_ATTANDEE,
+                                      //     style: context.bodyLarge,
+                                      //   ),
                                       Row(
                                         children: [
                                           controller.isAttandeeSearch.value
@@ -745,7 +741,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   await controller
                                       .createSalesOrdersOfSelectedAttandees();
                                 },
-                                title: 'Finish',
+                                title: AppStrings.FINISH,
                                 minWidht: Sizes.WIDTH_120,
                                 minHeight: Sizes.HEIGHT_30,
                                 backgroundColor:
@@ -763,7 +759,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   // controller
                                   //     .getSingleItemFromGraphQL('S10082-002');
                                 },
-                                title: 'Scan',
+                                title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_120,
                                 minHeight: Sizes.HEIGHT_30,
                                 backgroundColor:

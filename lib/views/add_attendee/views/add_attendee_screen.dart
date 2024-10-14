@@ -6,9 +6,6 @@ import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/add_attendee/components/contact_page_textfield.dart';
 import 'package:sales_person_app/views/add_attendee/controllers/add_attendee_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
-import 'package:sales_person_app/widgets/custom_drawer.dart';
-
-// import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class AddAttendeeScreen extends GetView<AddAttendeeController> {
@@ -20,12 +17,8 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
     return Scaffold(
       appBar: customAppBar(
         context: context,
-        automaticallyImplyLeading: true,
         title: const Text(AppStrings.ADD_CONTACT),
-        // isDrawerIcon: true,
-      ),
-      endDrawer: CustomDrawer(
-        logOutOnTap: () => controller.userLogOut(),
+        automaticallyImplyLeading: true,
       ),
       body: Obx(
         () => controller.isLoading.value
@@ -59,9 +52,9 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                     controller: controller
                                         .contactCustomerTextFieldController,
                                     textAlign: TextAlign.left,
-                                    onChanged: (value) {
-                                      // controller.filterCustomerList(value);
-                                    },
+                                    // onChanged: (value) {
+                                    //   controller.filterCustomerList(value);
+                                    // },
                                     onSubmitted: (value) {},
                                     decoration: InputDecoration(
                                       labelText: AppStrings.CUSTOMER,
@@ -95,55 +88,54 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          controller
-                                                  .isContactCustomerSearch.value
-                                              ? Expanded(
-                                                  child: TextField(
-                                                    onChanged: (value) {
+                                          // controller
+                                          //         .isContactCustomerSearch.value
+                                          // ?
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (value) {
+                                                controller
+                                                    .filterCustomerList(value);
+                                              },
+                                              controller: controller
+                                                  .contactSearchTextFieldController,
+                                              decoration: InputDecoration(
+                                                labelText:
+                                                    AppStrings.SEARCH_CUSTOMER,
+                                                border:
+                                                    const UnderlineInputBorder(),
+                                                suffixIcon: IconButton(
+                                                    icon: const Icon(
+                                                        Icons.search),
+                                                    onPressed: () {
                                                       controller
-                                                          .filterCustomerList(
-                                                              value);
-                                                    },
-                                                    controller: controller
-                                                        .contactSearchTextFieldController,
-                                                    autofocus: true,
-                                                    decoration: InputDecoration(
-                                                      labelText: AppStrings
-                                                          .SEARCH_CUSTOMER,
-                                                      border:
-                                                          const UnderlineInputBorder(),
-                                                      suffixIcon: IconButton(
-                                                          icon: const Icon(
-                                                              Icons.search),
-                                                          onPressed: () {
-                                                            controller
-                                                                .isContactCustomerSearch
-                                                                .value = false;
-                                                            controller
-                                                                .contactSearchTextFieldController
-                                                                .clear();
-                                                          }),
-                                                    ),
-                                                  ),
-                                                )
-                                              : Text(
-                                                  AppStrings.SEARCH_CUSTOMER,
-                                                  style: context.bodyLarge,
-                                                ),
+                                                          .isContactCustomerSearch
+                                                          .value = false;
+                                                      controller
+                                                          .contactSearchTextFieldController
+                                                          .clear();
+                                                    }),
+                                              ),
+                                            ),
+                                          ),
+                                          // : Text(
+                                          //     AppStrings.SEARCH_CUSTOMER,
+                                          //     style: context.bodyLarge,
+                                          //   ),
                                           Row(
                                             children: [
-                                              controller.isContactCustomerSearch
-                                                      .value
-                                                  ? const SizedBox.shrink()
-                                                  : GestureDetector(
-                                                      onTap: () {
-                                                        controller
-                                                            .isContactCustomerSearch
-                                                            .value = true;
-                                                      },
-                                                      child: const Icon(
-                                                          Icons.search),
-                                                    ),
+                                              // controller.isContactCustomerSearch
+                                              //         .value
+                                              //     ? const SizedBox.shrink()
+                                              //     : GestureDetector(
+                                              //         onTap: () {
+                                              //           controller
+                                              //               .isContactCustomerSearch
+                                              //               .value = true;
+                                              //         },
+                                              //         child: const Icon(
+                                              //             Icons.search),
+                                              //       ),
                                               GestureDetector(
                                                 onTap: () {
                                                   controller
@@ -178,8 +170,6 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                       Axis.vertical,
                                                   controller: controller
                                                       .contactCustomerScrollController,
-                                                  // itemCount: controller
-                                                  //     .filteredCustomers.length,
                                                   itemCount: controller
                                                       .tliCustomers
                                                       ?.value
@@ -197,12 +187,6 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                     final filteredData =
                                                         sortedCustomers[index]
                                                             .name;
-                                                    // final filteredData =
-                                                    //     controller
-                                                    //         .filteredCustomers[
-                                                    //             index]
-                                                    //         .name;
-
                                                     return ListTile(
                                                       title:
                                                           Text(filteredData!),

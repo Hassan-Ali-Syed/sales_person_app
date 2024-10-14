@@ -21,6 +21,10 @@ class CustomerVisitController extends GetxController {
     await getCustomersFromGraphQL();
   }
 
+  // Initialize the list to hold customer data
+  // List<Map<String, dynamic>> customersData = [];
+  // RxList<String?> customerNames = <String?>[].obs;
+
   //Instance of Models which
   TliCustomers? tliCustomers;
   TliCustomers? tliCustomerById;
@@ -142,12 +146,6 @@ class CustomerVisitController extends GetxController {
             tliSalesLines: listOfTliSalesLineMaps);
       }
       log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
-    }
-  }
-
-  void searchQuery(List items, String item, TextEditingController controller) {
-    if (items.contains(item)) {
-      controller.text = item;
     }
   }
 

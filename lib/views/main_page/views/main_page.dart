@@ -21,6 +21,7 @@ class MainPage extends GetView<MainPageController> {
           },
           context: context,
           automaticallyImplyLeading: false,
+          customLeading: true,
           title: Obx(
             () => Text(controller.appBarTitle[controller.selectedIndex.value]),
           ),

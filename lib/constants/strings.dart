@@ -71,6 +71,7 @@ class AppStrings {
   static const String SAVE = 'Save';
   static const String FINISH = 'Finish';
   static const String UPDATE = 'Update';
+  static const String SCAN = 'Scan';
 
   // Api Message Strings
   static const String LOADING = 'Loading';
