@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
-import 'package:sales_person_app/views/main_page/components/contact_page_textfield.dart';
-import 'package:sales_person_app/views/main_page/views/add_attendee/controllers/add_attendee_controller.dart';
+import 'package:sales_person_app/views/add_attendee/components/contact_page_textfield.dart';
+import 'package:sales_person_app/views/add_attendee/controllers/add_attendee_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
 import 'package:sales_person_app/widgets/custom_drawer.dart';
 
@@ -22,7 +22,7 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
         context: context,
         automaticallyImplyLeading: true,
         title: const Text(AppStrings.ADD_CONTACT),
-        isDrawerIcon: true,
+        // isDrawerIcon: true,
       ),
       endDrawer: CustomDrawer(
         logOutOnTap: () => controller.userLogOut(),
