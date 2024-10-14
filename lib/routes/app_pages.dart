@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
-import 'package:sales_person_app/views/main_page/views/add_attendee/bindings/add_attendee_binding.dart';
-import 'package:sales_person_app/views/main_page/views/add_attendee/views/add_attendee_screen.dart';
+import 'package:sales_person_app/views/add_attendee/bindings/add_attendee_binding.dart';
+import 'package:sales_person_app/views/add_attendee/views/add_attendee_screen.dart';
+import 'package:sales_person_app/views/customer_visit/bindings/customer_visit_binding.dart';
+import 'package:sales_person_app/views/customer_visit/views/customer_visit_screen.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/home_page_screen.dart';
@@ -37,7 +39,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.HOME_PAGE,
-      page: () => const HomePageScreen(),
+      page: () => HomePageScreen(),
       binding: MainPageBinding(),
     ),
     GetPage(
@@ -54,6 +56,11 @@ class AppPages {
       name: AppRoutes.MORE_PAGE,
       page: () => const MorePageScreen(),
       binding: MainPageBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.CUSTOMER_VISIT,
+      page: () => const CustomerVisitScreen(),
+      binding: CustomerVisitBinding(),
     ),
     GetPage(
       name: AppRoutes.ADD_ATTENDEE_PAGE,
