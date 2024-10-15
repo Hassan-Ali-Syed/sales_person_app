@@ -162,7 +162,11 @@ class SignInScreen extends GetView<SignInController> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                         Get.to(() {
+                      // return const MicrosoftLoginWebView();
+                    });
+                      },
                       child: Image.asset(
                         AppAssets.getPNGIcon(AppAssets.MICROSOFT_LOGO),
                       ),

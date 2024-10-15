@@ -1,18 +1,21 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/queries/api_quries/tliitems_query.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
+import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/queries/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class CustomerVisitController extends GetxController {
   @override
@@ -20,10 +23,6 @@ class CustomerVisitController extends GetxController {
     super.onInit();
     await getCustomersFromGraphQL();
   }
-
-  // Initialize the list to hold customer data
-  // List<Map<String, dynamic>> customersData = [];
-  // RxList<String?> customerNames = <String?>[].obs;
 
   //Instance of Models which
   TliCustomers? tliCustomers;
@@ -33,6 +32,9 @@ class CustomerVisitController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isServerError = false.obs;
   RxInt itemIndex = 0.obs;
+  final TextEditingController commentController = TextEditingController();
+  final TextEditingController notesController = TextEditingController();
+  final double tileHeight = Sizes.HEIGHT_50;
 
 // Reactive variable for Customers
   String customerNo = '';
@@ -189,13 +191,17 @@ class CustomerVisitController extends GetxController {
       },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
-        log("=================${response.data}==============");
+        log("======getSingleItemFromGraphQL===========${response.data}==============");
 
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
       },
       onError: (e) {
         isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Error',
+            message: 'data not fetched try Again later',
+            duration: const Duration(seconds: 2));
         log('******* ON ERROR******** \n ${e.message}');
       },
     );
@@ -205,7 +211,6 @@ class CustomerVisitController extends GetxController {
     required String sellToCustomerNo,
     required String contact,
     required List<Map<String, dynamic>>? tliSalesLines,
-    // required String shipToCode,
   }) async {
     await BaseClient.safeApiCall(
         ApiConstants.CREATE_SALES_ORDER, RequestType.post,
@@ -222,6 +227,10 @@ class CustomerVisitController extends GetxController {
         onLoading: () => isLoading.value = true,
         onSuccess: (response) {
           log('******* ON SUCCESS ${response.data}');
+          CustomSnackBar.showCustomSnackBar(
+              title: 'Sales Order created',
+              message: ' customerNo: $sellToCustomerNo \ncontact: $contact',
+              duration: const Duration(seconds: 2));
           isLoading.value = false;
         },
         onError: (e) {
@@ -287,7 +296,7 @@ class CustomerVisitController extends GetxController {
   void filterCustomerList(String query) {
     if (tliCustomers?.value == null) return;
     if (query.isEmpty || query == ' ') {
-      filteredCustomers.value = List.from(tliCustomers!.value);
+      filteredCustomers.value = tliCustomers!.value;
     } else {
       filteredCustomers.value = tliCustomers!.value
           .where((customer) =>
@@ -327,11 +336,14 @@ class CustomerVisitController extends GetxController {
         var tliContacts = values.tliContact;
         for (var element in tliContacts!) {
           if (element.type == 'Person' || element.type == 'person') {
+            log("====Before Adding Contacts======${element.type}");
             customerContacts.add({
               'name': element.name,
               'contactNo': element.no,
+              'type': element.type,
               'tliSalesLine': []
             });
+            log("====After Adding Contacts======$customerContacts");
           }
         }
         checkBoxStates.value =
@@ -342,10 +354,6 @@ class CustomerVisitController extends GetxController {
 
   // Set Selected Ship to Add
   String setSelectedShipToAdd(int index) {
-    // if (index < 0 || index >= customersShipToAdd.length) {
-    //   log('Invalid index: $index');
-    //   return 'Invalid index';
-    // }
     var address = customersShipToAdd[index]['address'] ?? 'Address not found';
     shipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
     log('**** After selecting address from ship to add list ******');
@@ -368,29 +376,40 @@ class CustomerVisitController extends GetxController {
     itemsListRefresh.value = true;
 
     tliItem = TliItems.fromJson(response);
-    log('============ After Parse ${tliItem!.value}================');
+    log('============ After Parse ${tliItem!.value.length}================');
 
     List<dynamic> currentSalesLines =
         selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] ?? [];
 
-    if (tliItem!.value.isNotEmpty) {
-      currentSalesLines.add(
-        TliSalesLineElement(
-          lineNo: currentSalesLines.isNotEmpty
-              ? (currentSalesLines.length + 1) * 10000
-              : 10000,
-          type: 'Item',
-          no: tliItem!.value[0].no!,
-          quantity: num.parse(tliItem!.value[0].qntyController!.text),
-          unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
-          itemDescription: tliItem!.value[0].description!,
-        ),
-      );
+    TliSalesLineElement newItem = TliSalesLineElement(
+      lineNo: currentSalesLines.isNotEmpty
+          ? (currentSalesLines.length + 1) * 10000
+          : 10000,
+      type: 'Item',
+      no: tliItem!.value[0].no!,
+      quantity: num.parse(tliItem!.value[0].qntyController!.text),
+      unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
+      itemDescription: tliItem!.value[0].description!,
+    );
+
+    bool itemExists = false;
+    for (var salesLineItem in currentSalesLines) {
+      if (salesLineItem.no == newItem.no) {
+        salesLineItem.quantity += newItem.quantity;
+        itemExists = true;
+        break;
+      }
     }
+
+    if (!itemExists) {
+      currentSalesLines.add(newItem);
+    }
+
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
-    log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]['tliSalesLine'].length}=========================');
+
+    log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
   }
 
   void onCheckboxChanged(bool? value, int index) {
@@ -432,44 +451,59 @@ class CustomerVisitController extends GetxController {
     }
   }
 
-  void showCommentDialog(BuildContext context) {
-    final TextEditingController commentController = TextEditingController();
-
+  void showCommentDialog(BuildContext context,
+      {required TextEditingController controller}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Add a Comment'),
+          titleTextStyle: context.titleLarge.copyWith(
+              color: const Color(0xff58595B), fontWeight: FontWeight.w800),
+          backgroundColor: LightTheme.appBarBackgroundColor,
           content: TextField(
-            controller: commentController,
+            maxLength: 80,
+            controller: controller,
             decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(),
               hintText: 'Enter your comment here',
             ),
-            maxLines: 3, // Allows multiple lines for the comment
+            maxLines: 4,
           ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog without saving
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String comment = commentController.text;
-                if (comment.isNotEmpty) {
-                  // Perform action with the comment, e.g., save it
-                  log('Comment: $comment');
-                  Navigator.of(context).pop(); // Close the dialog
-                } else {
-                  // Show a message or handle empty comment
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Comment cannot be empty')),
-                  );
-                }
-              },
-              child: const Text('Submit'),
-            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: Sizes.PADDING_10),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    commentController.clear();
+                  },
+                  title: AppStrings.CANCEL,
+                  minWidht: Sizes.WIDTH_100,
+                  minHeight: Sizes.HEIGHT_30,
+                  backgroundColor: LightTheme.buttonBackgroundColor2,
+                  borderRadiusCircular: BorderRadius.circular(
+                    Sizes.RADIUS_6,
+                  ),
+                ),
+                const SizedBox(
+                  width: Sizes.WIDTH_20,
+                ),
+                CustomElevatedButton(
+                  onPressed: () {},
+                  title: 'Submit',
+                  minWidht: Sizes.WIDTH_100,
+                  minHeight: Sizes.HEIGHT_30,
+                  backgroundColor: LightTheme.buttonBackgroundColor2,
+                  borderRadiusCircular: BorderRadius.circular(
+                    Sizes.RADIUS_6,
+                  ),
+                ),
+              ]),
+            )
           ],
         );
       },

@@ -14,9 +14,9 @@ class CustomRowCells extends StatelessWidget {
   final String? notes;
   final void Function()? notesOnTap;
   final void Function(String)? notesOnChanged;
-  final bool isNotesPressed;
   final bool isQtyPressed;
   final int rowIndex;
+
   final int selectedIndex;
 
   final TextEditingController notesController;
@@ -34,7 +34,6 @@ class CustomRowCells extends StatelessWidget {
     this.notes,
     this.notesOnTap,
     this.notesOnChanged,
-    this.isNotesPressed = false,
     required this.notesController,
     required this.rowIndex,
     required this.selectedIndex,
@@ -100,60 +99,40 @@ class CustomRowCells extends StatelessWidget {
         _buildCell(price ?? '', Sizes.WIDTH_80),
 
         // Handle notes display and editing
-        !isNotesPressed
-            ? GestureDetector(
-                onTap: notesOnTap,
-                child: Container(
-                  width: Sizes.WIDTH_118,
-                  height: Sizes.HEIGHT_50,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: LightTheme.grayColorShade5,
-                      width: 2,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      // Safeguard notes with a default value
-                      notes ?? '',
-                      style: context.bodyMedium,
-                    ),
-                  ),
-                ),
-              )
-            : SizedBox(
-                width: Sizes.WIDTH_118,
-                height: Sizes.HEIGHT_50,
-                child: TextField(
-                  controller: notesController,
-                  onChanged: (text) {
-                    if (text.length > 6) {
-                      // Handle text change logic here if needed
-                    }
-                  },
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: commentDialogBoxOnPressed,
-                      icon: const Icon(Icons.edit),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: LightTheme.grayColorShade5, width: 2),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: LightTheme.grayColorShade5, width: 2),
-                    ),
-                  ),
-                ),
+        SizedBox(
+          width: Sizes.WIDTH_118,
+          height: Sizes.HEIGHT_50,
+          child: TextField(
+            readOnly: true,
+            controller: notesController,
+            onChanged: (text) {
+              if (text.length > 6) {
+                // Handle text change logic here if needed
+              }
+            },
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+            textAlignVertical: TextAlignVertical.top,
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                onPressed: commentDialogBoxOnPressed,
+                icon: const Icon(Icons.edit),
               ),
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
