@@ -8,29 +8,40 @@ import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/customer_visit/components/custom_header_row.dart';
 import 'package:sales_person_app/views/customer_visit/components/custom_row_data_cells.dart';
 import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
+import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
+import 'package:sales_person_app/widgets/custom_drawer.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class CustomerVisitScreen extends GetView<CustomerVisitController> {
   static const String routeName = '/customer_visit_screen';
-  const CustomerVisitScreen({super.key});
-
+  CustomerVisitScreen({super.key});
+  final mainPageController = Get.find<MainPageController>();
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: controller.customerVisitScaffoldKey,
       appBar: customAppBar(
         context: context,
         automaticallyImplyLeading: true,
         title: const Text(AppStrings.CUSTOMER_VISIT),
+        isDrawerIcon: true,
+        onTap: () =>
+            controller.customerVisitScaffoldKey.currentState!.openEndDrawer(),
+      ),
+      endDrawer: CustomDrawer(
+        logOutOnTap: () {
+          mainPageController.userLogOut();
+        },
       ),
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.only(
-                top: Sizes.PADDING_10,
-                left: Sizes.PADDING_8,
-                right: Sizes.PADDING_8,
-                bottom: Sizes.PADDING_10),
+              left: Sizes.PADDING_8,
+              right: Sizes.PADDING_8,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -39,10 +50,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                   () => !controller.isCustomerExpanded.value
                       ? Padding(
                           padding: const EdgeInsets.only(
-                            top: Sizes.PADDING_8,
+                            top: Sizes.PADDING_6,
                           ),
                           child: TextField(
-                            readOnly: true,
+                            onTap: () =>
+                                controller.isCustomerExpanded.value = true,
                             controller: controller.customerTextFieldController,
                             textAlign: TextAlign.left,
                             onSubmitted: (value) {
@@ -79,74 +91,56 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // controller.isCustomerSearch.value
-                                  //     ?
                                   Expanded(
                                     child: TextField(
+                                      autofocus: true,
                                       onChanged: (value) {
                                         controller.filterCustomerList(value);
                                       },
-                                      controller:
-                                          controller.searchCustomerController,
+                                      controller: controller
+                                          .customerTextFieldController,
+                                      onTapOutside: (event) {},
                                       decoration: InputDecoration(
                                         labelText: AppStrings.SEARCH_CUSTOMER,
                                         border: const UnderlineInputBorder(),
                                         suffixIcon: IconButton(
                                             icon: const Icon(Icons.search),
                                             onPressed: () {
-                                              controller.isCustomerSearch
-                                                  .value = false;
-
-                                              // controller.searchQuery(items, item, controller)
-                                              controller
-                                                  .searchCustomerController
-                                                  .clear();
-
-                                              controller.searchAttandeeController
-                                                          .text !=
-                                                      ''
-                                                  ? controller
-                                                          .customerTextFieldController
-                                                          .text =
-                                                      controller
-                                                          .searchCustomerController
-                                                          .text
-                                                  : controller
-                                                          .customerTextFieldController =
-                                                      controller
-                                                          .customerTextFieldController;
+                                              // controller.isCustomerSearch
+                                              //     .value = false;
+ 
+                                              // // controller.searchQuery(items, item, controller)
+                                              // // controller
+                                              // //     .customerTextFieldController
+                                              // //     .clear();
+ 
+                                              // controller.searchAttandeeController
+                                              //             .text !=
+                                              //         ''
+                                              //     ? controller
+                                              //             .customerTextFieldController
+                                              //             .text =
+                                              //         controller
+                                              //             .customerTextFieldController
+                                              //             .text
+                                              //     : controller
+                                              //             .customerTextFieldController =
+                                              //         controller
+                                              //             .customerTextFieldController;
                                             }),
                                       ),
                                     ),
                                   ),
-                                  // :
-                                  // Text(
-                                  //     AppStrings.SEARCH_CUSTOMER,
-                                  //     style: context.bodyLarge,
-                                  //   ),
-                                  Row(
-                                    children: [
-                                      // controller.isCustomerSearch.value
-                                      //     ? const SizedBox.shrink()
-                                      //     : GestureDetector(
-                                      //         onTap: () {
-                                      //           controller.isCustomerSearch
-                                      //               .value = true;
-                                      //         },
-                                      //         child: const Icon(Icons.search),
-                                      //       ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          controller.isCustomerExpanded.value =
-                                              false;
-                                        },
-                                        child: const Icon(
-                                          Icons.arrow_drop_up,
-                                          size: Sizes.WIDTH_40,
-                                          color: Color.fromRGBO(0, 0, 0, 1),
-                                        ),
-                                      ),
-                                    ],
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.isCustomerExpanded.value =
+                                          false;
+                                    },
+                                    child: const Icon(
+                                      Icons.arrow_drop_up,
+                                      size: Sizes.WIDTH_40,
+                                      color: Color.fromRGBO(0, 0, 0, 1),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -165,14 +159,20 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                           controller: controller
                                               .customerScrollController,
                                           itemCount: controller
-                                              .filteredCustomers.length,
-                                          // itemCount: controller
-                                          //     .tliCustomers?.value.length,
+                                                  .filteredCustomers.isNotEmpty
+                                              ? controller
+                                                  .filteredCustomers.length
+                                              : controller
+                                                  .tliCustomers?.value.length,
                                           itemBuilder: (context, index) {
-                                            // final filteredData =
-                                            //     sortedCustomers[index].name;
                                             final filteredData = controller
-                                                .filteredCustomers[index].name;
+                                                    .filteredCustomers
+                                                    .isNotEmpty
+                                                ? controller
+                                                    .filteredCustomers[index]
+                                                    .name
+                                                : controller.tliCustomers
+                                                    ?.value[index].name;
                                             return ListTile(
                                               title: Text(filteredData!),
                                               onTap: () {
@@ -185,12 +185,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                 controller
                                                     .customerTextFieldController
                                                     .text = filteredData;
-
+ 
                                                 controller.isCustomerExpanded
                                                     .value = false;
-                                                controller
-                                                    .searchCustomerController
-                                                    .clear();
                                               },
                                             );
                                           },
@@ -223,9 +220,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             ],
                           ),
                         ),
-                ),
-
-                // Second TextField Bill to Add automatically filled when select customer
+                ),                // Second TextField Bill to Add automatically filled when select customer
                 Obx(
                   () => controller.isAddressFieldVisible.value
                       ? SizedBox(
@@ -240,7 +235,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                         )
                       : const SizedBox.shrink(),
                 ),
-
+ 
                 // third TextField of Ship to Address we have to fill
                 Obx(
                   () => controller.isShipToAddFieldVisible.value
@@ -285,12 +280,10 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // controller.isShipToAddSearch.value
-                                      //     ?
                                       Expanded(
                                         child: TextField(
-                                          controller: controller
-                                              .searchCustomerController,
+                                          controller:
+                                              controller.shipToAddController,
                                           decoration: InputDecoration(
                                             labelText:
                                                 AppStrings.SEARCH_SHIP_TO_ADD,
@@ -307,10 +300,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                           ),
                                         ),
                                       ),
-                                      // : Text(
-                                      //     AppStrings.SEARCH_SHIP_TO_ADD,
-                                      //     style: context.bodyLarge,
-                                      //   ),
                                       GestureDetector(
                                         onTap: () {
                                           controller.isShipToAddExpanded.value =
@@ -348,9 +337,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                     controller
                                                         .isShipToAddExpanded
                                                         .value = false;
-                                                    controller
-                                                        .isAttandeeFieldVisible
-                                                        .value = true;
                                                     controller
                                                         .searchShipToAddController
                                                         .clear();
@@ -391,7 +377,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             )
                       : const SizedBox.shrink(),
                 ),
-
+ 
                 // Fourth  TextField of contacts
                 Obx(
                   () => controller.isAttandeeFieldVisible.value
@@ -436,8 +422,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // controller.isAttandeeSearch.value
-                                      //     ?
                                       Expanded(
                                         child: TextField(
                                           controller: controller
@@ -459,10 +443,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                           ),
                                         ),
                                       ),
-                                      // : Text(
-                                      //     AppStrings.ADD_ATTANDEE,
-                                      //     style: context.bodyLarge,
-                                      //   ),
                                       Row(
                                         children: [
                                           GestureDetector(
@@ -550,11 +530,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             )
                       : const SizedBox.shrink(),
                 ),
-
+ 
                 const SizedBox(
                   height: Sizes.HEIGHT_10,
                 ),
-
+ 
                 Obx(
                   () => controller.selectedAttendees.isNotEmpty
                       ? Wrap(
@@ -569,7 +549,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 controller.selectedAttendee.value =
                                     controller.selectedAttendees[index]['name'];
                                 controller.attandeeSelectedIndex.value = index;
-
+ 
                                 controller.itemIndex.value = -1;
                                 log(' Index: ${controller.attandeeSelectedIndex.value}');
                                 controller.userItemListReferesh.value = false;
@@ -605,12 +585,10 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                         )
                       : const SizedBox(),
                 ),
-
+ 
                 const SizedBox(
                   height: Sizes.HEIGHT_10,
-                ),
-
-                Column(
+                ),                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(
@@ -621,7 +599,16 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                     Obx(() {
                       return controller.userItemListReferesh.value
                           ? const Center(child: CircularProgressIndicator())
-                          : controller.selectedAttendees.isEmpty
+                          : controller.selectedAttendees.isEmpty ||
+                                  controller.selectedAttendees[controller
+                                          .attandeeSelectedIndex
+                                          .value]['tliSalesLine'] ==
+                                      null ||
+                                  controller
+                                      .selectedAttendees[controller
+                                          .attandeeSelectedIndex
+                                          .value]['tliSalesLine']
+                                      .isEmpty
                               ? const SizedBox()
                               : SizedBox(
                                   height: Sizes.HEIGHT_200,
@@ -640,7 +627,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                       .attandeeSelectedIndex
                                                       .value]['tliSalesLine']
                                               [index];
-
+ 
                                       log("***** Description *********${salesLineItem.itemDescription}");
                                       return CustomRowCells(
                                         rowIndex: index,
@@ -672,7 +659,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                     [index]
                                                 .quantity = 1;
                                           }
-
+ 
                                           controller.userItemListReferesh
                                               .value = false;
                                           log('===Attendee Indeex ON CHANGED  ${controller.attandeeSelectedIndex.value}============');
@@ -707,7 +694,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                     }),
                   ],
                 ),
-
+ 
                 const SizedBox(
                   height: Sizes.HEIGHT_20,
                 ),
@@ -717,10 +704,12 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                               CustomElevatedButton(
-                                onPressed: () async {
-                                  await controller
-                                      .createSalesOrdersOfSelectedAttandees();
-                                },
+                                onPressed: !controller.isLoading.value
+                                    ? () async {
+                                        await controller
+                                            .createSalesOrdersOfSelectedAttandees();
+                                      }
+                                    : null,
                                 title: AppStrings.FINISH,
                                 minWidht: Sizes.WIDTH_120,
                                 minHeight: Sizes.HEIGHT_30,
@@ -735,9 +724,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               ),
                               CustomElevatedButton(
                                 onPressed: () {
-                                  // controller.scanBarcodeNormal();
-                                  controller
-                                      .getSingleItemFromGraphQL('S10082-002');
+                                  controller.scanBarcodeNormal();
+                                  // controller
+                                  //     .getSingleItemFromGraphQL('S10082-002');
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_120,

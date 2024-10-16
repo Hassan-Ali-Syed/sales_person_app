@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
               padding: const EdgeInsets.only(
                   top: Sizes.PADDING_80, bottom: Sizes.PADDING_144),
               child: Text(
-                'Posh Textiles',
+                'posh textiles',
                 style: context.titleLarge.copyWith(
                   fontSize: Sizes.TEXT_SIZE_50,
                   fontWeight: FontWeight.w400,

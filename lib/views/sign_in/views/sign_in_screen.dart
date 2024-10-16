@@ -5,6 +5,7 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/views/sign_in/controller/sign_in_controller.dart';
+import 'package:sales_person_app/views/sign_in/views/microsoft_login_web_view.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
 
@@ -162,7 +163,11 @@ class SignInScreen extends GetView<SignInController> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                       onTap: () async {
+                    Get.to(() {
+                      return const MicrosoftLoginWebView();
+                    });
+                  },
                       child: Image.asset(
                         AppAssets.getPNGIcon(AppAssets.MICROSOFT_LOGO),
                       ),

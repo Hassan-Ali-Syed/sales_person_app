@@ -59,7 +59,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.CUSTOMER_VISIT,
-      page: () => const CustomerVisitScreen(),
+      page: () =>  CustomerVisitScreen(),
       binding: CustomerVisitBinding(),
     ),
     GetPage(

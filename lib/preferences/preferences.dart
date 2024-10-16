@@ -1,4 +1,6 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:sales_person_app/views/sign_in/models/sign_in_model.dart'
+    as user;
 
 class Preferences {
   final storage = GetStorage();
@@ -10,6 +12,8 @@ class Preferences {
 
   void setUserId(String userId) => storage.write("userId", userId);
   getUserId() => storage.read("userId");
+  void setUser(user.Data user) => storage.write("user", user);
+  getUser() => storage.read("user");
 
   void setUserToken(String token) => storage.write("token", token);
   getUserToken() => storage.read("token");
