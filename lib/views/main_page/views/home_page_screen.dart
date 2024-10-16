@@ -18,24 +18,50 @@ class HomePageScreen extends GetView<MainPageController> {
   );
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(
-                    top: Sizes.PADDING_24,
-                    left: Sizes.PADDING_18,
-                    right: Sizes.PADDING_14,
-                    bottom: Sizes.PADDING_12),
-                height: Sizes.HEIGHT_120,
-                width: double.infinity,
-                color: LightTheme.appBarBackgroundColor,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(
+                  top: Sizes.PADDING_24,
+                  left: Sizes.PADDING_18,
+                  right: Sizes.PADDING_14,
+                  bottom: Sizes.PADDING_12),
+              height: Sizes.HEIGHT_120,
+              width: double.infinity,
+              color: LightTheme.appBarBackgroundColor,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: Sizes.PADDING_24),
+                        child: Text(
+                          AppStrings.HOME,
+                          style: TextStyle(
+                            fontSize: Sizes.TEXT_SIZE_20,
+                            fontWeight: FontWeight.normal,
+                            color: LightTheme.appBarTextColor,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Icon(
+                          Icons.menu,
+                          color: Color(0xff7C7A7A),
+                          size: Sizes.ICON_SIZE_26,
+                        ),
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: Sizes.PADDING_10),
+                    child: Row(
+
                       children: [
                         const Padding(
                           padding: EdgeInsets.only(left: Sizes.PADDING_24),
@@ -123,10 +149,18 @@ class HomePageScreen extends GetView<MainPageController> {
                   trailing: const Icon(Icons.add_circle),
                 ),
               ),
-              Center(
-                child: Text(
-                  'No Meetings For this day',
-                  style: context.bodyMedium.copyWith(
+
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: Sizes.PADDING_20, bottom: Sizes.HEIGHT_20),
+              child: ListTile(
+                minTileHeight: Sizes.HEIGHT_60,
+                tileColor: LightTheme.appBarBackgroundColor,
+                title: Text(
+                  AppStrings.CUSTOMER_VISIT,
+                  style: context.bodyLarge.copyWith(
+
                     color: const Color(0xff58595B),
                   ),
                 ),

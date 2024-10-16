@@ -97,8 +97,10 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       onChanged: (value) {
                                         controller.filterCustomerList(value);
                                       },
+
                                       controller: controller
                                           .customerTextFieldController,
+
                                       onTapOutside: (event) {},
                                       decoration: InputDecoration(
                                         labelText: AppStrings.SEARCH_CUSTOMER,

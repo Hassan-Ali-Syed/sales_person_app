@@ -6,7 +6,9 @@ class TlicustomersQuery {
       tliCustomers(companyId: "${ApiConstants.POSH_ID}",
       page: 1,
       perPage: 10000,
+
       orderBy: { column: name, order: ASC })
+
       {
         message
         status

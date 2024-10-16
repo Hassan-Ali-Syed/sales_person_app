@@ -24,8 +24,11 @@ class CustomerVisitController extends GetxController {
     await getCustomersFromGraphQL();
   }
 
+
+
   final GlobalKey<ScaffoldState> customerVisitScaffoldKey =
       GlobalKey<ScaffoldState>();
+
 
   //Instance of Models which
   TliCustomers? tliCustomers;
@@ -216,6 +219,10 @@ class CustomerVisitController extends GetxController {
         userItemListReferesh.value = false;
         barcodeScanned.value = false;
         isLoading.value = false;
+        CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Error',
+            message: 'data not fetched try Again later',
+            duration: const Duration(seconds: 2));
         log('******* ON ERROR******** \n ${e.message}');
       },
     );
@@ -243,7 +250,9 @@ class CustomerVisitController extends GetxController {
           log('******* ON SUCCESS ${response.data}');
           CustomSnackBar.showCustomSnackBar(
               title: 'Sales Order created',
-              message: '',
+
+              message: ' customerNo: $sellToCustomerNo \ncontact: $contact',
+
               duration: const Duration(seconds: 2));
           isLoading.value = false;
           // if (response.data['Success']) {
@@ -437,11 +446,13 @@ class CustomerVisitController extends GetxController {
         itemExists = true;
         break;
       }
+
     }
 
     if (!itemExists) {
       currentSalesLines.add(newItem);
     }
+
 
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
