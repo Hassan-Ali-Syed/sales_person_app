@@ -71,12 +71,18 @@ class SignInController extends GetxController {
       },
       onError: (e) {
         isServerError.value = true;
-        // CustomSnackBar.showCustomErrorSnackBar(
-        //     title: 'Error',
-        //     message: e.message,
-        //     duration: const Duration(seconds: 3));
       },
     );
+  }
+
+  void addUserLoginData(Map<String, dynamic> data) async {
+    isLoading.value = true;
+    userLoginData = SignInModel.fromJson(data);
+    Preferences().setUser(userLoginData!.data!);
+    Preferences().setUserToken(userLoginData!.data!.token!);
+    // await userLoginGraph();
+    isLoading.value = false;
+    Get.offAllNamed(AppRoutes.MAIN_PAGE);
   }
 
   void signInMethod() {

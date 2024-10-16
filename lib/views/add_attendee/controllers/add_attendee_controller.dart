@@ -13,7 +13,7 @@ import 'package:sales_person_app/queries/api_mutate/tlicontact_mutate.dart';
 import 'package:sales_person_app/queries/api_quries/tlicustomers_query.dart';
 
 class AddAttendeeController extends GetxController {
-  TliCustomers? tliCustomers;
+  // TliCustomers? tliCustomers;
 
   TextEditingController contactFullNameTextFieldController =
       TextEditingController();
@@ -39,39 +39,39 @@ class AddAttendeeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await getCustomersFromGraphQL();
+    // await getCustomersFromGraphQL();
   }
 
-  addTliCustomerModel(response) {
-    tliCustomers = TliCustomers.fromJson(response);
-    isLoading.value = false;
-  }
+  // addTliCustomerModel(response) {
+  //   tliCustomers = TliCustomers.fromJson(response);
+  //   isLoading.value = false;
+  // }
 
-  Future<void> getCustomersFromGraphQL() async {
-    await BaseClient.safeApiCall(
-      ApiConstants.BASE_URL_GRAPHQL,
-      RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-      query: TlicustomersQuery.tliCustomersQuery(),
-      onLoading: () {
-        isLoading.value = true;
-      },
-      onSuccessGraph: (response) {
-        addTliCustomerModel(response.data!['tliCustomers']);
-        log("########RESPONSE: ############## \n ${response.data!['tliCustomers']}");
-        isLoading.value = false;
-      },
-      onError: (e) {
-        isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Error',
-          message: e.message,
-          duration: const Duration(seconds: 5),
-        );
-        log('*** onError *** \n ${e.message}');
-      },
-    );
-  }
+  // Future<void> getCustomersFromGraphQL() async {
+  //   await BaseClient.safeApiCall(
+  //     ApiConstants.BASE_URL_GRAPHQL,
+  //     RequestType.query,
+  //     headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+  //     query: TlicustomersQuery.tliCustomersQuery(),
+  //     onLoading: () {
+  //       isLoading.value = true;
+  //     },
+  //     onSuccessGraph: (response) {
+  //       addTliCustomerModel(response.data!['tliCustomers']);
+  //       log("########RESPONSE: ############## \n ${response.data!['tliCustomers']}");
+  //       isLoading.value = false;
+  //     },
+  //     onError: (e) {
+  //       isLoading.value = false;
+  //       CustomSnackBar.showCustomErrorSnackBar(
+  //         title: 'Error',
+  //         message: e.message,
+  //         duration: const Duration(seconds: 5),
+  //       );
+  //       log('*** onError *** \n ${e.message}');
+  //     },
+  //   );
+  // }
 
   Future<void> createTliContacts({
     required String name,
@@ -132,7 +132,7 @@ class AddAttendeeController extends GetxController {
     contactPhoneNoTextFieldController.clear();
   }
 
-  void filterCustomerList(String query) {
+  void filterCustomerList(String query, TliCustomers? tliCustomers) {
     if (tliCustomers?.value == null) return;
     if (query.isEmpty) {
       filteredCustomers.value = List.from(tliCustomers!.value);
@@ -144,31 +144,7 @@ class AddAttendeeController extends GetxController {
     }
   }
 
-  void clearFilteredCustomers() {
+  void clearFilteredCustomers(TliCustomers? tliCustomers) {
     filteredCustomers.value = List.from(tliCustomers!.value);
-  }
-
-  Future<void> userLogOut() async {
-    await BaseClient.safeApiCall(
-      ApiConstants.LOG_OUT,
-      RequestType.post,
-      headers: await BaseClient.generateHeadersForLogout(),
-      onLoading: () {
-        isLoading.value = true;
-      },
-      onSuccess: (response) {
-        Preferences().removeToken();
-        isLoading.value = false;
-        Get.offAllNamed(AppRoutes.SIGN_IN);
-      },
-      onError: (p0) {
-        isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Error',
-          message: p0.message,
-          duration: const Duration(seconds: 2),
-        );
-      },
-    );
   }
 }

@@ -12,7 +12,7 @@ class ApiConstants {
   //GRAPHQL
   static const String BASE_URL_GRAPHQL = 'https://be2.rs74.net/graphql';
 
-  // RESTFUL API's PRODUCTION
+
   static const String BASE_URL_API = '${BASE_URL}api/v1/';
 
   // AUTHENTICATION API`s
@@ -20,9 +20,16 @@ class ApiConstants {
 
   // AUTHENTICATION WITH MICROSOFT URL
   static const String MICROSOFT_LOGIN = '${BASE_URL}login';
+  static const String MICROSOFT_USER_DATA = "${BASE_URL_REST}getUserInfo";
 
   //LOG OUT API's URL
   static const String LOG_OUT = '${BASE_URL_REST}logout';
+
+
+  //LOG OUT API's URL
+  static const String LOG_OUT = '${BASE_URL_REST}logout';
+
+
 
   //FOR REST API URL (TESTING SERVER)
   static const String BASE_URL_REST = 'https://be2.rs74.net/api/v2/';

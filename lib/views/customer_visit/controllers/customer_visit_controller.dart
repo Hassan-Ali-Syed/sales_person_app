@@ -24,6 +24,12 @@ class CustomerVisitController extends GetxController {
     await getCustomersFromGraphQL();
   }
 
+
+
+  final GlobalKey<ScaffoldState> customerVisitScaffoldKey =
+      GlobalKey<ScaffoldState>();
+
+
   //Instance of Models which
   TliCustomers? tliCustomers;
   TliCustomers? tliCustomerById;
@@ -34,7 +40,7 @@ class CustomerVisitController extends GetxController {
   RxInt itemIndex = 0.obs;
   final TextEditingController commentController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
-  final double tileHeight = Sizes.HEIGHT_50;
+  // final double tileHeight = Sizes.HEIGHT_50;
 
 // Reactive variable for Customers
   String customerNo = '';
@@ -87,7 +93,7 @@ class CustomerVisitController extends GetxController {
   // Customer's TextFields
 
   TextEditingController customerTextFieldController = TextEditingController();
-  TextEditingController searchCustomerController = TextEditingController();
+  // TextEditingController searchCustomerController = TextEditingController();
   // Customer's Bill to Address TextField
   late TextEditingController addressController;
 // Ship to Address TextField
@@ -117,8 +123,8 @@ class CustomerVisitController extends GetxController {
       onError: (e) {
         isLoading.value = false;
         CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Error',
-          message: e.message,
+          title: 'Server Error',
+          message: 'Data not fetched. Try again later',
           duration: const Duration(seconds: 5),
         );
         log('*** onError *** \n ${e.message}');
@@ -140,12 +146,18 @@ class CustomerVisitController extends GetxController {
         for (var i in listOfTliSalesLineMaps) {
           i.remove('itemDescription');
         }
-
         await createSalesOrderRest(
             sellToCustomerNo: customerNo,
             contact: attendeeData['contactNo'],
             // shipToCode: shipToAddCode,
             tliSalesLines: listOfTliSalesLineMaps);
+      } else {
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Failed to create order',
+          message: '${attendeeData['name']} has no item(s)',
+          duration: const Duration(seconds: 2),
+        );
+        log('==Current Attandee Data  ${attendeeData['name']}===================');
       }
       log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
     }
@@ -186,17 +198,26 @@ class CustomerVisitController extends GetxController {
       query: TliItemsQuery.tliItemsQuery(no),
       onLoading: () {
         userItemListReferesh.value = true;
+        barcodeScanned.value = true;
         isLoading.value = true;
         log('******* LOADING ********');
       },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
         log("======getSingleItemFromGraphQL===========${response.data}==============");
-
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
+        userItemListReferesh.value = false;
+        barcodeScanned.value = false;
       },
       onError: (e) {
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Scan failed',
+          message: 'Unable to recognize text. Please try again.',
+          duration: const Duration(seconds: 2),
+        );
+        userItemListReferesh.value = false;
+        barcodeScanned.value = false;
         isLoading.value = false;
         CustomSnackBar.showCustomErrorSnackBar(
             title: 'Error',
@@ -229,17 +250,40 @@ class CustomerVisitController extends GetxController {
           log('******* ON SUCCESS ${response.data}');
           CustomSnackBar.showCustomSnackBar(
               title: 'Sales Order created',
+
               message: ' customerNo: $sellToCustomerNo \ncontact: $contact',
+
               duration: const Duration(seconds: 2));
           isLoading.value = false;
+          // if (response.data['Success']) {
+          //   CustomSnackBar.showCustomSnackBar(
+          //       title: 'Sales Order created',
+          //       message: '',
+          //       duration: const Duration(seconds: 2));
+          //   isLoading.value = false;
+          // }
         },
         onError: (e) {
           isLoading.value = false;
-          CustomSnackBar.showCustomErrorSnackBar(
-            title: 'Error',
-            message: e.message,
-            duration: const Duration(seconds: 2),
-          );
+          if (e.statusCode == 400) {
+            CustomSnackBar.showCustomErrorSnackBar(
+              title: 'Already created',
+              message: 'Failed to create sales order',
+              duration: const Duration(seconds: 2),
+            );
+          }
+          if (e.statusCode == 500) {
+            CustomSnackBar.showCustomErrorSnackBar(
+              title: 'Server Error',
+              message: 'Failed to create sales order',
+              duration: const Duration(seconds: 2),
+            );
+          }
+          // CustomSnackBar.showCustomErrorSnackBar(
+          //   title: ' ',
+          //   message: e.message,
+          //   duration: const Duration(seconds: 2),
+          // );
           log('******* ON ERROR******** \n ${e.message}');
         });
   }
@@ -274,24 +318,27 @@ class CustomerVisitController extends GetxController {
   }
 
   void setCustomerData(var indexNo) async {
+    isCustomerExpanded.value = false;
     isAddressFieldVisible.value = false;
-
+    isShipToAddFieldVisible.value = false;
+    isAttandeeFieldVisible.value = false;
+    filteredCustomers.value = tliCustomers!.value;
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
     isAddressFieldVisible.value = true;
     customerNo = tliCustomers!.value[indexNo].no!;
-
     log('Customer No: $customerNo');
     await getCustomerbyIdFromGraphQL(customerNo);
-
-    shipToAddController = TextEditingController(text: '');
-    isShipToAddFieldVisible.value = true;
     setCustomerShipToAdd();
     setCustomerContacts();
+    shipToAddController = TextEditingController(text: '');
+    isShipToAddFieldVisible.value = true;
+    isShipToAddFieldVisible.value = true;
+    isAttandeeFieldVisible.value = true;
   }
 
-// search query list and Method
+  // search query list and Method
   var filteredCustomers = [].obs;
   void filterCustomerList(String query) {
     if (tliCustomers?.value == null) return;
@@ -399,11 +446,13 @@ class CustomerVisitController extends GetxController {
         itemExists = true;
         break;
       }
+
     }
 
     if (!itemExists) {
       currentSalesLines.add(newItem);
     }
+
 
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
@@ -436,18 +485,31 @@ class CustomerVisitController extends GetxController {
         selectedAttendees.map((attendee) => attendee['name']).join(',');
   }
 
-// Method for scanning barcode
+  // Method for scanning barcode
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
+    barcodeScanned.value = true;
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-    if (barcodeScanRes != 'Failed to get platform version.') {
+    if (barcodeScanRes == 'Failed to get platform version.') {
+      barcodeScanned.value = false;
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Scan failed',
+        message: barcodeScanRes,
+      );
+    } else if (barcodeScanRes.isEmpty) {
+      barcodeScanRes = 'Please scan Barcode again';
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Scan failed',
+        message: barcodeScanRes,
+      );
+      barcodeScanned.value = false;
+    } else {
       await getSingleItemFromGraphQL(barcodeScanRes);
-      barcodeScanned.value = true;
     }
   }
 

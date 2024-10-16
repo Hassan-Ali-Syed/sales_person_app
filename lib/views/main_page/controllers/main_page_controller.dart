@@ -14,6 +14,7 @@ import 'package:sales_person_app/views/main_page/views/more_page_screen.dart';
 class MainPageController extends GetxController {
   final GlobalKey<ScaffoldState> mainPageScaffoldKey =
       GlobalKey<ScaffoldState>();
+
   // Observable for selecte Index from NavBar
   var selectedIndex = 0.obs;
 
