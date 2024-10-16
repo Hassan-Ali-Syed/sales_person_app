@@ -23,11 +23,10 @@ class CustomerVisitController extends GetxController {
     super.onInit();
     await getCustomersFromGraphQL();
   }
-
-  // Initialize the list to hold customer data
-  // List<Map<String, dynamic>> customersData = [];
-  // RxList<String?> customerNames = <String?>[].obs;
-
+ 
+  final GlobalKey<ScaffoldState> customerVisitScaffoldKey =
+      GlobalKey<ScaffoldState>();
+ 
   //Instance of Models which
   TliCustomers? tliCustomers;
   TliCustomers? tliCustomerById;
@@ -38,71 +37,71 @@ class CustomerVisitController extends GetxController {
   RxInt itemIndex = 0.obs;
   final TextEditingController commentController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
-  final double tileHeight = Sizes.HEIGHT_50;
-
+  // final double tileHeight = Sizes.HEIGHT_50;
+ 
 // Reactive variable for Customers
   String customerNo = '';
   RxString customerAddress = ''.obs;
   String shipToAddCode = '';
-
+ 
   // Customer's Ship To Address
   List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
   RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
   List<Widget> attendeeButtons = [];
   RxString selectedAttendee = ''.obs;
   List<Map<String, dynamic>> listOfTliItems = [];
-
+ 
   //flags for customer text field
   RxBool isCustomerExpanded = false.obs;
   RxBool isCustomerSearch = false.obs;
-
+ 
   //flags for ship to Address text fields
   RxBool isShipToAddExpanded = false.obs;
   RxBool isShipToAddSearch = false.obs;
   RxBool userItemListReferesh = false.obs;
-
+ 
 // flags for Textfields visibility
   RxBool isAddressFieldVisible = false.obs;
   RxBool isShipToAddFieldVisible = false.obs;
   RxBool isAttandeesFieldVisible = false.obs;
-
+ 
 //Flags of attandee
   RxBool isAttandeeFieldVisible = false.obs;
   RxBool isAttandeeExpanded = false.obs;
   RxBool isAttandeeSearch = false.obs;
   RxBool itemsListRefresh = false.obs;
   RxBool isQtyPressed = false.obs;
-
+ 
   //attandee List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
-
+ 
   // attandee (Contact) selected index flag
   RxInt attandeeSelectedIndex = 0.obs;
   RxBool barcodeScanned = false.obs;
   RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
   Map<String, List> attendeeItemsMap = {};
-
+ 
   //Scroll Controller
   ScrollController customerScrollController = ScrollController();
   ScrollController shipToAddScrollController = ScrollController();
   ScrollController attandeeScrollController = ScrollController();
   ScrollController contactScrollController = ScrollController();
-
+ 
   // Customer's TextFields
-
+ 
   TextEditingController customerTextFieldController = TextEditingController();
-  TextEditingController searchCustomerController = TextEditingController();
+  // TextEditingController searchCustomerController = TextEditingController();
   // Customer's Bill to Address TextField
   late TextEditingController addressController;
 // Ship to Address TextField
   late TextEditingController shipToAddController;
   TextEditingController searchShipToAddController = TextEditingController();
-
+ 
   // Contacts textField
   TextEditingController attandeeController = TextEditingController();
   TextEditingController searchAttandeeController = TextEditingController();
   TextEditingController itemQntyController = TextEditingController();
-
+ 
 // GET ALL CUSTOMERS RECORDS
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
@@ -129,7 +128,7 @@ class CustomerVisitController extends GetxController {
       },
     );
   }
-
+ 
   Future<void> createSalesOrdersOfSelectedAttandees() async {
     var attendeesData = selectedAttendees;
     for (var attendeeData in attendeesData) {
@@ -144,17 +143,23 @@ class CustomerVisitController extends GetxController {
         for (var i in listOfTliSalesLineMaps) {
           i.remove('itemDescription');
         }
-
         await createSalesOrderRest(
             sellToCustomerNo: customerNo,
             contact: attendeeData['contactNo'],
             // shipToCode: shipToAddCode,
             tliSalesLines: listOfTliSalesLineMaps);
+      } else {
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Failed to create order',
+          message: '${attendeeData['name']} has no item(s)',
+          duration: const Duration(seconds: 2),
+        );
+        log('==Current Attandee Data  ${attendeeData['name']}===================');
       }
       log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
     }
   }
-
+ 
   Future<void> getCustomerbyIdFromGraphQL(String no) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -167,7 +172,7 @@ class CustomerVisitController extends GetxController {
       onSuccessGraph: (response) {
         log("########RESPONSE: ############## \n ${response.data}");
         addTliCustomerByIdModel(response.data!['tliCustomers']);
-
+ 
         isLoading.value = false;
       },
       onError: (e) {
@@ -181,7 +186,7 @@ class CustomerVisitController extends GetxController {
       },
     );
   }
-
+ 
   Future<void> getSingleItemFromGraphQL(String no) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -190,28 +195,34 @@ class CustomerVisitController extends GetxController {
       query: TliItemsQuery.tliItemsQuery(no),
       onLoading: () {
         userItemListReferesh.value = true;
-        isLoading.value = true;
+        barcodeScanned.value = true;
+        // isLoading.value = true;
         log('******* LOADING ********');
       },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
         log("======getSingleItemFromGraphQL===========${response.data}==============");
-
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
+        userItemListReferesh.value = false;
       },
       onError: (e) {
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Scan failed',
+          message: 'Unable to recognize text. Please try again.',
+          duration: const Duration(seconds: 2),
+        );
+        userItemListReferesh.value = false;
         isLoading.value = false;
         log('******* ON ERROR******** \n ${e.message}');
       },
     );
   }
-
+ 
   Future<void> createSalesOrderRest({
     required String sellToCustomerNo,
     required String contact,
     required List<Map<String, dynamic>>? tliSalesLines,
-    // required String shipToCode,
   }) async {
     await BaseClient.safeApiCall(
         ApiConstants.CREATE_SALES_ORDER, RequestType.post,
@@ -228,19 +239,44 @@ class CustomerVisitController extends GetxController {
         onLoading: () => isLoading.value = true,
         onSuccess: (response) {
           log('******* ON SUCCESS ${response.data}');
+          CustomSnackBar.showCustomSnackBar(
+              title: 'Sales Order created',
+              message: '',
+              duration: const Duration(seconds: 2));
           isLoading.value = false;
+          // if (response.data['Success']) {
+          //   CustomSnackBar.showCustomSnackBar(
+          //       title: 'Sales Order created',
+          //       message: '',
+          //       duration: const Duration(seconds: 2));
+          //   isLoading.value = false;
+          // }
         },
         onError: (e) {
           isLoading.value = false;
-          CustomSnackBar.showCustomErrorSnackBar(
-            title: 'Error',
-            message: e.message,
-            duration: const Duration(seconds: 2),
-          );
+          if (e.statusCode == 400) {
+            CustomSnackBar.showCustomErrorSnackBar(
+              title: 'Already created',
+              message: 'Failed to create sales order',
+              duration: const Duration(seconds: 2),
+            );
+          }
+          if (e.statusCode == 500) {
+            CustomSnackBar.showCustomErrorSnackBar(
+              title: 'Server Error',
+              message: 'Failed to create sales order',
+              duration: const Duration(seconds: 2),
+            );
+          }
+          // CustomSnackBar.showCustomErrorSnackBar(
+          //   title: ' ',
+          //   message: e.message,
+          //   duration: const Duration(seconds: 2),
+          // );
           log('******* ON ERROR******** \n ${e.message}');
         });
   }
-
+ 
   Future<void> createSalesLineComment({
     required List<Map<String, dynamic>>? tliSalesLines,
   }) async {
@@ -264,31 +300,34 @@ class CustomerVisitController extends GetxController {
           log('******* ON ERROR******** \n ${e.message}');
         });
   }
-
+ 
   String createExternalDocumentNo(String contactNo) {
     String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
     return "VISIT $formattedDate $contactNo";
   }
-
+ 
   void setCustomerData(var indexNo) async {
+    isCustomerExpanded.value = false;
     isAddressFieldVisible.value = false;
-
+    isShipToAddFieldVisible.value = false;
+    isAttandeeFieldVisible.value = false;
+    filteredCustomers.value = tliCustomers!.value;
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
     isAddressFieldVisible.value = true;
     customerNo = tliCustomers!.value[indexNo].no!;
-
     log('Customer No: $customerNo');
     await getCustomerbyIdFromGraphQL(customerNo);
-
-    shipToAddController = TextEditingController(text: '');
-    isShipToAddFieldVisible.value = true;
     setCustomerShipToAdd();
     setCustomerContacts();
+    shipToAddController = TextEditingController(text: '');
+    isShipToAddFieldVisible.value = true;
+    isShipToAddFieldVisible.value = true;
+    isAttandeeFieldVisible.value = true;
   }
-
-// search query list and Method
+ 
+  // search query list and Method
   var filteredCustomers = [].obs;
   void filterCustomerList(String query) {
     if (tliCustomers?.value == null) return;
@@ -300,8 +339,9 @@ class CustomerVisitController extends GetxController {
               customer.name!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
+    log('List $filteredCustomers');
   }
-
+ 
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
     customersShipToAdd.clear();
@@ -322,7 +362,7 @@ class CustomerVisitController extends GetxController {
       }
     }
   }
-
+ 
 // SET CUSTOMER'S CONTACTS
   void setCustomerContacts() {
     customerContacts.clear();
@@ -332,14 +372,14 @@ class CustomerVisitController extends GetxController {
         var tliContacts = values.tliContact;
         for (var element in tliContacts!) {
           if (element.type == 'Person' || element.type == 'person') {
-            log("====Before Adding Contacts======${element.type}=======================");
+            log("====Before Adding Contacts======${element.type}");
             customerContacts.add({
               'name': element.name,
               'contactNo': element.no,
               'type': element.type,
               'tliSalesLine': []
             });
-            log("====After Adding Contacts======$customerContacts=======================");
+            log("====After Adding Contacts======$customerContacts");
           }
         }
         checkBoxStates.value =
@@ -347,13 +387,9 @@ class CustomerVisitController extends GetxController {
       }
     }
   }
-
+ 
   // Set Selected Ship to Add
   String setSelectedShipToAdd(int index) {
-    if (index < 0 || index >= customersShipToAdd.length) {
-      log('Invalid index: $index');
-      return 'Invalid index';
-    }
     var address = customersShipToAdd[index]['address'] ?? 'Address not found';
     shipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
     log('**** After selecting address from ship to add list ******');
@@ -361,47 +397,57 @@ class CustomerVisitController extends GetxController {
     log('**** Ship to Code: $shipToAddCode');
     return address;
   }
-
+ 
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     isLoading.value = false;
   }
-
+ 
   addTliCustomerByIdModel(response) {
     tliCustomerById = TliCustomers.fromJson(response);
     isLoading.value = false;
   }
-
+ 
   addTliItemModel(response) {
     itemsListRefresh.value = true;
-
+ 
     tliItem = TliItems.fromJson(response);
     log('============ After Parse ${tliItem!.value.length}================');
-
+ 
     List<dynamic> currentSalesLines =
         selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] ?? [];
-
-    if (tliItem!.value.isNotEmpty) {
-      currentSalesLines.add(
-        TliSalesLineElement(
-          lineNo: currentSalesLines.isNotEmpty
-              ? (currentSalesLines.length + 1) * 10000
-              : 10000,
-          type: 'Item',
-          no: tliItem!.value[0].no!,
-          quantity: num.parse(tliItem!.value[0].qntyController!.text),
-          unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
-          itemDescription: tliItem!.value[0].description!,
-        ),
-      );
+ 
+    TliSalesLineElement newItem = TliSalesLineElement(
+      lineNo: currentSalesLines.isNotEmpty
+          ? (currentSalesLines.length + 1) * 10000
+          : 10000,
+      type: 'Item',
+      no: tliItem!.value[0].no!,
+      quantity: num.parse(tliItem!.value[0].qntyController!.text),
+      unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
+      itemDescription: tliItem!.value[0].description!,
+    );
+ 
+    bool itemExists = false;
+    for (var salesLineItem in currentSalesLines) {
+      if (salesLineItem.no == newItem.no) {
+        salesLineItem.quantity += newItem.quantity;
+        itemExists = true;
+        break;
+      }
     }
+ 
+    if (!itemExists) {
+      currentSalesLines.add(newItem);
+    }
+ 
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
-    log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]}=========================');
-    log('==SELECTED ATTENDEES LIST==========${selectedAttendees[0]['tliSalesLine'][0].itemDescription}=========================');
+ 
+    log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
   }
-
+ 
   void onCheckboxChanged(bool? value, int index) {
     if (value == true) {
       checkBoxStates[index] = true;
@@ -413,20 +459,20 @@ class CustomerVisitController extends GetxController {
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
     } else {
       checkBoxStates[index] = false;
-
+ 
       selectedAttendees.removeWhere((attendee) =>
           attendee['name'] == customerContacts[index]['name'] &&
           attendee['contactNo'] == customerContacts[index]['contactNo'] &&
           attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
-
+ 
       log('**** SELECTED ATTANDEES $selectedAttendees ******');
     }
-
+ 
     attandeeController.text =
         selectedAttendees.map((attendee) => attendee['name']).join(',');
   }
-
-// Method for scanning barcode
+ 
+  // Method for scanning barcode
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
     try {
@@ -435,12 +481,25 @@ class CustomerVisitController extends GetxController {
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-    if (barcodeScanRes != 'Failed to get platform version.') {
+    if (barcodeScanRes == 'Failed to get platform version.') {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Scan failed',
+        message: barcodeScanRes,
+      );
+      barcodeScanned.value = false;
+    } else if (barcodeScanRes.isEmpty || barcodeScanRes == null) {
+      barcodeScanRes = 'Please scan Barcode again';
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Scan failed',
+        message: barcodeScanRes,
+      );
+      barcodeScanned.value = false;
+    } else {
       await getSingleItemFromGraphQL(barcodeScanRes);
-      barcodeScanned.value = true;
+      // barcodeScanned.value = false;
     }
   }
-
+ 
   void showCommentDialog(BuildContext context,
       {required TextEditingController controller}) {
     showDialog(
