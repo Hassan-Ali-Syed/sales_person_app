@@ -18,7 +18,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
   static const String routeName = '/customer_visit_screen';
   CustomerVisitScreen({super.key});
   final mainPageController = Get.find<MainPageController>();
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,30 +104,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                         labelText: AppStrings.SEARCH_CUSTOMER,
                                         border: const UnderlineInputBorder(),
                                         suffixIcon: IconButton(
-                                            icon: const Icon(Icons.search),
-                                            onPressed: () {
-                                              // controller.isCustomerSearch
-                                              //     .value = false;
- 
-                                              // // controller.searchQuery(items, item, controller)
-                                              // // controller
-                                              // //     .customerTextFieldController
-                                              // //     .clear();
- 
-                                              // controller.searchAttandeeController
-                                              //             .text !=
-                                              //         ''
-                                              //     ? controller
-                                              //             .customerTextFieldController
-                                              //             .text =
-                                              //         controller
-                                              //             .customerTextFieldController
-                                              //             .text
-                                              //     : controller
-                                              //             .customerTextFieldController =
-                                              //         controller
-                                              //             .customerTextFieldController;
-                                            }),
+                                          icon: const Icon(Icons.search),
+                                          onPressed: () {},
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -185,16 +164,22 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                 controller
                                                     .customerTextFieldController
                                                     .text = filteredData;
- 
+
                                                 controller.isCustomerExpanded
                                                     .value = false;
                                               },
                                             );
                                           },
                                         )
-                                      : const Center(
-                                          child: Text(AppStrings.NO_CUST_AVAIL),
-                                        ),
+                                      : controller.isLoading.value
+                                          ? const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : const Center(
+                                              child: Text(
+                                                  AppStrings.NO_CUST_AVAIL),
+                                            ),
                                 ),
                               ),
                               Padding(
@@ -220,7 +205,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             ],
                           ),
                         ),
-                ),                // Second TextField Bill to Add automatically filled when select customer
+                ), // Second TextField Bill to Add automatically filled when select customer
                 Obx(
                   () => controller.isAddressFieldVisible.value
                       ? SizedBox(
@@ -235,7 +220,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                         )
                       : const SizedBox.shrink(),
                 ),
- 
+
                 // third TextField of Ship to Address we have to fill
                 Obx(
                   () => controller.isShipToAddFieldVisible.value
@@ -377,7 +362,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             )
                       : const SizedBox.shrink(),
                 ),
- 
+
                 // Fourth  TextField of contacts
                 Obx(
                   () => controller.isAttandeeFieldVisible.value
@@ -530,11 +515,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             )
                       : const SizedBox.shrink(),
                 ),
- 
+
                 const SizedBox(
                   height: Sizes.HEIGHT_10,
                 ),
- 
+
                 Obx(
                   () => controller.selectedAttendees.isNotEmpty
                       ? Wrap(
@@ -549,7 +534,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 controller.selectedAttendee.value =
                                     controller.selectedAttendees[index]['name'];
                                 controller.attandeeSelectedIndex.value = index;
- 
+
                                 controller.itemIndex.value = -1;
                                 log(' Index: ${controller.attandeeSelectedIndex.value}');
                                 controller.userItemListReferesh.value = false;
@@ -585,10 +570,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                         )
                       : const SizedBox(),
                 ),
- 
+
                 const SizedBox(
                   height: Sizes.HEIGHT_10,
-                ),                Column(
+                ),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(
@@ -627,7 +613,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                       .attandeeSelectedIndex
                                                       .value]['tliSalesLine']
                                               [index];
- 
+
                                       log("***** Description *********${salesLineItem.itemDescription}");
                                       return CustomRowCells(
                                         rowIndex: index,
@@ -659,7 +645,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                     [index]
                                                 .quantity = 1;
                                           }
- 
+
                                           controller.userItemListReferesh
                                               .value = false;
                                           log('===Attendee Indeex ON CHANGED  ${controller.attandeeSelectedIndex.value}============');
@@ -694,7 +680,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                     }),
                   ],
                 ),
- 
+
                 const SizedBox(
                   height: Sizes.HEIGHT_20,
                 ),

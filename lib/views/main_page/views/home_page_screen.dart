@@ -69,8 +69,8 @@ class HomePageScreen extends GetView<MainPageController> {
                             height: Sizes.HEIGHT_44,
                             width: Sizes.WIDTH_250,
                             child: TextField(
-                              textAlign: TextAlign.justify,
-                              textAlignVertical: TextAlignVertical.center,
+                              textAlign: TextAlign.start,
+                              textAlignVertical: TextAlignVertical.top,
                               decoration: InputDecoration(
                                   prefixIcon: const Icon(
                                     Icons.search,
