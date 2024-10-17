@@ -11,15 +11,14 @@ class CustomRowCells extends StatelessWidget {
   final void Function()? qtyOnTap;
   final void Function(String)? qtyOnChanged;
   final TextEditingController qntyController;
-  final String? notes;
-  final void Function()? notesOnTap;
+
   final void Function(String)? notesOnChanged;
   final bool isQtyPressed;
   final int rowIndex;
 
   final int selectedIndex;
 
-  final TextEditingController notesController;
+  final String notes;
 
   const CustomRowCells({
     super.key,
@@ -31,10 +30,8 @@ class CustomRowCells extends StatelessWidget {
     this.qtyOnChanged,
     this.isQtyPressed = false,
     required this.qntyController,
-    this.notes,
-    this.notesOnTap,
     this.notesOnChanged,
-    required this.notesController,
+    required this.notes,
     required this.rowIndex,
     required this.selectedIndex,
   });
@@ -99,43 +96,46 @@ class CustomRowCells extends StatelessWidget {
         _buildCell(price ?? '', Sizes.WIDTH_80),
 
         // Handle notes display and editing
-        SizedBox(
-          width: Sizes.WIDTH_118,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: Sizes.PADDING_4),
           height: Sizes.HEIGHT_50,
-          child: TextField(
-            readOnly: true,
-            controller: notesController,
-            onChanged: (text) {
-              if (text.length > 6) {
-                // Handle text change logic here if needed
-              }
-            },
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.top,
-            decoration: InputDecoration(
-              suffixIcon: IconButton(
-                onPressed: commentDialogBoxOnPressed,
-                icon: const Icon(Icons.edit),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: LightTheme.grayColorShade5, width: 2),
-              ),
+          width: Sizes.WIDTH_118,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: LightTheme.grayColorShade5,
+              width: 2,
             ),
           ),
-        ),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  maxLines: 2,
+                  notes,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: commentDialogBoxOnPressed,
+                  child: const Icon(
+                    Icons.edit,
+                    color: LightTheme.appBarTextColor,
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
       ],
     );
   }
+
+  // height: Sizes.HEIGHT_50,
 
   Widget _buildCell(String value, double width) {
     return Container(
