@@ -24,86 +24,63 @@ class CustomerVisitController extends GetxController {
     await getCustomersFromGraphQL();
   }
 
-
-
   final GlobalKey<ScaffoldState> customerVisitScaffoldKey =
       GlobalKey<ScaffoldState>();
-
 
   //Instance of Models which
   TliCustomers? tliCustomers;
   TliCustomers? tliCustomerById;
   TliItems? tliItem;
   TliSalesLine? tliSalesLine;
+
   RxBool isLoading = false.obs;
   RxBool isServerError = false.obs;
   RxInt itemIndex = 0.obs;
-  final TextEditingController commentController = TextEditingController();
-  final TextEditingController notesController = TextEditingController();
-  // final double tileHeight = Sizes.HEIGHT_50;
-
-// Reactive variable for Customers
-  String customerNo = '';
-  RxString customerAddress = ''.obs;
-  String shipToAddCode = '';
-
-  // Customer's Ship To Address
-  List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
-  RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
-  List<Widget> attendeeButtons = [];
-  RxString selectedAttendee = ''.obs;
-  List<Map<String, dynamic>> listOfTliItems = [];
-
-  //flags for customer text field
-  RxBool isCustomerExpanded = false.obs;
-  RxBool isCustomerSearch = false.obs;
-
-  //flags for ship to Address text fields
-  RxBool isShipToAddExpanded = false.obs;
-  RxBool isShipToAddSearch = false.obs;
+  RxBool barcodeScanned = false.obs;
   RxBool userItemListReferesh = false.obs;
-
-// flags for Textfields visibility
-  RxBool isAddressFieldVisible = false.obs;
-  RxBool isShipToAddFieldVisible = false.obs;
-  RxBool isAttandeesFieldVisible = false.obs;
-
-//Flags of attandee
-  RxBool isAttandeeFieldVisible = false.obs;
-  RxBool isAttandeeExpanded = false.obs;
-  RxBool isAttandeeSearch = false.obs;
   RxBool itemsListRefresh = false.obs;
   RxBool isQtyPressed = false.obs;
 
-  //attandee List of checkbox
+  final TextEditingController commentController = TextEditingController();
+  final TextEditingController notesController = TextEditingController();
+  TextEditingController itemQntyController = TextEditingController();
+
+  // Reactive variables
+  String customerNo = '';
+  RxString customerAddress = ''.obs;
+  String selectedShipToAddCode = '';
+  RxInt attendeeSelectedIndex = 0.obs;
+  RxString selectedAttendee = ''.obs;
+  List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
+  RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
+  //selected attendees List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
-
-  // attandee (Contact) selected index flag
-  RxInt attandeeSelectedIndex = 0.obs;
-  RxBool barcodeScanned = false.obs;
   RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
-  Map<String, List> attendeeItemsMap = {};
 
-  //Scroll Controller
+  //customer's text field & flags
+  RxBool isCustomerExpanded = false.obs;
   ScrollController customerScrollController = ScrollController();
-  ScrollController shipToAddScrollController = ScrollController();
-  ScrollController attandeeScrollController = ScrollController();
-  ScrollController contactScrollController = ScrollController();
-
-  // Customer's TextFields
-
   TextEditingController customerTextFieldController = TextEditingController();
-  // TextEditingController searchCustomerController = TextEditingController();
-  // Customer's Bill to Address TextField
+
+  // ADDRESS FIELD's related
+  RxBool isAddressFieldVisible = false.obs;
   late TextEditingController addressController;
-// Ship to Address TextField
+
+  // Customer's Ship To Address
+  RxBool isShipToAddFieldVisible = false.obs;
+  RxBool isShipToAddExpanded = false.obs;
+  RxBool isShipToAddSearch = false.obs;
   late TextEditingController shipToAddController;
   TextEditingController searchShipToAddController = TextEditingController();
+  ScrollController shipToAddScrollController = ScrollController();
 
-  // Contacts textField
-  TextEditingController attandeeController = TextEditingController();
-  TextEditingController searchAttandeeController = TextEditingController();
-  TextEditingController itemQntyController = TextEditingController();
+  // Attendee's related flags and controller
+  RxBool isAttendeeFieldVisible = false.obs;
+  RxBool isAttendeeExpanded = false.obs;
+  RxBool isAttendeeSearch = false.obs;
+  ScrollController attendeeScrollController = ScrollController();
+  TextEditingController attendeeController = TextEditingController();
+  TextEditingController searchAttendeeController = TextEditingController();
 
 // GET ALL CUSTOMERS RECORDS
   Future<void> getCustomersFromGraphQL() async {
@@ -132,7 +109,8 @@ class CustomerVisitController extends GetxController {
     );
   }
 
-  Future<void> createSalesOrdersOfSelectedAttandees() async {
+// CREATE SALES ORDER OF SELECTED ATTENDEES
+  Future<void> createSalesOrdersOfSelectedattendees() async {
     var attendeesData = selectedAttendees;
     for (var attendeeData in attendeesData) {
       List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
@@ -149,7 +127,6 @@ class CustomerVisitController extends GetxController {
         await createSalesOrderRest(
             sellToCustomerNo: customerNo,
             contact: attendeeData['contactNo'],
-            // shipToCode: shipToAddCode,
             tliSalesLines: listOfTliSalesLineMaps);
       } else {
         CustomSnackBar.showCustomErrorSnackBar(
@@ -157,9 +134,9 @@ class CustomerVisitController extends GetxController {
           message: '${attendeeData['name']} has no item(s)',
           duration: const Duration(seconds: 2),
         );
-        log('==Current Attandee Data  ${attendeeData['name']}===================');
+        log('==Current attendee Data  ${attendeeData['name']}===================');
       }
-      log('==LIST OF TLISALESLINE MAP   $listOfTliSalesLineMaps===================');
+      log('==LIST OF TliSALESLINE MAP   $listOfTliSalesLineMaps===================');
     }
   }
 
@@ -219,10 +196,6 @@ class CustomerVisitController extends GetxController {
         userItemListReferesh.value = false;
         barcodeScanned.value = false;
         isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-            title: 'Error',
-            message: 'data not fetched try Again later',
-            duration: const Duration(seconds: 2));
         log('******* ON ERROR******** \n ${e.message}');
       },
     );
@@ -242,26 +215,18 @@ class CustomerVisitController extends GetxController {
           "contact": contact,
           "externalDocumentNo": createExternalDocumentNo(contact),
           "locationCode": "SYOSSET",
-          "shipToCode": shipToAddCode,
+          "shipToCode": selectedShipToAddCode,
           "tliSalesLines": tliSalesLines,
         },
         onLoading: () => isLoading.value = true,
         onSuccess: (response) {
           log('******* ON SUCCESS ${response.data}');
           CustomSnackBar.showCustomSnackBar(
-              title: 'Sales Order created',
-
-              message: ' customerNo: $sellToCustomerNo \ncontact: $contact',
-
-              duration: const Duration(seconds: 2));
+            title: 'Sales Order created',
+            message: '',
+            duration: const Duration(seconds: 2),
+          );
           isLoading.value = false;
-          // if (response.data['Success']) {
-          //   CustomSnackBar.showCustomSnackBar(
-          //       title: 'Sales Order created',
-          //       message: '',
-          //       duration: const Duration(seconds: 2));
-          //   isLoading.value = false;
-          // }
         },
         onError: (e) {
           isLoading.value = false;
@@ -279,26 +244,22 @@ class CustomerVisitController extends GetxController {
               duration: const Duration(seconds: 2),
             );
           }
-          // CustomSnackBar.showCustomErrorSnackBar(
-          //   title: ' ',
-          //   message: e.message,
-          //   duration: const Duration(seconds: 2),
-          // );
           log('******* ON ERROR******** \n ${e.message}');
         });
   }
 
   Future<void> createSalesLineComment({
+    required String salesOrderNo,
     required List<Map<String, dynamic>>? tliSalesLines,
   }) async {
     await BaseClient.safeApiCall(
         ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
         headers: await BaseClient.generateHeadersWithToken(),
         data: {
-          "no": "SO12693", // SalesOrder No
+          "no": salesOrderNo, // SalesOrder No
           "documentLineNo": 10000, // Sales Line No
           "lineNo": 10000, // line no for multiple comments of sales Line
-          "date": "2023-03-14",
+          "date": currentDate(),
           "comment": "Order Line One Comment" // comment limit 80 characters
         },
         onLoading: () => isLoading.value = true,
@@ -317,11 +278,21 @@ class CustomerVisitController extends GetxController {
     return "VISIT $formattedDate $contactNo";
   }
 
+  String currentDate() {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    return formattedDate;
+  }
+
   void setCustomerData(var indexNo) async {
+    attendeeController.clear();
+    selectedAttendees.clear();
+    commentController.clear();
+    isCustomerExpanded.value = false;
+    filteredCustomers.value = tliCustomers!.value;
     isCustomerExpanded.value = false;
     isAddressFieldVisible.value = false;
     isShipToAddFieldVisible.value = false;
-    isAttandeeFieldVisible.value = false;
+    isAttendeeFieldVisible.value = false;
     filteredCustomers.value = tliCustomers!.value;
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
@@ -329,13 +300,14 @@ class CustomerVisitController extends GetxController {
     isAddressFieldVisible.value = true;
     customerNo = tliCustomers!.value[indexNo].no!;
     log('Customer No: $customerNo');
+
     await getCustomerbyIdFromGraphQL(customerNo);
     setCustomerShipToAdd();
     setCustomerContacts();
     shipToAddController = TextEditingController(text: '');
     isShipToAddFieldVisible.value = true;
     isShipToAddFieldVisible.value = true;
-    isAttandeeFieldVisible.value = true;
+    isAttendeeFieldVisible.value = true;
   }
 
   // search query list and Method
@@ -402,10 +374,10 @@ class CustomerVisitController extends GetxController {
   // Set Selected Ship to Add
   String setSelectedShipToAdd(int index) {
     var address = customersShipToAdd[index]['address'] ?? 'Address not found';
-    shipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
+    selectedShipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
     log('**** After selecting address from ship to add list ******');
     log('**** Ship to Address: $address');
-    log('**** Ship to Code: $shipToAddCode');
+    log('**** Ship to Code: $selectedShipToAddCode');
     return address;
   }
 
@@ -426,7 +398,7 @@ class CustomerVisitController extends GetxController {
     log('============ After Parse ${tliItem!.value.length}================');
 
     List<dynamic> currentSalesLines =
-        selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'] ?? [];
+        selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'] ?? [];
 
     TliSalesLineElement newItem = TliSalesLineElement(
       lineNo: currentSalesLines.isNotEmpty
@@ -435,7 +407,9 @@ class CustomerVisitController extends GetxController {
       type: 'Item',
       no: tliItem!.value[0].no!,
       quantity: num.parse(tliItem!.value[0].qntyController!.text),
-      unitPrice: num.parse(tliItem!.value[0].unitPrice.toString()),
+      unitPrice: num.parse(
+        tliItem!.value[0].unitPrice.toString(),
+      ),
       itemDescription: tliItem!.value[0].description!,
     );
 
@@ -446,19 +420,17 @@ class CustomerVisitController extends GetxController {
         itemExists = true;
         break;
       }
-
     }
 
     if (!itemExists) {
       currentSalesLines.add(newItem);
     }
 
-
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
 
-    log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attandeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
+    log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
   }
 
   void onCheckboxChanged(bool? value, int index) {
@@ -469,7 +441,7 @@ class CustomerVisitController extends GetxController {
         'contactNo': customerContacts[index]['contactNo'],
         'tliSalesLine': customerContacts[index]['tliSalesLine']
       });
-      log('**** SELECTED ATTANDEES $selectedAttendees ******');
+      log('**** SELECTED attendeeS $selectedAttendees ******');
     } else {
       checkBoxStates[index] = false;
 
@@ -478,10 +450,10 @@ class CustomerVisitController extends GetxController {
           attendee['contactNo'] == customerContacts[index]['contactNo'] &&
           attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
 
-      log('**** SELECTED ATTANDEES $selectedAttendees ******');
+      log('**** SELECTED attendeeS $selectedAttendees ******');
     }
 
-    attandeeController.text =
+    attendeeController.text =
         selectedAttendees.map((attendee) => attendee['name']).join(',');
   }
 
@@ -514,7 +486,7 @@ class CustomerVisitController extends GetxController {
   }
 
   void showCommentDialog(BuildContext context,
-      {required TextEditingController controller}) {
+      {required TextEditingController controller, void Function()? onPressed}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -555,7 +527,7 @@ class CustomerVisitController extends GetxController {
                   width: Sizes.WIDTH_20,
                 ),
                 CustomElevatedButton(
-                  onPressed: () {},
+                  onPressed: onPressed,
                   title: 'Submit',
                   minWidht: Sizes.WIDTH_100,
                   minHeight: Sizes.HEIGHT_30,

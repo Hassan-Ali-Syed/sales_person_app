@@ -30,6 +30,7 @@ class TliSalesLineElement {
   String no;
   num quantity;
   num unitPrice;
+  String? comment;
 
   TliSalesLineElement(
       {required this.lineNo,
@@ -37,7 +38,8 @@ class TliSalesLineElement {
       required this.no,
       required this.quantity,
       required this.unitPrice,
-      required this.itemDescription});
+      required this.itemDescription,
+      this.comment});
 
   factory TliSalesLineElement.fromJson(Map<String, dynamic> json) =>
       TliSalesLineElement(
@@ -47,6 +49,7 @@ class TliSalesLineElement {
         quantity: json["quantity"],
         unitPrice: json["unitPrice"],
         itemDescription: json['itemDescription'],
+        comment: json['comment'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -55,6 +58,7 @@ class TliSalesLineElement {
         "no": no,
         "quantity": quantity,
         "unitPrice": unitPrice,
-        'itemDescription':itemDescription
+        'itemDescription': itemDescription,
+        'comment': comment
       };
 }

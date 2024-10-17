@@ -39,191 +39,6 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                         controller:
                             controller.contactFullNameTextFieldController,
                       ),
-
-                      // RELATED CUSTOMER TEXTFIELD
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(
-                      //       vertical: Sizes.PADDING_10),
-                      //   child: Obx(
-                      //     () => !controller.isContactCustomerExpanded.value
-                      //         ? Padding(
-                      //             padding: const EdgeInsets.only(
-                      //               top: Sizes.PADDING_8,
-                      //             ),
-                      //             child: TextField(
-                      //               controller: controller
-                      //                   .contactCustomerTextFieldController,
-                      //               textAlign: TextAlign.left,
-                      //               // onChanged: (value) {
-                      //               //   controller.filterCustomerList(value);
-                      //               // },
-                      //               onSubmitted: (value) {},
-                      //               decoration: InputDecoration(
-                      //                 labelText: AppStrings.CUSTOMER,
-                      //                 suffixIcon: IconButton(
-                      //                   onPressed: () {
-                      //                     controller.isContactCustomerExpanded
-                      //                         .value = true;
-                      //                   },
-                      //                   icon: const Icon(
-                      //                     Icons.arrow_drop_down,
-                      //                     size: Sizes.WIDTH_30,
-                      //                     color: Colors.black,
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //           )
-                      //         : Container(
-                      //             height: Sizes.HEIGHT_250,
-                      //             width: double.infinity,
-                      //             decoration: const BoxDecoration(
-                      //               border: Border(
-                      //                 bottom: BorderSide(
-                      //                   color: Colors.grey,
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             child: Column(
-                      //               children: [
-                      //                 Row(
-                      //                   mainAxisAlignment:
-                      //                       MainAxisAlignment.spaceBetween,
-                      //                   children: [
-                      //                     // controller
-                      //                     //         .isContactCustomerSearch.value
-                      //                     // ?
-                      //                     Expanded(
-                      //                       child: TextField(
-                      //                         onChanged: (value) {
-                      //                           controller
-                      //                               .filterCustomerList(value);
-                      //                         },
-                      //                         controller: controller
-                      //                             .contactSearchTextFieldController,
-                      //                         decoration: InputDecoration(
-                      //                           labelText:
-                      //                               AppStrings.SEARCH_CUSTOMER,
-                      //                           border:
-                      //                               const UnderlineInputBorder(),
-                      //                           suffixIcon: IconButton(
-                      //                               icon: const Icon(
-                      //                                   Icons.search),
-                      //                               onPressed: () {
-                      //                                 controller
-                      //                                     .isContactCustomerSearch
-                      //                                     .value = false;
-                      //                                 controller
-                      //                                     .contactSearchTextFieldController
-                      //                                     .clear();
-                      //                               }),
-                      //                         ),
-                      //                       ),
-                      //                     ),
-                      //                     // : Text(
-                      //                     //     AppStrings.SEARCH_CUSTOMER,
-                      //                     //     style: context.bodyLarge,
-                      //                     //   ),
-                      //                     Row(
-                      //                       children: [
-                      //                         // controller.isContactCustomerSearch
-                      //                         //         .value
-                      //                         //     ? const SizedBox.shrink()
-                      //                         //     : GestureDetector(
-                      //                         //         onTap: () {
-                      //                         //           controller
-                      //                         //               .isContactCustomerSearch
-                      //                         //               .value = true;
-                      //                         //         },
-                      //                         //         child: const Icon(
-                      //                         //             Icons.search),
-                      //                         //       ),
-                      //                         GestureDetector(
-                      //                           onTap: () {
-                      //                             controller
-                      //                                 .isContactCustomerExpanded
-                      //                                 .value = false;
-                      //                           },
-                      //                           child: const Icon(
-                      //                             Icons.arrow_drop_up,
-                      //                             size: Sizes.WIDTH_40,
-                      //                             color: Color.fromRGBO(
-                      //                                 0, 0, 0, 1),
-                      //                           ),
-                      //                         ),
-                      //                       ],
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //                 Expanded(
-                      //                   child: Scrollbar(
-                      //                     interactive: true,
-                      //                     thickness: 12,
-                      //                     thumbVisibility: true,
-                      //                     controller: controller
-                      //                         .contactCustomerScrollController,
-                      //                     child: controller.tliCustomers
-                      //                                     ?.value !=
-                      //                                 null &&
-                      //                             controller.tliCustomers!.value
-                      //                                 .isNotEmpty
-                      //                         ? ListView.builder(
-                      //                             scrollDirection:
-                      //                                 Axis.vertical,
-                      //                             controller: controller
-                      //                                 .contactCustomerScrollController,
-                      //                             itemCount: controller
-                      //                                 .tliCustomers
-                      //                                 ?.value
-                      //                                 .length,
-                      //                             itemBuilder:
-                      //                                 (context, index) {
-                      //                               final sortedCustomers =
-                      //                                   controller
-                      //                                       .tliCustomers!.value
-                      //                                     ..sort((a, b) => a
-                      //                                         .name!
-                      //                                         .toLowerCase()
-                      //                                         .compareTo(b.name!
-                      //                                             .toLowerCase()));
-                      //                               final filteredData =
-                      //                                   sortedCustomers[index]
-                      //                                       .name;
-                      //                               return ListTile(
-                      //                                 title:
-                      //                                     Text(filteredData!),
-                      //                                 onTap: () {
-                      //                                   controller
-                      //                                           .contactCustomerNo
-                      //                                           .value =
-                      //                                       controller
-                      //                                           .tliCustomers!
-                      //                                           .value[index]
-                      //                                           .no!;
-                      //                                   controller
-                      //                                       .contactCustomerTextFieldController
-                      //                                       .text = filteredData;
-                      //                                   controller
-                      //                                       .isContactCustomerExpanded
-                      //                                       .value = false;
-                      //                                   controller
-                      //                                       .contactSearchTextFieldController
-                      //                                       .clear();
-                      //                                 },
-                      //                               );
-                      //                             },
-                      //                           )
-                      //                         : const Center(
-                      //                             child: Text(
-                      //                                 AppStrings.NO_CUST_AVAIL),
-                      //                           ),
-                      //                   ),
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //   ),
-                      // ),
                       Obx(
                         () => !controller.isContactCustomerExpanded.value
                             ? Padding(
@@ -272,8 +87,10 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                           child: TextField(
                                             autofocus: true,
                                             onChanged: (value) {
-                                              controller
-                                                  .filterCustomerList(value, customerVisitController.tliCustomers);
+                                              controller.filterCustomerList(
+                                                  value,
+                                                  customerVisitController
+                                                      .tliCustomers);
                                             },
                                             controller: controller
                                                 .contactCustomerTextFieldController,
@@ -440,17 +257,7 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                               ),
                               CustomElevatedButton(
                                 onPressed: () {
-                                  controller.createTliContacts(
-                                    name: controller
-                                        .contactFullNameTextFieldController
-                                        .text,
-                                    customerNo:
-                                        controller.contactCustomerNo.value,
-                                    email: controller
-                                        .contactEmailTextFieldController.text,
-                                    phoneNo: controller
-                                        .contactPhoneNoTextFieldController.text,
-                                  );
+                                  controller.ateendeeFormValidation();
                                 },
                                 title: AppStrings.SAVE,
                                 minWidht: Sizes.WIDTH_100,
