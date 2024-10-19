@@ -38,7 +38,7 @@ class AppStrings {
   static const String CUSTOMER_VISIT = 'Customer visit';
 
   // hint_text
-  static const String FULL_NAME = 'Full Name';
+  static const String NAME = 'Name';
   static const String PH_NUMBER = 'Phone Number';
   static const String EMAIL = "Email";
   static const String EMAIL_2 = "EMAIL";

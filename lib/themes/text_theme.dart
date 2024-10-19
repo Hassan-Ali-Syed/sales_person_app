@@ -13,41 +13,41 @@ TextTheme buildTextTheme({
   // required Color buttonColor,
 }) =>
     TextTheme(
-      titleLarge: GoogleFonts.manrope(
+      titleLarge: GoogleFonts.nunitoSans(
         textStyle: TextStyle(
           fontSize: Sizes.TEXT_SIZE_32,
           color: textColor,
           fontWeight: _bold,
         ),
       ),
-      titleMedium: GoogleFonts.manrope(
+      titleMedium: GoogleFonts.nunitoSans(
           textStyle: TextStyle(
         fontSize: Sizes.TEXT_SIZE_18,
         color: textColor,
         fontWeight: _bold,
       )),
-      titleSmall: GoogleFonts.manrope(
+      titleSmall: GoogleFonts.nunitoSans(
         textStyle: TextStyle(
           fontSize: Sizes.TEXT_SIZE_16,
           color: textColor,
           fontWeight: _light,
         ),
       ),
-      bodyLarge: GoogleFonts.manrope(
+      bodyLarge: GoogleFonts.nunitoSans(
         textStyle: TextStyle(
           fontSize: Sizes.TEXT_SIZE_18,
           fontWeight: _semiBold,
           color: textColor,
         ),
       ),
-      bodyMedium: GoogleFonts.manrope(
+      bodyMedium: GoogleFonts.nunitoSans(
         textStyle: TextStyle(
           fontWeight: _medium,
           fontSize: Sizes.TEXT_SIZE_16,
           color: textColor,
         ),
       ),
-      bodySmall: GoogleFonts.manrope(
+      bodySmall: GoogleFonts.nunitoSans(
         fontWeight: _medium,
         textStyle: TextStyle(
           fontSize: Sizes.TEXT_SIZE_14,

@@ -15,41 +15,45 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController logoController;
-  late AnimationController companyNameController;
-  late Animation<double> logoAnimation;
-  late Animation<double> companyNameAnimation;
+  late AnimationController fadeControllerTitle;
+  late Animation<double> fadeAnimationTitle;
+  late AnimationController fadeControllerLogo;
+  late Animation<double> fadeAnimationLogo;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize animations
-    logoController = AnimationController(
+    fadeControllerTitle = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-    companyNameController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
     );
 
-    logoAnimation = Tween<double>(begin: 544, end: 0).animate(
+    fadeAnimationTitle = Tween<double>(begin: 0.0, end: 1).animate(
       CurvedAnimation(
-          parent: logoController, curve: Curves.fastEaseInToSlowEaseOut),
-    );
-    companyNameAnimation = Tween<double>(begin: -200, end: 0).animate(
-      CurvedAnimation(
-          parent: companyNameController, curve: Curves.fastEaseInToSlowEaseOut),
+        parent: fadeControllerTitle,
+        curve: Curves.easeInOut,
+      ),
     );
 
-    // Start animations after a slight delay
+    fadeControllerLogo = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+
+    fadeAnimationLogo = Tween<double>(begin: 0.2, end: 1).animate(
+      CurvedAnimation(
+        parent: fadeControllerLogo,
+        curve: Curves.easeInOut,
+      ),
+    );
     Future.delayed(const Duration(seconds: 1), () {
-      logoController.forward();
-      companyNameController.forward();
+      fadeControllerTitle.forward();
+      Future.delayed(const Duration(seconds: 1), () {
+        fadeControllerLogo.forward();
+      });
     });
 
-    // Navigate to SignInScreen after 4 seconds
     Timer(const Duration(seconds: 4), () {
       Get.offNamed(AppRoutes.SIGN_IN);
     });
@@ -57,27 +61,18 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
-    logoController.dispose();
-    companyNameController.dispose();
+    fadeControllerTitle.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff7C7A7A),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          AnimatedBuilder(
-            animation: companyNameAnimation,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, companyNameAnimation.value),
-                child: child,
-              );
-            },
+      backgroundColor: const Color(0xffE9E8E7),
+      body: Center(
+        child: Column(children: [
+          FadeTransition(
+            opacity: fadeAnimationTitle,
             child: Padding(
               padding: const EdgeInsets.only(
                   top: Sizes.PADDING_80, bottom: Sizes.PADDING_144),
@@ -86,28 +81,20 @@ class _SplashScreenState extends State<SplashScreen>
                 style: context.titleLarge.copyWith(
                   fontSize: Sizes.TEXT_SIZE_50,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xffFAFAFA),
+                  color: const Color(0xff58595B),
                   fontFamily: 'Nunito Sans',
                 ),
               ),
             ),
           ),
-          Center(
-            child: AnimatedBuilder(
-              animation: logoAnimation,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(0, logoAnimation.value),
-                  child: child,
-                );
-              },
-              child: Image.asset(
-                height: Sizes.HEIGHT_260,
-                AppAssets.getPNGIcon(AppAssets.SPLASH_SCREEN_LOGO),
-              ),
+          FadeTransition(
+            opacity: fadeAnimationLogo,
+            child: Image.asset(
+              height: Sizes.HEIGHT_260,
+              AppAssets.getPNGIcon(AppAssets.SPLASH_SCREEN_LOGO),
             ),
           ),
-        ],
+        ]),
       ),
     );
   }

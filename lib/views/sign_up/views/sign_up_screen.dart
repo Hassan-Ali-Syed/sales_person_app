@@ -21,23 +21,20 @@ class SignUpScreen extends GetView<SignUpController> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.PADDING_16, vertical: Sizes.PADDING_30),
+              horizontal: Sizes.PADDING_24, vertical: Sizes.PADDING_30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 AppStrings.HI,
                 style: context.titleLarge.copyWith(
-                  color: const Color(0xff2B2829),
+                  color: const Color(0xff58595B),
                 ),
-              ),
-              const SizedBox(
-                height: Sizes.HEIGHT_6,
               ),
               Text(
                 AppStrings.CREATE_NEW_ACCOUNT,
                 style: context.bodyLarge.copyWith(
-                  color: const Color(0xff433E3F),
+                  color: const Color(0xff58595B),
                 ),
               ),
               const SizedBox(
@@ -47,19 +44,19 @@ class SignUpScreen extends GetView<SignUpController> {
                 hinttext: AppStrings.EMAIL,
               ),
               const Padding(
-                padding: EdgeInsets.only(top: Sizes.PADDING_18),
+                padding: EdgeInsets.only(top: Sizes.PADDING_14),
                 child: CustomTextField(
-                  hinttext: AppStrings.FULL_NAME,
+                  hinttext: AppStrings.NAME,
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: Sizes.PADDING_18),
+                padding: EdgeInsets.symmetric(vertical: Sizes.PADDING_14),
                 child: CustomTextField(
                   hinttext: AppStrings.PH_NUMBER,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: Sizes.PADDING_18),
+                padding: const EdgeInsets.only(bottom: Sizes.PADDING_14),
                 child: Obx(
                   () => CustomTextField(
                     hinttext: AppStrings.PASSWORD,
@@ -87,7 +84,7 @@ class SignUpScreen extends GetView<SignUpController> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    top: Sizes.PADDING_26, bottom: Sizes.PADDING_54),
+                    top: Sizes.PADDING_44, bottom: Sizes.PADDING_80),
                 child: CustomElevatedButton(
                   title: AppStrings.SEND_REQUEST,
                   onPressed: () {},

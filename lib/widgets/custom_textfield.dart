@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/extensions/context_extension.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -21,25 +22,13 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyBoardType ?? TextInputType.text,
       obscureText: obscureText,
       decoration: InputDecoration(
-          floatingLabelStyle: const TextStyle(
-            color:
-                Color(0xff7C7A7A), // Customize the label color when it floats
-            fontSize: 24, // Customize the font size
+          hintStyle: context.titleSmall.copyWith(
+            fontWeight: FontWeight.w600,
+            color: const Color(0xff939598),
           ),
-          labelText: hinttext,
           hintText: hinttext,
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-            borderSide: const BorderSide(
-              color: Color(0xff7C7A7A),
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-            borderSide: const BorderSide(
-              color: Color(0xff7C7A7A),
-            ),
-          ),
+          focusedBorder: const UnderlineInputBorder(),
+          enabledBorder: const UnderlineInputBorder(),
           suffixIcon: suffixIcon),
     );
   }
