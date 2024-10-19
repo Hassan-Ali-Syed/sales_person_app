@@ -112,7 +112,7 @@ class CustomRowCells extends StatelessWidget {
               children: [
                 Text(
                   maxLines: 2,
-                  notes,
+                  notes == 'null' ? '' : notes,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,

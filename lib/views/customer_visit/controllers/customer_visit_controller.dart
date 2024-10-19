@@ -41,8 +41,7 @@ class CustomerVisitController extends GetxController {
   RxBool itemsListRefresh = false.obs;
   RxBool isQtyPressed = false.obs;
 
-  final TextEditingController commentController = TextEditingController();
-  final TextEditingController notesController = TextEditingController();
+  TextEditingController commentController = TextEditingController();
   TextEditingController itemQntyController = TextEditingController();
 
   // Reactive variables

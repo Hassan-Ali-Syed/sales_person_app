@@ -1,10 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
-
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
@@ -21,17 +19,23 @@ class SignInController extends GetxController {
 
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  @override
+  void dispose() {
+    passwordController.clear();
+    emailController.clear();
+    super.dispose();
+  }
 
   @override
   void onInit() {
     super.onInit();
     Preferences().clearAll();
 
-    emailController = TextEditingController(text: 'mansoor.messo@gmail.com');
-    passwordController = TextEditingController(text: 'messo123');
+    // emailController = TextEditingController(text: 'hassan@gmail.com');
+    // passwordController = TextEditingController(text: 'hassan123');
 
-    // emailController = TextEditingController();
-    // passwordController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
   }
 
   @override
@@ -45,7 +49,6 @@ class SignInController extends GetxController {
     String token = await Preferences().getUserToken();
     return token;
   }
-
 
   Future<void> userLoginGraph() async {
     await BaseClient.safeApiCall(

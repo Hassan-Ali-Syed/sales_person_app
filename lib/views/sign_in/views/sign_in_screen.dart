@@ -17,27 +17,27 @@ class SignInScreen extends GetView<SignInController> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: controller.signInScaffoldKey,
-      appBar: customAppBar(context: context, automaticallyImplyLeading: false),
+      appBar: customAppBar(
+        context: context,
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.PADDING_16, vertical: Sizes.PADDING_30),
+              horizontal: Sizes.PADDING_24, vertical: Sizes.PADDING_30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 AppStrings.WELCOME,
                 style: context.titleLarge.copyWith(
-                  color: const Color(0xff2B2829),
+                  color: const Color(0xff58595B),
                 ),
-              ),
-              const SizedBox(
-                height: Sizes.HEIGHT_6,
               ),
               Text(
                 AppStrings.SIGN_IN_TO_CONTINUE,
                 style: context.bodyLarge.copyWith(
-                  color: const Color(0xff433E3F),
+                  color: const Color(0xff58595B),
                 ),
               ),
               const SizedBox(
@@ -46,49 +46,33 @@ class SignInScreen extends GetView<SignInController> {
               TextField(
                 controller: controller.emailController,
                 decoration: InputDecoration(
-                  floatingLabelStyle: const TextStyle(
-                    color: Color(0xff7C7A7A),
-                    fontSize: 24,
+                  hintStyle: context.titleSmall.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xff939598),
                   ),
-                  labelText: AppStrings.EMAIL,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-                    borderSide: const BorderSide(
-                      color: Color(0xff7C7A7A),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-                    borderSide: const BorderSide(
-                      color: Color(0xff7C7A7A),
-                    ),
-                  ),
+                  focusedBorder: const UnderlineInputBorder(),
+                  enabledBorder: const UnderlineInputBorder(),
+                  hintText: AppStrings.EMAIL,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Sizes.PADDING_18),
+                padding: const EdgeInsets.only(
+                    top: Sizes.PADDING_14, bottom: Sizes.PADDING_44),
                 child: Obx(
                   () => TextField(
                     controller: controller.passwordController,
                     obscureText: controller.isObscure.value,
                     decoration: InputDecoration(
-                      floatingLabelStyle: const TextStyle(
-                        color: Color(0xff7C7A7A),
-                        fontSize: 24,
+                      hintStyle: context.titleSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xff939598),
                       ),
-                      labelText: AppStrings.PASSWORD,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-                        borderSide: const BorderSide(
-                          color: Color(0xff7C7A7A),
-                        ),
+                      label: const Text(
+                        AppStrings.PASSWORD,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-                        borderSide: const BorderSide(
-                          color: Color(0xff7C7A7A),
-                        ),
-                      ),
+                      focusedBorder: const UnderlineInputBorder(),
+                      enabledBorder: const UnderlineInputBorder(),
+                      hintText: AppStrings.PASSWORD,
                       suffixIcon: GestureDetector(
                         onTap: () => controller.isObscure.value =
                             !controller.isObscure.value,
@@ -107,14 +91,14 @@ class SignInScreen extends GetView<SignInController> {
                 onPressed: () {
                   controller.signInMethod();
 
-
                   // controller.getuserToken();
-
                 },
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    bottom: Sizes.PADDING_60, top: Sizes.PADDING_6),
+                    bottom: Sizes.PADDING_60,
+                    top: Sizes.PADDING_6,
+                    right: Sizes.PADDING_6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -163,11 +147,11 @@ class SignInScreen extends GetView<SignInController> {
                       ),
                     ),
                     GestureDetector(
-                       onTap: () async {
-                    Get.to(() {
-                      return const MicrosoftLoginWebView();
-                    });
-                  },
+                      onTap: () async {
+                        Get.to(() {
+                          return const MicrosoftLoginWebView();
+                        });
+                      },
                       child: Image.asset(
                         AppAssets.getPNGIcon(AppAssets.MICROSOFT_LOGO),
                       ),
