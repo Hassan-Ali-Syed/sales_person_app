@@ -8,6 +8,7 @@ import 'package:sales_person_app/views/sign_in/controller/sign_in_controller.dar
 import 'package:sales_person_app/views/sign_in/views/microsoft_login_web_view.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
+import 'package:sales_person_app/widgets/custom_textfield.dart';
 
 class SignInScreen extends GetView<SignInController> {
   static const String routeName = '/sign_in_screen';
@@ -43,43 +44,23 @@ class SignInScreen extends GetView<SignInController> {
               const SizedBox(
                 height: Sizes.HEIGHT_62,
               ),
-              TextField(
+              CustomTextField(
+                hinttext: AppStrings.EMAIL,
                 controller: controller.emailController,
-                decoration: InputDecoration(
-                  hintStyle: context.titleSmall.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xff939598),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(),
-                  enabledBorder: const UnderlineInputBorder(),
-                  hintText: AppStrings.EMAIL,
-                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    top: Sizes.PADDING_14, bottom: Sizes.PADDING_44),
+                    top: Sizes.PADDING_6, bottom: Sizes.PADDING_44),
                 child: Obx(
-                  () => TextField(
+                  () => CustomTextField(
+                    hinttext: AppStrings.PASSWORD,
                     controller: controller.passwordController,
                     obscureText: controller.isObscure.value,
-                    decoration: InputDecoration(
-                      hintStyle: context.titleSmall.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xff939598),
-                      ),
-                      label: const Text(
-                        AppStrings.PASSWORD,
-                      ),
-                      focusedBorder: const UnderlineInputBorder(),
-                      enabledBorder: const UnderlineInputBorder(),
-                      hintText: AppStrings.PASSWORD,
-                      suffixIcon: GestureDetector(
-                        onTap: () => controller.isObscure.value =
-                            !controller.isObscure.value,
-                        child: controller.isObscure.value
-                            ? const Icon(Icons.visibility_off)
-                            : const Icon(Icons.visibility),
-                      ),
+                    suffixIcon: GestureDetector(
+                      onTap: controller.toggleObscure,
+                      child: controller.isObscure.value
+                          ? const Icon(Icons.visibility_off)
+                          : const Icon(Icons.visibility),
                     ),
                   ),
                 ),
