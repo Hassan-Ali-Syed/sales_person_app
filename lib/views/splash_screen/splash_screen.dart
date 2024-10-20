@@ -38,8 +38,8 @@ class _SplashScreenState extends State<SplashScreen>
 
     fadeControllerLogo = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    )..repeat(reverse: true);
+      duration: const Duration(milliseconds: 900),
+    )..repeat(reverse: true, );
 
     fadeAnimationLogo = Tween<double>(begin: 0.2, end: 1).animate(
       CurvedAnimation(

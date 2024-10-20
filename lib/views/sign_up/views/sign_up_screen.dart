@@ -44,19 +44,20 @@ class SignUpScreen extends GetView<SignUpController> {
                 hinttext: AppStrings.EMAIL,
               ),
               const Padding(
-                padding: EdgeInsets.only(top: Sizes.PADDING_14),
+                padding: EdgeInsets.only(top: Sizes.PADDING_6),
                 child: CustomTextField(
                   hinttext: AppStrings.NAME,
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: Sizes.PADDING_14),
+                padding: EdgeInsets.symmetric(vertical: Sizes.PADDING_6),
                 child: CustomTextField(
+                  keyBoardType: TextInputType.number,
                   hinttext: AppStrings.PH_NUMBER,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: Sizes.PADDING_14),
+                padding: const EdgeInsets.only(bottom: Sizes.PADDING_6),
                 child: Obx(
                   () => CustomTextField(
                     hinttext: AppStrings.PASSWORD,
