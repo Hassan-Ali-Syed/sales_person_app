@@ -19,6 +19,22 @@ class Preferences {
   getUserToken() => storage.read("token");
   removeToken() => storage.remove("token");
 
+  // Store created orders in cache
+  void setCreatedOrders(List<Map<String, dynamic>> createdOrders) =>
+      storage.write('createdOrders', createdOrders);
+
+  getCreatedOrders() => storage.read('createdOrders');
+
+  void setFailedOrders(List<Map<String, dynamic>> failedOrders) =>
+      storage.write('failedOrders', failedOrders);
+
+  getFailedOrders() => storage.read('failedOrders');
+
+  clearOrdersCache() async {
+    await storage.remove('createdOrders');
+    await storage.remove('failedOrders');
+  }
+
   // Set the attendees data as a list of maps
   // void setAttendeesData(List<Map<String, dynamic>> attendeesList) {
   //   storage.write("attendeesData", attendeesList);
