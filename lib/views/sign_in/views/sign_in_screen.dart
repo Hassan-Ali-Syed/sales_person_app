@@ -19,6 +19,7 @@ class SignInScreen extends GetView<SignInController> {
     return Scaffold(
       key: controller.signInScaffoldKey,
       appBar: customAppBar(
+        backButton: false,
         context: context,
         automaticallyImplyLeading: false,
       ),

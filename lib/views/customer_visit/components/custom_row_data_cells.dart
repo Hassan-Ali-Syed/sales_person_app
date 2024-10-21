@@ -41,7 +41,7 @@ class CustomRowCells extends StatelessWidget {
     return Row(
       children: [
         // Safely handle itemName with default value ''
-        _buildCell(itemName ?? '', Sizes.WIDTH_118),
+        _buildCell(itemName ?? '', Sizes.WIDTH_120),
 
         // Handle qty display and editing
         isQtyPressed && rowIndex == selectedIndex
@@ -74,7 +74,7 @@ class CustomRowCells extends StatelessWidget {
             : GestureDetector(
                 onTap: qtyOnTap,
                 child: Container(
-                  width: Sizes.WIDTH_60,
+                  width: Sizes.WIDTH_50,
                   height: Sizes.HEIGHT_50,
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -93,13 +93,13 @@ class CustomRowCells extends StatelessWidget {
               ),
 
         // Safely handle price with a default value ''
-        _buildCell(price ?? '', Sizes.WIDTH_80),
+        _buildCell(price ?? '', Sizes.WIDTH_60),
 
         // Handle notes display and editing
         Container(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.PADDING_4),
           height: Sizes.HEIGHT_50,
-          width: Sizes.WIDTH_118,
+          width: Sizes.WIDTH_120,
           decoration: BoxDecoration(
             border: Border.all(
               color: LightTheme.grayColorShade5,
@@ -110,21 +110,27 @@ class CustomRowCells extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  maxLines: 2,
-                  notes == 'null' ? '' : notes,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                Flexible(
+                  child: Text(
+                    overflow:
+                        TextOverflow.ellipsis, // Add ellipsis for overflow
+                    maxLines: 1,
+
+                    notes == 'null' ? '' : notes,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
                 GestureDetector(
                   onTap: commentDialogBoxOnPressed,
                   child: const Icon(
-                    Icons.edit,
+                    Icons.edit_note,
                     color: LightTheme.appBarTextColor,
+                    size: Sizes.ICON_SIZE_30,
                   ),
                 )
               ],

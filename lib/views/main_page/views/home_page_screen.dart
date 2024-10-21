@@ -37,15 +37,12 @@ class HomePageScreen extends GetView<MainPageController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(left: Sizes.PADDING_24),
-                          child: Text(
-                            'Home',
-                            style: TextStyle(
-                              fontSize: Sizes.TEXT_SIZE_20,
-                              fontWeight: FontWeight.normal,
-                              color: LightTheme.appBarTextColor,
-                            ),
+                        const Text(
+                          'Home',
+                          style: TextStyle(
+                            fontSize: Sizes.TEXT_SIZE_20,
+                            fontWeight: FontWeight.normal,
+                            color: LightTheme.appBarTextColor,
                           ),
                         ),
                         GestureDetector(
@@ -69,6 +66,9 @@ class HomePageScreen extends GetView<MainPageController> {
                             height: Sizes.HEIGHT_44,
                             width: Sizes.WIDTH_250,
                             child: TextField(
+                              style: context.titleMedium.copyWith(
+                                color: const Color(0xff58595B),
+                              ),
                               textAlign: TextAlign.start,
                               textAlignVertical: TextAlignVertical.top,
                               decoration: InputDecoration(
@@ -120,7 +120,10 @@ class HomePageScreen extends GetView<MainPageController> {
                       color: const Color(0xff58595B),
                     ),
                   ),
-                  trailing: const Icon(Icons.add_circle),
+                  trailing: GestureDetector(
+                    onTap: () {},
+                    child: const Icon(Icons.add_circle),
+                  ),
                 ),
               ),
               Center(

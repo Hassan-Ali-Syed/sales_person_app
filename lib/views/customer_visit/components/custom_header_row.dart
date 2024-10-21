@@ -11,19 +11,19 @@ class CustomHeaderRow extends StatelessWidget {
     return const Row(
       children: [
         CustomHeaderCell(
-          width: Sizes.WIDTH_118,
+          width: Sizes.WIDTH_120,
           text: 'Item Name',
         ),
         CustomHeaderCell(
-          width: Sizes.WIDTH_60,
+          width: Sizes.WIDTH_50,
           text: 'Qty',
         ),
         CustomHeaderCell(
-          width: Sizes.WIDTH_80,
+          width: Sizes.WIDTH_60,
           text: 'Price',
         ),
         CustomHeaderCell(
-          width: Sizes.WIDTH_118,
+          width: Sizes.WIDTH_120,
           text: 'Notes',
         ),
       ],

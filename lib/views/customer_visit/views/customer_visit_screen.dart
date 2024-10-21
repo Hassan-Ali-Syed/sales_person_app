@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
@@ -26,9 +27,18 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
       child: Scaffold(
         key: controller.customerVisitScaffoldKey,
         appBar: customAppBar(
+          title: Text(
+            AppStrings.CUSTOMER_VISIT,
+            style: GoogleFonts.nunitoSans(
+                textStyle: const TextStyle(
+              fontSize: Sizes.TEXT_SIZE_20,
+              fontWeight: FontWeight.normal,
+              color: LightTheme.appBarTextColor,
+            )),
+          ),
+          customLeading: false,
           context: context,
           automaticallyImplyLeading: true,
-          title: const Text(AppStrings.CUSTOMER_VISIT),
           isDrawerIcon: true,
           onTap: () =>
               controller.customerVisitScaffoldKey.currentState!.openEndDrawer(),
@@ -41,8 +51,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
         body: SingleChildScrollView(
           child: Padding(
               padding: const EdgeInsets.only(
-                left: Sizes.PADDING_8,
-                right: Sizes.PADDING_8,
+                left: Sizes.PADDING_20,
+                right: Sizes.PADDING_20,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,6 +65,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               top: Sizes.PADDING_6,
                             ),
                             child: TextField(
+                              style: context.titleMedium
+                                  .copyWith(color: const Color(0xff58595B)),
                               onTap: () =>
                                   controller.isCustomerExpanded.value = true,
                               controller:
@@ -72,7 +84,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   icon: const Icon(
                                     Icons.arrow_drop_down,
                                     size: Sizes.WIDTH_30,
-                                    color: Colors.black,
+                                    color: Color(0xff7C7A7A),
                                   ),
                                 ),
                               ),
@@ -96,6 +108,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   children: [
                                     Expanded(
                                       child: TextField(
+                                        style: context.titleMedium.copyWith(
+                                            color: const Color(0xff58595B)),
                                         autofocus: true,
                                         onChanged: (value) {
                                           controller.filterCustomerList(value);
@@ -128,6 +142,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 ),
                                 Expanded(
                                   child: Scrollbar(
+                                    radius:
+                                        const Radius.circular(Sizes.RADIUS_6),
                                     interactive: true,
                                     thickness: 12,
                                     thumbVisibility: true,
@@ -157,7 +173,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                   : controller.tliCustomers
                                                       ?.value[index].name;
                                               return ListTile(
-                                                title: Text(filteredData!),
+                                                title: Text(
+                                                  filteredData!,
+                                                  style: context.titleMedium
+                                                      .copyWith(
+                                                          color: const Color(
+                                                              0xff58595B)),
+                                                ),
                                                 onTap: () {
                                                   controller
                                                       .setCustomerData(index);
@@ -207,6 +229,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                     () => controller.isAddressFieldVisible.value
                         ? SizedBox(
                             child: TextField(
+                              style: context.titleMedium
+                                  .copyWith(color: const Color(0xff58595B)),
                               controller: controller.addressController,
                               readOnly: true,
                               decoration: const InputDecoration(
@@ -227,6 +251,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   top: Sizes.PADDING_8,
                                 ),
                                 child: TextField(
+                                  style: context.titleMedium
+                                      .copyWith(color: const Color(0xff58595B)),
                                   controller: controller.shipToAddController,
                                   readOnly: true,
                                   textAlign: TextAlign.left,
@@ -240,7 +266,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
                                         size: Sizes.WIDTH_30,
-                                        color: Colors.black,
+                                        color: Color(0xff7C7A7A),
                                       ),
                                     ),
                                   ),
@@ -300,6 +326,10 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     controller.customersShipToAdd.isNotEmpty
                                         ? Expanded(
                                             child: Scrollbar(
+                                              interactive: true,
+                                              thickness: 12,
+                                              radius: const Radius.circular(
+                                                  Sizes.RADIUS_6),
                                               thumbVisibility: true,
                                               controller: controller
                                                   .shipToAddScrollController,
@@ -314,7 +344,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                           .setSelectedShipToAdd(
                                                               index);
                                                   return ListTile(
-                                                    title: Text(filteredData),
+                                                    title: Text(
+                                                      filteredData,
+                                                      style: context.titleMedium
+                                                          .copyWith(
+                                                              color: const Color(
+                                                                  0xff58595B)),
+                                                    ),
                                                     onTap: () {
                                                       controller
                                                           .shipToAddController
@@ -374,11 +410,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   top: Sizes.PADDING_8,
                                 ),
                                 child: TextField(
+                                  style: context.titleMedium
+                                      .copyWith(color: const Color(0xff58595B)),
                                   controller: controller.attendeeController,
                                   readOnly: true,
                                   textAlign: TextAlign.left,
                                   decoration: InputDecoration(
-                                    labelText: AppStrings.ATTANDEE,
+                                    labelText: AppStrings.ATTANDEES,
                                     suffixIcon: IconButton(
                                       onPressed: () {
                                         controller.isAttendeeExpanded.value =
@@ -387,7 +425,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
                                         size: Sizes.WIDTH_30,
-                                        color: Colors.black,
+                                        color: Color(0xff7C7A7A),
                                       ),
                                     ),
                                   ),
@@ -452,6 +490,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     controller.customerContacts.isNotEmpty
                                         ? Expanded(
                                             child: Scrollbar(
+                                              radius: const Radius.circular(
+                                                  Sizes.RADIUS_6),
                                               interactive: true,
                                               thickness: 12,
                                               thumbVisibility: true,
@@ -480,7 +520,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                         },
                                                       ),
                                                     ),
-                                                    title: Text(filteredData),
+                                                    title: Text(
+                                                      filteredData,
+                                                      style: context.titleMedium
+                                                          .copyWith(
+                                                              color: const Color(
+                                                                  0xff58595B)),
+                                                    ),
                                                   );
                                                 },
                                               ),
@@ -523,7 +569,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                   ),
 
                   const SizedBox(
-                    height: Sizes.HEIGHT_10,
+                    height: Sizes.HEIGHT_20,
                   ),
 
                   Obx(
@@ -558,18 +604,14 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       color: controller.attendeeSelectedIndex
                                                   .value ==
                                               index
-                                          ? LightTheme.buttonBackgroundColor2
+                                          ? const Color(0xffE9E8E7)
                                           : Colors.white,
                                     ),
                                     child: Text(
                                       controller.selectedAttendees[index]
                                           ['name'],
-                                      style: TextStyle(
-                                        color: controller.attendeeSelectedIndex
-                                                    .value ==
-                                                index
-                                            ? Colors.white
-                                            : Colors.black,
+                                      style: const TextStyle(
+                                        color: Color(0xff58595B),
                                       ),
                                     ),
                                   ),
@@ -581,7 +623,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                   ),
 
                   const SizedBox(
-                    height: Sizes.HEIGHT_10,
+                    height: Sizes.HEIGHT_14,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -592,8 +634,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             : const SizedBox(),
                       ),
                       Obx(() {
-                        return controller.userItemListReferesh.value ||
-                                controller.isLoading.value
+                        return (controller.selectedAttendees.isEmpty ||
+                                    controller.selectedAttendees[controller
+                                            .attendeeSelectedIndex
+                                            .value]['tliSalesLine'] ==
+                                        null) &&
+                                (controller.userItemListReferesh.value ||
+                                    controller.isLoading.value)
                             ? const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -692,12 +739,18 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                 salesLineItem.itemDescription,
                                             price: salesLineItem.unitPrice
                                                 .toString(),
-                                            notes: salesLineItem.comment
-                                                .toString(),
+                                            notes: controller
+                                                    .itemsListRefresh.value
+                                                ? ''
+                                                : salesLineItem.comment
+                                                    .toString(),
                                             commentDialogBoxOnPressed: () {
-                                              controller
-                                                      .commentController.text =
-                                                  salesLineItem.comment
+                                              controller.commentController
+                                                  .text = salesLineItem.comment
+                                                          .toString() ==
+                                                      'null'
+                                                  ? ''
+                                                  : salesLineItem.comment
                                                       .toString();
 
                                               controller.itemIndex.value =
@@ -732,9 +785,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                       .toJson()
                                                       .toString(),
                                                 );
-
                                                 controller.itemsListRefresh
                                                     .value = false;
+
                                                 Get.back();
                                               },
                                                   controller: controller
@@ -761,7 +814,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   onPressed: !controller.isLoading.value
                                       ? () async {
                                           await controller
-                                              .createSalesOrdersOfSelectedattendees();
+                                              .createSalesOrdersOfSelectedAttendees();
                                         }
                                       : null,
                                   title: AppStrings.FINISH,
