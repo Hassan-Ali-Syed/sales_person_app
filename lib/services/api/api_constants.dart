@@ -36,5 +36,5 @@ class ApiConstants {
 
   // CREATE SALES LINE COMMENT URL IN POSH
   static const String CREATE_SALES_LINES_COMMENT =
-      '${BASE_URL_POSH}tliSalesComments';
+      '${BASE_URL_POSH}tliSalesComment';
 }

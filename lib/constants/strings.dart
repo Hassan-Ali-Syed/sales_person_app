@@ -61,7 +61,7 @@ class AppStrings {
       'Ship to Address not available';
   static const String SHIP_TO_ADD = 'Ship to add';
   static const String ADD_NEW_SHIP_TO_ADD = 'Add new ship to add';
-  static const String ATTANDEE = 'Attandee';
+  static const String ATTANDEES = 'Attandees';
   static const String SEARCH_ATTANDEE = 'Search attandee';
   static const String NO_CONTACTS_AVAILABLE = 'No Contacts Available';
   static const String COMING_SOON = 'Coming soon..';

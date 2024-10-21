@@ -40,8 +40,11 @@ class CustomerVisitController extends GetxController {
   RxBool userItemListReferesh = false.obs;
   RxBool itemsListRefresh = false.obs;
   RxBool isQtyPressed = false.obs;
+  var createdOrders = [];
+  var failedOrders = [];
+  RxString msg = ''.obs;
 
-  TextEditingController commentController = TextEditingController();
+  TextEditingController commentController = TextEditingController(text: '');
   TextEditingController itemQntyController = TextEditingController();
 
   // Reactive variables
@@ -106,37 +109,6 @@ class CustomerVisitController extends GetxController {
         log('*** onError *** \n ${e.message}');
       },
     );
-  }
-
-// CREATE SALES ORDER OF SELECTED ATTENDEES
-  Future<void> createSalesOrdersOfSelectedattendees() async {
-    var attendeesData = selectedAttendees;
-    for (var attendeeData in attendeesData) {
-      List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
-      List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
-      if (tliSalesLineElement.isNotEmpty) {
-        for (var tliSalesLineMap in tliSalesLineElement) {
-          listOfTliSalesLineMaps.add(
-            tliSalesLineMap.toJson(),
-          );
-        }
-        for (var i in listOfTliSalesLineMaps) {
-          i.remove('itemDescription');
-        }
-        await createSalesOrderRest(
-            sellToCustomerNo: customerNo,
-            contact: attendeeData['contactNo'],
-            tliSalesLines: listOfTliSalesLineMaps);
-      } else {
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Failed to create order',
-          message: '${attendeeData['name']} has no item(s)',
-          duration: const Duration(seconds: 2),
-        );
-        log('==Current attendee Data  ${attendeeData['name']}===================');
-      }
-      log('==LIST OF TliSALESLINE MAP   $listOfTliSalesLineMaps===================');
-    }
   }
 
   Future<void> getCustomerbyIdFromGraphQL(String no) async {
@@ -370,6 +342,93 @@ class CustomerVisitController extends GetxController {
     }
   }
 
+// CREATE SALES ORDER OF SELECTED ATTENDEES
+  Future<void> createSalesOrdersOfSelectedAttendees() async {
+    isLoading.value = true;
+    createdOrders.clear();
+    failedOrders.clear();
+    for (var attendeeData in selectedAttendees) {
+      var contactNo = attendeeData['contactNo'];
+      List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
+      List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
+      if (tliSalesLineElement.isNotEmpty) {
+        for (var tliSalesLineMap in tliSalesLineElement) {
+          listOfTliSalesLineMaps.add({
+            'lineNo': tliSalesLineMap.lineNo,
+            'type': tliSalesLineMap.type,
+            'no': tliSalesLineMap.no,
+            'quantity': tliSalesLineMap.quantity,
+            'unitPrice': tliSalesLineMap.unitPrice,
+          });
+        }
+        await BaseClient.safeApiCall(
+          ApiConstants.CREATE_SALES_ORDER,
+          RequestType.post,
+          headers: await BaseClient.generateHeadersWithToken(),
+          data: {
+            "no": "",
+            "sellToCustomerNo": customerNo,
+            "contact": contactNo,
+            "externalDocumentNo": createExternalDocumentNo(contactNo),
+            "locationCode": "SYOSSET",
+            "shipToCode": selectedShipToAddCode,
+            "tliSalesLines": listOfTliSalesLineMaps,
+          },
+          onSuccess: (response) async {
+            log('******* ON SUCCESS ${response.data} ****');
+
+            if (response.data['success']) {
+              createdOrders.add({'Attendee Name': attendeeData['name']});
+              var salesOrderNo = response.data['data']['no'];
+              log('******* Sales order No: $salesOrderNo ****');
+              for (var tliSalesLine in tliSalesLineElement) {
+                if (tliSalesLine.comment != null ||
+                    tliSalesLine.comment != '') {
+                  log('comment: ${tliSalesLine.comment}');
+                  await BaseClient.safeApiCall(
+                      ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
+                      headers: await BaseClient.generateHeadersWithToken(),
+                      data: {
+                        "no": salesOrderNo, // SalesOrder No
+                        "documentLineNo": tliSalesLine.lineNo, // Sales Line No
+                        "lineNo": 10000, // line no of comments of sales Line
+                        "date": currentDate(), // current date
+                        "comment": tliSalesLine.comment // comment
+                      }, onSuccess: (response) {
+                    log('******* ON SUCCESS ${response.data}');
+                  }, onError: (e) {
+                    log('******* ON Sales Line Comment Error Block******** \n ${e.message}');
+                  });
+                }
+              }
+            }
+          },
+          onError: (e) {
+            if (e.statusCode == 400) {
+              // External No already exist for Order No.
+              failedOrders.add({'Attendee Name': attendeeData['name']});
+              msg.value = e.response!.data["msg"];
+            } else if (e.statusCode == 500) {
+              // Order already created
+              failedOrders.add({'Attendee Name': attendeeData['name']});
+              msg.value = e.response!.data["msg"];
+            } else {
+              msg.value = 'Server Error';
+            }
+
+            log('**********Error Message: ${msg.value} *************');
+            isLoading.value = false;
+          },
+        );
+      } else {
+        failedOrders.add({'Attendee Name': attendeeData['name']});
+      }
+    }
+    isLoading.value = false;
+    log('Orders created: $createdOrders');
+    log('Orders cancelled: $failedOrders');
+  }
+
   // Set Selected Ship to Add
   String setSelectedShipToAdd(int index) {
     var address = customersShipToAdd[index]['address'] ?? 'Address not found';
@@ -490,53 +549,84 @@ class CustomerVisitController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add a Comment'),
+          contentPadding: EdgeInsets.zero,
           titleTextStyle: context.titleLarge.copyWith(
               color: const Color(0xff58595B), fontWeight: FontWeight.w800),
-          backgroundColor: LightTheme.appBarBackgroundColor,
-          content: TextField(
-            maxLength: 80,
-            controller: controller,
-            decoration: const InputDecoration(
-              enabledBorder: OutlineInputBorder(),
-              focusedBorder: OutlineInputBorder(),
-              hintText: 'Enter your comment here',
-            ),
-            maxLines: 4,
+          backgroundColor: Colors.white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: Sizes.HEIGHT_36,
+                color: LightTheme.appBarBackgroundColor,
+                width: double.infinity,
+                child: Center(
+                    child: Text(
+                  'Notes',
+                  style: context.titleSmall.copyWith(
+                      color: const Color(0xff58595B),
+                      fontWeight: FontWeight.bold),
+                )),
+              ),
+              const SizedBox(
+                height: Sizes.SIZE_4,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: Sizes.PADDING_16),
+                child: TextField(
+                  style: context.titleSmall.copyWith(
+                    color: const Color(0xff58595B),
+                  ),
+                  maxLength: 80,
+                  controller: controller,
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xffF3F3F3),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xffF3F3F3),
+                      ),
+                    ),
+                    hintText: 'Enter your comment here',
+                  ),
+                  maxLines: 4,
+                ),
+              ),
+            ],
           ),
           actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: Sizes.PADDING_10),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomElevatedButton(
-                  onPressed: () {
-                    Get.back();
-                    commentController.clear();
-                  },
-                  title: AppStrings.CANCEL,
-                  minWidht: Sizes.WIDTH_100,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(
-                    Sizes.RADIUS_6,
-                  ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              CustomElevatedButton(
+                onPressed: () {
+                  Get.back();
+                  commentController.clear();
+                },
+                title: AppStrings.CANCEL,
+                minWidht: Sizes.WIDTH_100,
+                minHeight: Sizes.HEIGHT_30,
+                backgroundColor: LightTheme.buttonBackgroundColor2,
+                borderRadiusCircular: BorderRadius.circular(
+                  Sizes.RADIUS_6,
                 ),
-                const SizedBox(
-                  width: Sizes.WIDTH_20,
+              ),
+              const SizedBox(
+                width: Sizes.WIDTH_20,
+              ),
+              CustomElevatedButton(
+                onPressed: onPressed,
+                title: 'Save',
+                minWidht: Sizes.WIDTH_100,
+                minHeight: Sizes.HEIGHT_30,
+                backgroundColor: LightTheme.buttonBackgroundColor2,
+                borderRadiusCircular: BorderRadius.circular(
+                  Sizes.RADIUS_6,
                 ),
-                CustomElevatedButton(
-                  onPressed: onPressed,
-                  title: 'Submit',
-                  minWidht: Sizes.WIDTH_100,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(
-                    Sizes.RADIUS_6,
-                  ),
-                ),
-              ]),
-            )
+              ),
+            ])
           ],
         );
       },

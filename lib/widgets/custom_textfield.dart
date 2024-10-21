@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 
@@ -48,6 +47,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     bool shouldShowLabel = (widget.controller?.text.isNotEmpty ?? false);
     return TextField(
+      controller: widget.controller,
       focusNode: _focusNode,
       style: context.titleMedium.copyWith(
         color: const Color(0xff58595B),
