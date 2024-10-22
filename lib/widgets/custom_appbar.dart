@@ -14,12 +14,14 @@ AppBar customAppBar({
   void Function()? backOnTap,
   bool isDrawerIcon = false,
   bool backButton = true,
+  Color? appBarColor,
   // bool isBackButton = false,
 }) {
   return AppBar(
     automaticallyImplyLeading: false,
     elevation: Sizes.ELEVATION_0,
-    backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+    backgroundColor:
+        appBarColor ?? Theme.of(context).appBarTheme.backgroundColor,
     title: Padding(
       padding: const EdgeInsets.only(left: Sizes.PADDING_2),
       child: Row(
