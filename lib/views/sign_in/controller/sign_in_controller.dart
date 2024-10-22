@@ -16,6 +16,7 @@ class SignInController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isServerError = false.obs;
   RxString msg = "".obs;
+  RxString errorTitle = ''.obs;
 
   late TextEditingController emailController;
   late TextEditingController passwordController;
@@ -30,10 +31,6 @@ class SignInController extends GetxController {
   void onInit() {
     super.onInit();
     Preferences().clearAll();
-
-    // emailController = TextEditingController(text: 'hassan@gmail.com');
-    // passwordController = TextEditingController(text: 'hassan123');
-
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -50,29 +47,42 @@ class SignInController extends GetxController {
     return token;
   }
 
-  Future<void> userLoginGraph() async {
+  Future<void> signInRest() async {
     await BaseClient.safeApiCall(
-      ApiConstants.BASE_URL_GRAPHQL,
-      RequestType.mutate,
-      headersForGraphQL: BaseClient.generateHeadersForGraphQL2_0(),
-      query: """
-        mutation {
-            login(input: {
-                email: "${emailController.text}"
-                password: "${passwordController.text}"
-            }) {
-                token
-            }
-        }""",
+      ApiConstants.LOGIN,
+      RequestType.post,
+      headers: await BaseClient.generateHeaders(),
+      data: {
+        "email": emailController.text,
+        "password": passwordController.text
+      },
       onLoading: () {
         isLoading.value = true;
       },
-      onSuccessGraph: (response) async {
-        Preferences().setUserToken(response.data!['login']["token"]);
-        log('Token: ${Preferences().getUserToken()}');
-        Get.offNamed(AppRoutes.MAIN_PAGE);
+      onSuccess: (response) async {
+        if (response.data!['success']) {
+          addUserLoginData(response.data!);
+        }
       },
       onError: (e) {
+        if (e.statusCode == 401) {
+          log('status code ${e.statusCode}: ${e.response?.data['message']}');
+          msg.value = e.response?.data['message'];
+          errorTitle.value = 'Invalid credentials';
+        } else if (e.statusCode == 422) {
+          log('status code ${e.statusCode}: ${e.response?.data['errors']['email'][0]}');
+          msg.value = e.response?.data['errors']['email'][0];
+          errorTitle.value = 'Invalid email';
+        } else {
+          log('status code ${e.statusCode}: ${e.response}');
+          errorTitle.value = 'Server error';
+          msg.value = e.message;
+        }
+        CustomSnackBar.showCustomErrorSnackBar(
+          title: errorTitle.value,
+          message: msg.value,
+          duration: const Duration(seconds: 2),
+        );
         isServerError.value = true;
       },
     );
@@ -83,20 +93,33 @@ class SignInController extends GetxController {
     userLoginData = SignInModel.fromJson(data);
     Preferences().setUser(userLoginData!.data!);
     Preferences().setUserToken(userLoginData!.data!.token!);
-    // await userLoginGraph();
+    log('Token: ${Preferences().getUserToken()}');
+    log('User: ${Preferences().getUser().name}');
     isLoading.value = false;
     Get.offAllNamed(AppRoutes.MAIN_PAGE);
   }
 
   void signInMethod() {
-    if (emailController.text != '' && passwordController.text != '') {
-      userLoginGraph();
-    } else {
+    if (emailController.text == '' && passwordController.text == '') {
       CustomSnackBar.showCustomErrorSnackBar(
         title: 'Invalid Input',
-        message: 'Enter All Fields',
+        message: 'Enter email address & password',
         duration: const Duration(seconds: 3),
       );
+    } else if (emailController.text == '') {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Invalid Input',
+        message: 'Enter email address',
+        duration: const Duration(seconds: 3),
+      );
+    } else if (passwordController.text == '') {
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Invalid Input',
+        message: 'Enter Password',
+        duration: const Duration(seconds: 3),
+      );
+    } else {
+      signInRest();
     }
   }
 

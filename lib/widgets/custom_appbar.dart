@@ -15,7 +15,6 @@ AppBar customAppBar({
   bool isDrawerIcon = false,
   bool backButton = true,
   Color? appBarColor,
-  // bool isBackButton = false,
 }) {
   return AppBar(
     automaticallyImplyLeading: false,
@@ -44,17 +43,6 @@ AppBar customAppBar({
         ],
       ),
     ),
-
-    // customLeading
-    //     ? widget
-    //     : (automaticallyImplyLeading
-    //         ? GestureDetector(
-    //             onTap: backOnTap ?? () => Get.back(),
-    //             child: Icon(Icons.arrow_back_ios,
-    //                 color: Theme.of(context).iconTheme.color),
-    //           )
-    //         : const SizedBox.shrink()),
-    // title: title,
     actions: [
       if (isDrawerIcon)
         Padding(
