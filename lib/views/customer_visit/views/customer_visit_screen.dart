@@ -50,9 +50,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-              padding: const EdgeInsets.only(
-                left: Sizes.PADDING_20,
-                right: Sizes.PADDING_20,
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.PADDING_22,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,6 +64,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               top: Sizes.PADDING_6,
                             ),
                             child: TextField(
+                              scrollPadding: EdgeInsets.zero,
                               style: context.bodySmall.copyWith(
                                 fontWeight: FontWeight.w400,
                                 fontSize: Sizes.TEXT_SIZE_16,
@@ -79,18 +79,57 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 controller.isAddressFieldVisible.value = true;
                               },
                               decoration: InputDecoration(
-                                labelText: AppStrings.CUSTOMER_NAME,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
+                                floatingLabelStyle: context.titleLarge.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xff939598),
+                                ),
+                                hintStyle: context.titleSmall.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xff939598),
+                                ),
+                                label: Text(
+                                  AppStrings.CUSTOMER,
+                                  style: context.titleSmall.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xff939598),
+                                  ),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff7C7A7A),
+                                  ),
+                                ),
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff7C7A7A),
+                                  ),
+                                ),
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
                                     controller.isCustomerExpanded.value = true;
                                   },
-                                  icon: const Icon(
+                                  child: const Icon(
                                     Icons.arrow_drop_down,
-                                    size: Sizes.WIDTH_30,
+                                    size: Sizes.WIDTH_26,
                                     color: Color(0xff7C7A7A),
                                   ),
                                 ),
                               ),
+                              //  InputDecoration(
+                              //   labelText: AppStrings.CUSTOMER_NAME,
+                              //   suffixIcon:
+                              // IconButton(
+                              //     onPressed: () {
+                              //       controller.isCustomerExpanded.value = true;
+                              //     },
+                              //     icon:
+                              // const Icon(
+                              //       Icons.arrow_drop_down,
+                              //       size: Sizes.WIDTH_30,
+                              //       color: Color(0xff7C7A7A),
+                              //     ),
+                              //   ),
+                              // ),
                             ),
                           )
                         : Container(
@@ -123,9 +162,23 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                         onTapOutside: (event) {},
                                         decoration: InputDecoration(
                                           labelText: AppStrings.SEARCH_CUSTOMER,
-                                          border: const UnderlineInputBorder(),
+                                          focusedBorder:
+                                              const UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0xff7C7A7A),
+                                            ),
+                                          ),
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0xff7C7A7A),
+                                            ),
+                                          ),
                                           suffixIcon: IconButton(
-                                            icon: const Icon(Icons.search),
+                                            icon: const Icon(
+                                              Icons.search,
+                                              color: Color(0xff58595B),
+                                            ),
                                             onPressed: () {},
                                           ),
                                         ),
@@ -138,11 +191,14 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       },
                                       child: const Icon(
                                         Icons.arrow_drop_up,
-                                        size: Sizes.WIDTH_40,
-                                        color: Color.fromRGBO(0, 0, 0, 1),
+                                        size: Sizes.WIDTH_26,
+                                        color: Color(0xff7C7A7A),
                                       ),
                                     ),
                                   ],
+                                ),
+                                const SizedBox(
+                                  height: Sizes.HEIGHT_10,
                                 ),
                                 Expanded(
                                   child: Scrollbar(
@@ -177,6 +233,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                   : controller.tliCustomers
                                                       ?.value[index].name;
                                               return ListTile(
+                                                visualDensity:
+                                                    VisualDensity.compact,
+                                                dense: true,
+                                                horizontalTitleGap: 0,
+                                                contentPadding: EdgeInsets.zero,
                                                 title: Text(
                                                   filteredData!,
                                                   style: context.bodySmall
@@ -203,14 +264,24 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                 child:
                                                     CircularProgressIndicator(),
                                               )
-                                            : const Center(
+                                            : Center(
                                                 child: Text(
-                                                    AppStrings.NO_CUST_AVAIL),
+                                                  AppStrings.NO_CUST_AVAIL,
+                                                  style: context.bodySmall
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize:
+                                                        Sizes.TEXT_SIZE_14,
+                                                    color:
+                                                        const Color(0xff58595B),
+                                                  ),
+                                                ),
                                               ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: Sizes.PADDING_8),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -220,9 +291,16 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                           children: [
                                             Text(
                                               AppStrings.ADD_CUSTOMER,
-                                              style: context.bodyLarge,
+                                              style: context.bodySmall.copyWith(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: Sizes.TEXT_SIZE_14,
+                                                color: const Color(0xff58595B),
+                                              ),
                                             ),
-                                            const Icon(Icons.add),
+                                            const Icon(
+                                              Icons.add,
+                                              color: Color(0xff58595B),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -246,7 +324,16 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               readOnly: true,
                               decoration: const InputDecoration(
                                 labelText: AppStrings.ADDRESS,
-                                border: UnderlineInputBorder(),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff7C7A7A),
+                                  ),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff7C7A7A),
+                                  ),
+                                ),
                               ),
                             ),
                           )
@@ -271,7 +358,17 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   readOnly: true,
                                   textAlign: TextAlign.left,
                                   decoration: InputDecoration(
-                                    labelText: AppStrings.SHIP_TO_ADD,
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff7C7A7A),
+                                      ),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff7C7A7A),
+                                      ),
+                                    ),
+                                    labelText: AppStrings.SHIP_TO,
                                     suffixIcon: IconButton(
                                       onPressed: () {
                                         controller.isShipToAddExpanded.value =
@@ -279,7 +376,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       },
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
-                                        size: Sizes.WIDTH_30,
+                                        size: Sizes.WIDTH_26,
                                         color: Color(0xff7C7A7A),
                                       ),
                                     ),
@@ -304,23 +401,40 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       children: [
                                         Expanded(
                                           child: TextField(
+                                            style: context.bodySmall.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: Sizes.TEXT_SIZE_16,
+                                              color: const Color(0xff58595B),
+                                            ),
                                             controller:
                                                 controller.shipToAddController,
                                             decoration: InputDecoration(
                                               labelText:
                                                   AppStrings.SEARCH_SHIP_TO_ADD,
-                                              border:
-                                                  const UnderlineInputBorder(),
+                                              focusedBorder:
+                                                  const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xff7C7A7A),
+                                                ),
+                                              ),
+                                              enabledBorder:
+                                                  const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xff7C7A7A),
+                                                ),
+                                              ),
                                               suffixIcon: IconButton(
-                                                  icon:
-                                                      const Icon(Icons.search),
-                                                  onPressed: () {
-                                                    controller.isShipToAddSearch
-                                                        .value = false;
-                                                    controller
-                                                        .shipToAddController
-                                                        .clear();
-                                                  }),
+                                                icon: const Icon(
+                                                  Icons.search,
+                                                  color: Color(0xff58595B),
+                                                ),
+                                                onPressed: () {
+                                                  controller.isShipToAddSearch
+                                                      .value = false;
+                                                  controller.shipToAddController
+                                                      .clear();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -331,11 +445,14 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                           },
                                           child: const Icon(
                                             Icons.arrow_drop_up,
-                                            size: Sizes.WIDTH_40,
-                                            color: Color.fromRGBO(0, 0, 0, 1),
+                                            size: Sizes.ICON_SIZE_26,
+                                            color: Color(0xff7C7A7A),
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    const SizedBox(
+                                      height: Sizes.HEIGHT_10,
                                     ),
                                     controller.customersShipToAdd.isNotEmpty
                                         ? Expanded(
@@ -358,12 +475,23 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                           .setSelectedShipToAdd(
                                                               index);
                                                   return ListTile(
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    dense: true,
+                                                    horizontalTitleGap: 0,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
                                                     title: Text(
                                                       filteredData,
-                                                      style: context.titleMedium
+                                                      style: context.bodySmall
                                                           .copyWith(
-                                                              color: const Color(
-                                                                  0xff58595B)),
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            Sizes.TEXT_SIZE_16,
+                                                        color: const Color(
+                                                            0xff58595B),
+                                                      ),
                                                     ),
                                                     onTap: () {
                                                       controller
@@ -381,32 +509,45 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                               ),
                                             ),
                                           )
-                                        : const Expanded(
+                                        : Expanded(
                                             child: Center(
-                                              child: Text(AppStrings
-                                                  .SHIP_TO_ADD_NOT_AVAILABLE),
+                                              child: Text(
+                                                AppStrings
+                                                    .SHIP_TO_ADD_NOT_AVAILABLE,
+                                                style:
+                                                    context.bodySmall.copyWith(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: Sizes.TEXT_SIZE_14,
+                                                  color:
+                                                      const Color(0xff58595B),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {},
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  AppStrings
-                                                      .ADD_NEW_SHIP_TO_ADD,
-                                                  style: context.bodyLarge,
-                                                ),
-                                                const Icon(Icons.add),
-                                              ],
+                                      padding: const EdgeInsets.only(
+                                          top: Sizes.PADDING_8,
+                                          bottom: Sizes.PADDING_8),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              AppStrings.ADD_NEW_SHIP_TO_ADD,
+                                              style: context.bodySmall.copyWith(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: Sizes.TEXT_SIZE_14,
+                                                color: const Color(0xff58595B),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            const Icon(
+                                              Icons.add,
+                                              color: Color(0xff58595B),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -433,7 +574,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   readOnly: true,
                                   textAlign: TextAlign.left,
                                   decoration: InputDecoration(
-                                    labelText: AppStrings.ATTANDEES,
+                                    labelText: AppStrings.ATTENDEES,
                                     suffixIcon: IconButton(
                                       onPressed: () {
                                         controller.isAttendeeExpanded.value =
@@ -442,6 +583,16 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
                                         size: Sizes.WIDTH_30,
+                                        color: Color(0xff7C7A7A),
+                                      ),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff7C7A7A),
+                                      ),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
                                         color: Color(0xff7C7A7A),
                                       ),
                                     ),
@@ -475,9 +626,19 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                 .searchAttendeeController,
                                             decoration: InputDecoration(
                                               labelText:
-                                                  AppStrings.SEARCH_ATTANDEE,
-                                              border:
-                                                  const UnderlineInputBorder(),
+                                                  AppStrings.SEARCH_ATTENDEE,
+                                              focusedBorder:
+                                                  const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xff7C7A7A),
+                                                ),
+                                              ),
+                                              enabledBorder:
+                                                  const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xff7C7A7A),
+                                                ),
+                                              ),
                                               suffixIcon: IconButton(
                                                   icon:
                                                       const Icon(Icons.search),
@@ -500,14 +661,16 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                               },
                                               child: const Icon(
                                                 Icons.arrow_drop_up,
-                                                size: Sizes.WIDTH_40,
-                                                color:
-                                                    Color.fromRGBO(0, 0, 0, 1),
+                                                size: Sizes.ICON_SIZE_26,
+                                                color: Color(0xff7C7A7A),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ],
+                                    ),
+                                    const SizedBox(
+                                      height: Sizes.HEIGHT_10,
                                     ),
                                     controller.customerContacts.isNotEmpty
                                         ? Expanded(
@@ -530,6 +693,12 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                               .customerContacts[
                                                           index]['name'];
                                                   return ListTile(
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    dense: true,
+                                                    horizontalTitleGap: 6,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
                                                     leading: Obx(
                                                       () => Checkbox(
                                                         value: controller
@@ -559,10 +728,19 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                               ),
                                             ),
                                           )
-                                        : const Expanded(
+                                        : Expanded(
                                             child: Center(
-                                              child: Text(AppStrings
-                                                  .NO_CONTACTS_AVAILABLE),
+                                              child: Text(
+                                                AppStrings
+                                                    .NO_CONTACTS_AVAILABLE,
+                                                style:
+                                                    context.bodySmall.copyWith(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: Sizes.TEXT_SIZE_14,
+                                                  color:
+                                                      const Color(0xff58595B),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                     Padding(
@@ -576,14 +754,26 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                               Get.toNamed(
                                                   AppRoutes.ADD_ATTENDEE_PAGE);
                                             },
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  AppStrings.ADD_ATTANDEE,
-                                                  style: context.bodyLarge,
-                                                ),
-                                                const Icon(Icons.add),
-                                              ],
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: Sizes.PADDING_8),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    AppStrings.ADD_ATTENDEE,
+                                                    style: context.bodySmall
+                                                        .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize:
+                                                          Sizes.TEXT_SIZE_14,
+                                                      color: const Color(
+                                                          0xff58595B),
+                                                    ),
+                                                  ),
+                                                  const Icon(Icons.add),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -846,31 +1036,39 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                         }
                                       : null,
                                   title: AppStrings.FINISH,
-                                  minWidht: Sizes.WIDTH_120,
-                                  minHeight: Sizes.HEIGHT_30,
+                                  minWidht: Sizes.WIDTH_90,
+                                  minHeight: Sizes.HEIGHT_36,
                                   backgroundColor:
                                       LightTheme.buttonBackgroundColor2,
                                   borderRadiusCircular: BorderRadius.circular(
                                     Sizes.RADIUS_6,
                                   ),
+                                  style: context.bodyMedium.copyWith(
+                                      color: LightTheme.buttonTextColor,
+                                      fontSize: Sizes.TEXT_SIZE_16,
+                                      fontWeight: FontWeight.w400),
                                 ),
                                 const SizedBox(
-                                  width: Sizes.WIDTH_10,
+                                  width: Sizes.WIDTH_26,
                                 ),
                                 CustomElevatedButton(
                                   onPressed: () {
-                                    controller.scanBarcodeNormal();
-                                    // controller
-                                    //     .getSingleItemFromGraphQL('S10082-002');
+                                    // controller.scanBarcodeNormal();
+                                    controller
+                                        .getSingleItemFromGraphQL('S10082-002');
                                   },
                                   title: AppStrings.SCAN,
-                                  minWidht: Sizes.WIDTH_120,
-                                  minHeight: Sizes.HEIGHT_30,
+                                  minWidht: Sizes.WIDTH_90,
+                                  minHeight: Sizes.HEIGHT_1,
                                   backgroundColor:
                                       LightTheme.buttonBackgroundColor2,
                                   borderRadiusCircular: BorderRadius.circular(
                                     Sizes.RADIUS_6,
                                   ),
+                                  style: context.bodyMedium.copyWith(
+                                      color: LightTheme.buttonTextColor,
+                                      fontSize: Sizes.TEXT_SIZE_16,
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ])
                         : const SizedBox(),

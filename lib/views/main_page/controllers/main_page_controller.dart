@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
@@ -64,6 +65,11 @@ class MainPageController extends GetxController {
         );
       },
     );
+  }
+
+  String currentDate() {
+    String formattedDate = DateFormat('MMMM d, yyyy').format(DateTime.now());
+    return formattedDate;
   }
 
   String capitalizeFirstLetter(String input) {

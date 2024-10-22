@@ -35,7 +35,7 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                     children: [
                       //ATTANDEE FULL NAME
                       ContactPageTextField(
-                        hintText: AppStrings.ATTANDEE_F_NAME,
+                        hintText: AppStrings.ATTENDEE_F_NAME,
                         controller:
                             controller.contactFullNameTextFieldController,
                       ),
@@ -46,6 +46,11 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                   top: Sizes.PADDING_6,
                                 ),
                                 child: TextField(
+                                  style: context.bodySmall.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: Sizes.TEXT_SIZE_16,
+                                    color: const Color(0xff58595B),
+                                  ),
                                   onTap: () => controller
                                       .isContactCustomerExpanded.value = true,
                                   controller: controller
@@ -60,8 +65,18 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                       },
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
-                                        size: Sizes.WIDTH_30,
-                                        color: Colors.black,
+                                        size: Sizes.ICON_SIZE_26,
+                                        color: Color(0xff7C7A7A),
+                                      ),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff7C7A7A),
+                                      ),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff7C7A7A),
                                       ),
                                     ),
                                   ),
@@ -104,6 +119,18 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                 icon: const Icon(Icons.search),
                                                 onPressed: () {},
                                               ),
+                                              focusedBorder:
+                                                  const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xff7C7A7A),
+                                                ),
+                                              ),
+                                              enabledBorder:
+                                                  const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xff7C7A7A),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -114,14 +141,16 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                           },
                                           child: const Icon(
                                             Icons.arrow_drop_up,
-                                            size: Sizes.WIDTH_40,
-                                            color: Color.fromRGBO(0, 0, 0, 1),
+                                            size: Sizes.ICON_SIZE_26,
+                                            color: Color(0xff7C7A7A),
                                           ),
                                         ),
                                       ],
                                     ),
                                     Expanded(
                                       child: Scrollbar(
+                                        radius: const Radius.circular(
+                                            Sizes.RADIUS_6),
                                         interactive: true,
                                         thickness: 12,
                                         thumbVisibility: true,
@@ -160,7 +189,23 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                           ?.value[index]
                                                           .name;
                                                   return ListTile(
-                                                    title: Text(filteredData!),
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    dense: true,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    title: Text(
+                                                      filteredData!,
+                                                      style: context.bodySmall
+                                                          .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            Sizes.TEXT_SIZE_16,
+                                                        color: const Color(
+                                                            0xff58595B),
+                                                      ),
+                                                    ),
                                                     onTap: () {
                                                       controller
                                                               .filteredCustomers
@@ -187,33 +232,43 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                     child:
                                                         CircularProgressIndicator(),
                                                   )
-                                                : const Center(
-                                                    child: Text(AppStrings
-                                                        .NO_CUST_AVAIL),
+                                                : Center(
+                                                    child: Text(
+                                                      AppStrings.NO_CUST_AVAIL,
+                                                      style: context.bodySmall
+                                                          .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            Sizes.TEXT_SIZE_14,
+                                                        color: const Color(
+                                                            0xff58595B),
+                                                      ),
+                                                    ),
                                                   ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {},
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  AppStrings.ADD_CUSTOMER,
-                                                  style: context.bodyLarge,
-                                                ),
-                                                const Icon(Icons.add),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(top: 8.0),
+                                    //   child: Row(
+                                    //     mainAxisAlignment:
+                                    //         MainAxisAlignment.end,
+                                    //     children: [
+                                    //       GestureDetector(
+                                    //         onTap: () {},
+                                    //         child: Row(
+                                    //           children: [
+                                    //             Text(
+                                    //               AppStrings.ADD_CUSTOMER,
+                                    //               style: context.bodyLarge,
+                                    //             ),
+                                    //             const Icon(Icons.add),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
