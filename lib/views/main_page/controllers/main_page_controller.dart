@@ -66,6 +66,10 @@ class MainPageController extends GetxController {
     );
   }
 
+  String capitalizeFirstLetter(String input) {
+    if (input.isEmpty) return input;
+    return input[0].toUpperCase() + input.substring(1);
+  }
   //******************** CUSTOMER PAGE PORTION ************************//
 
   // ******************* CONTACT PAGE PORTION ************************//

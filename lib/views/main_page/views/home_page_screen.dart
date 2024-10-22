@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
+import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
@@ -109,30 +110,91 @@ class HomePageScreen extends GetView<MainPageController> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: Sizes.PADDING_26),
-                child: ListTile(
-                  leading: Container(
-                    height: Sizes.HEIGHT_100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Sizes.RADIUS_6),
-                      color: const Color(0xffE9E8E7),
+                padding: const EdgeInsets.only(
+                    top: Sizes.PADDING_26,
+                    left: Sizes.PADDING_24,
+                    bottom: Sizes.PADDING_18),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: Sizes.HEIGHT_80,
+                      width: Sizes.WIDTH_84,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Sizes.RADIUS_6),
+                        color: const Color(0xffE9E8E7),
+                      ),
+                      child: Image.asset(
+                        AppAssets.getPNGIcon(AppAssets.ACCOUNT_CIRCLE),
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.account_circle,
-                      size: Sizes.ICON_SIZE_56,
-                    ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: Sizes.PADDING_10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: Sizes.PADDING_16, bottom: Sizes.PADDING_2),
+                            child: Text(
+                              controller.capitalizeFirstLetter(
+                                  Preferences().getUser().name),
+                              style: context.bodyMedium.copyWith(
+                                fontSize: Sizes.TEXT_SIZE_18,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xff58595B),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'September 19 2024',
+                            style: context.bodyMedium.copyWith(
+                              fontSize: Sizes.TEXT_SIZE_16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xff58595B),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     Container(
+              //       height: Sizes.HEIGHT_44,
+              //       width: Sizes.WIDTH_44,
+              //       alignment: Alignment.center,
+              //       decoration: BoxDecoration(
+              //         color: const Color(0xff58595B),
+              //         borderRadius: BorderRadius.circular(Sizes.RADIUS_4),
+              //         border: Border.all(
+              //           color: const Color(0xffE0E0E0),
+              //           width: 1.5,
+              //         ),
+              //       ),
+              //       child: Text(
+              //         'day',
+              //         style: context.bodySmall.copyWith(
+              //           color: const Color(0xff58595B),
+              //           fontWeight: FontWeight.w600,
+              //         ),
+              //       ),
+              //     )
+              //   ],
+              // ),
               Padding(
-                padding: const EdgeInsets.only(
-                    top: Sizes.PADDING_100, bottom: Sizes.HEIGHT_20),
+                padding: const EdgeInsets.only(bottom: Sizes.HEIGHT_20),
                 child: ListTile(
                   minTileHeight: Sizes.HEIGHT_60,
                   tileColor: LightTheme.appBarBackgroundColor,
                   title: Text(
                     'Meetings',
                     style: context.bodyLarge.copyWith(
+                      fontSize: Sizes.TEXT_SIZE_18,
+                      fontWeight: FontWeight.w600,
                       color: const Color(0xff58595B),
                     ),
                   ),
@@ -145,7 +207,9 @@ class HomePageScreen extends GetView<MainPageController> {
               Center(
                 child: Text(
                   'No Meetings For this day',
-                  style: context.bodyMedium.copyWith(
+                  style: context.bodyLarge.copyWith(
+                    fontSize: Sizes.TEXT_SIZE_16,
+                    fontWeight: FontWeight.w500,
                     color: const Color(0xff58595B),
                   ),
                 ),
@@ -159,6 +223,8 @@ class HomePageScreen extends GetView<MainPageController> {
                   title: Text(
                     'Customer Visit',
                     style: context.bodyLarge.copyWith(
+                      fontSize: Sizes.TEXT_SIZE_18,
+                      fontWeight: FontWeight.w600,
                       color: const Color(0xff58595B),
                     ),
                   ),
@@ -173,7 +239,9 @@ class HomePageScreen extends GetView<MainPageController> {
               Center(
                 child: Text(
                   'No Visit for this day',
-                  style: context.bodyMedium.copyWith(
+                  style: context.bodyLarge.copyWith(
+                    fontSize: Sizes.TEXT_SIZE_16,
+                    fontWeight: FontWeight.w500,
                     color: const Color(0xff58595B),
                   ),
                 ),
