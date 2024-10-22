@@ -57,7 +57,11 @@ class CustomHeaderCell extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: context.bodyLarge,
+          style: context.bodySmall.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: Sizes.TEXT_SIZE_14,
+            color: const Color(0xff58595B),
+          ),
         ),
       ),
     );

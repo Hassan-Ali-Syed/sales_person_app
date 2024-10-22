@@ -41,7 +41,7 @@ class CustomRowCells extends StatelessWidget {
     return Row(
       children: [
         // Safely handle itemName with default value ''
-        _buildCell(itemName ?? '', Sizes.WIDTH_120),
+        _buildCell(itemName ?? '', Sizes.WIDTH_120, context),
 
         // Handle qty display and editing
         isQtyPressed && rowIndex == selectedIndex
@@ -52,10 +52,10 @@ class CustomRowCells extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   controller: qntyController,
                   onChanged: qtyOnChanged,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: FontWeight.w400,
+                    fontSize: Sizes.TEXT_SIZE_12,
+                    color: const Color(0xff58595B),
                   ),
                   textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.top,
@@ -86,14 +86,18 @@ class CustomRowCells extends StatelessWidget {
                     child: Text(
                       // Safeguard qty with a default value
                       qty ?? '0',
-                      style: context.bodyMedium,
+                      style: context.bodySmall.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: Sizes.TEXT_SIZE_12,
+                        color: const Color(0xff58595B),
+                      ),
                     ),
                   ),
                 ),
               ),
 
         // Safely handle price with a default value ''
-        _buildCell(price ?? '', Sizes.WIDTH_60),
+        _buildCell(price ?? '', Sizes.WIDTH_60, context),
 
         // Handle notes display and editing
         Container(
@@ -118,10 +122,10 @@ class CustomRowCells extends StatelessWidget {
 
                     notes == 'null' ? '' : notes,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                    style: context.bodySmall.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: Sizes.TEXT_SIZE_12,
+                      color: const Color(0xff58595B),
                     ),
                   ),
                 ),
@@ -143,7 +147,7 @@ class CustomRowCells extends StatelessWidget {
 
   // height: Sizes.HEIGHT_50,
 
-  Widget _buildCell(String value, double width) {
+  Widget _buildCell(String value, double width, BuildContext context) {
     return Container(
       height: Sizes.HEIGHT_50,
       width: width,
@@ -157,10 +161,10 @@ class CustomRowCells extends StatelessWidget {
         child: Text(
           value,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
+          style: context.bodySmall.copyWith(
+            fontWeight: FontWeight.w400,
+            fontSize: Sizes.TEXT_SIZE_12,
+            color: const Color(0xff58595B),
           ),
         ),
       ),

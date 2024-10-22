@@ -35,7 +35,7 @@ class AppStrings {
   static const String CONTACT_TITLE = 'Contact';
   static const String MORE_TITLE = 'More';
   static const String ADD_CONTACT = 'Add contact';
-  static const String CUSTOMER_VISIT = 'Customer visit';
+  static const String CUSTOMER_VISIT = 'Customer Visit';
 
   // hint_text
   static const String NAME = 'Name';
