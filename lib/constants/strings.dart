@@ -47,24 +47,24 @@ class AppStrings {
   static const String CONFIRM_PASSWORD = "Confirm Password";
   static const String ADDRESS = 'Address';
 
-  static const String SEARCH_CUSTOMER = 'Search customer';
-  static const String CUSTOMER_NAME = 'Customer name';
-  static const String SEARCH_ADDRESS = 'Search address';
-  static const String NO_CUST_AVAIL = 'No customers available';
+  static const String SEARCH_CUSTOMER = 'Search Customer';
+  static const String CUSTOMER_NAME = 'Customer';
+  static const String SEARCH_ADDRESS = 'Search Address';
+  static const String NO_CUST_AVAIL = 'No Customers Available';
   static const String SEARCH_SHIP_TO_ADD = 'Search Ship to Address';
-  static const String ADD_CUSTOMER = 'Add new customer';
-  static const String ADD_ADDRESS = 'Add new address';
-  static const String ADD_SHIP_TO_ADD = 'Add new ship to address';
-  static const String ADD_ATTANDEE = 'Add new attandee';
-  static const String ATTANDEE_F_NAME = 'Attendee Full Name';
+  static const String ADD_CUSTOMER = 'Add New Customer';
+  static const String ADD_ADDRESS = 'Add New Address';
+  static const String ADD_SHIP_TO_ADD = 'Add New Ship to Address';
+  static const String ADD_ATTENDEE = 'Add New Attendee';
+  static const String ATTENDEE_F_NAME = 'Attendee Full Name';
   static const String SHIP_TO_ADD_NOT_AVAILABLE =
-      'Ship to Address not available';
-  static const String SHIP_TO_ADD = 'Ship to add';
-  static const String ADD_NEW_SHIP_TO_ADD = 'Add new ship to add';
-  static const String ATTANDEES = 'Attandees';
-  static const String SEARCH_ATTANDEE = 'Search attandee';
+      'Ship to Address Not Available';
+  static const String SHIP_TO = 'Ship to';
+  static const String ADD_NEW_SHIP_TO_ADD = 'Add New Ship to Add';
+  static const String ATTENDEES = 'Attendees';
+  static const String SEARCH_ATTENDEE = 'Search Attendee';
   static const String NO_CONTACTS_AVAILABLE = 'No Contacts Available';
-  static const String COMING_SOON = 'Coming soon..';
+  static const String COMING_SOON = 'Coming Soon..';
 
   //ELEVATED BUTTONS CONST STRING
   static const String CANCEL = 'Cancel';

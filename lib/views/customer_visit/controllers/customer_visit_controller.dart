@@ -521,9 +521,10 @@ class CustomerVisitController extends GetxController {
                 child: Center(
                     child: Text(
                   'Notes',
-                  style: context.titleSmall.copyWith(
+                  style: context.bodySmall.copyWith(
+                      fontSize: Sizes.TEXT_SIZE_16,
                       color: const Color(0xff58595B),
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.w700),
                 )),
               ),
               const SizedBox(
@@ -572,7 +573,7 @@ class CustomerVisitController extends GetxController {
                 ),
               ),
               const SizedBox(
-                width: Sizes.WIDTH_20,
+                width: Sizes.WIDTH_26,
               ),
               CustomElevatedButton(
                 onPressed: onPressed,
