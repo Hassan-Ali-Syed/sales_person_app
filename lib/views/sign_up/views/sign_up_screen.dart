@@ -19,9 +19,10 @@ class SignUpScreen extends GetView<SignUpController> {
     return Scaffold(
       key: controller.signUpScaffoldKey,
       appBar: customAppBar(
-          context: context,
-          automaticallyImplyLeading: true,
-          appBarColor: LightTheme.scaffoldBackgroundColor),
+        context: context,
+        automaticallyImplyLeading: true,
+        appBarColor: LightTheme.scaffoldBackgroundColor,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(

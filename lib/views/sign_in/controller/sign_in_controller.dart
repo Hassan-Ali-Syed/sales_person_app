@@ -102,6 +102,7 @@ class SignInController extends GetxController {
 
   void signInMethod() {
     if (emailController.text == '' && passwordController.text == '') {
+
       CustomSnackBar.showCustomErrorSnackBar(
         title: 'Invalid Input',
         message: 'Enter email address & password',
@@ -119,6 +120,7 @@ class SignInController extends GetxController {
         message: 'Enter Password',
         duration: const Duration(seconds: 3),
       );
+
     } else {
       signInRest();
     }
