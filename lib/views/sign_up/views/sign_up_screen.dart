@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
+import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/sign_up/controller/sign_up_controller.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_textfield.dart';
@@ -17,7 +18,10 @@ class SignUpScreen extends GetView<SignUpController> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: controller.signUpScaffoldKey,
-      appBar: customAppBar(context: context, automaticallyImplyLeading: true),
+      appBar: customAppBar(
+          context: context,
+          automaticallyImplyLeading: true,
+          appBarColor: LightTheme.scaffoldBackgroundColor),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(

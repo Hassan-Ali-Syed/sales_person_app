@@ -173,78 +173,6 @@ class CustomerVisitController extends GetxController {
     );
   }
 
-  // Future<void> createSalesOrderRest({
-  //   required String sellToCustomerNo,
-  //   required String contact,
-  //   required List<Map<String, dynamic>>? tliSalesLines,
-  // }) async {
-  //   await BaseClient.safeApiCall(
-  //       ApiConstants.CREATE_SALES_ORDER, RequestType.post,
-  //       headers: await BaseClient.generateHeadersWithToken(),
-  //       data: {
-  //         "no": "",
-  //         "sellToCustomerNo": sellToCustomerNo,
-  //         "contact": contact,
-  //         "externalDocumentNo": createExternalDocumentNo(contact),
-  //         "locationCode": "SYOSSET",
-  //         "shipToCode": selectedShipToAddCode,
-  //         "tliSalesLines": tliSalesLines,
-  //       },
-  //       onLoading: () => isLoading.value = true,
-  //       onSuccess: (response) {
-  //         log('******* ON SUCCESS ${response.data}');
-  //         CustomSnackBar.showCustomSnackBar(
-  //           title: 'Sales Order created',
-  //           message: '',
-  //           duration: const Duration(seconds: 2),
-  //         );
-  //         isLoading.value = false;
-  //       },
-  //       onError: (e) {
-  //         isLoading.value = false;
-  //         if (e.statusCode == 400) {
-  //           CustomSnackBar.showCustomErrorSnackBar(
-  //             title: 'Already created',
-  //             message: 'Failed to create sales order',
-  //             duration: const Duration(seconds: 2),
-  //           );
-  //         }
-  //         if (e.statusCode == 500) {
-  //           CustomSnackBar.showCustomErrorSnackBar(
-  //             title: 'Server Error',
-  //             message: 'Failed to create sales order',
-  //             duration: const Duration(seconds: 2),
-  //           );
-  //         }
-  //         log('******* ON ERROR******** \n ${e.message}');
-  //       });
-  // }
-
-  // Future<void> createSalesLineComment({
-  //   required String salesOrderNo,
-  //   required List<Map<String, dynamic>>? tliSalesLines,
-  // }) async {
-  //   await BaseClient.safeApiCall(
-  //       ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
-  //       headers: await BaseClient.generateHeadersWithToken(),
-  //       data: {
-  //         "no": salesOrderNo, // SalesOrder No
-  //         "documentLineNo": 10000, // Sales Line No
-  //         "lineNo": 10000, // line no for multiple comments of sales Line
-  //         "date": currentDate(),
-  //         "comment": "Order Line One Comment" // comment limit 80 characters
-  //       },
-  //       onLoading: () => isLoading.value = true,
-  //       onSuccess: (response) {
-  //         log('******* ON SUCCESS ${response.data}');
-  //         isLoading.value = false;
-  //       },
-  //       onError: (e) {
-  //         isLoading.value = false;
-  //         log('******* ON ERROR******** \n ${e.message}');
-  //       });
-  // }
-
   String createExternalDocumentNo(String contactNo) {
     String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
     return "VISIT $formattedDate $contactNo";
@@ -342,89 +270,6 @@ class CustomerVisitController extends GetxController {
     }
   }
 
-  // // CREATE SALES ORDER OF SELECTED ATTENDEES
-  // Future<void> createSalesOrdersOfSelectedAttendees() async {
-  //   isLoading.value = true;
-  //   createdOrders.clear();
-  //   failedOrders.clear();
-  //   for (var attendeeData in selectedAttendees) {
-  //     var contactNo = attendeeData['contactNo'];
-  //     List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
-  //     List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
-  //     if (tliSalesLineElement.isNotEmpty) {
-  //       for (var tliSalesLineMap in tliSalesLineElement) {
-  //         listOfTliSalesLineMaps.add({
-  //           'lineNo': tliSalesLineMap.lineNo,
-  //           'type': tliSalesLineMap.type,
-  //           'no': tliSalesLineMap.no,
-  //           'quantity': tliSalesLineMap.quantity,
-  //           'unitPrice': tliSalesLineMap.unitPrice,
-  //         });
-  //       }
-  //       await BaseClient.safeApiCall(
-  //         ApiConstants.CREATE_SALES_ORDER,
-  //         RequestType.post,
-  //         headers: await BaseClient.generateHeadersWithToken(),
-  //         data: {
-  //           "no": "",
-  //           "sellToCustomerNo": customerNo,
-  //           "contact": contactNo,
-  //           "externalDocumentNo": createExternalDocumentNo(contactNo),
-  //           "locationCode": "SYOSSET",
-  //           "shipToCode": selectedShipToAddCode,
-  //           "tliSalesLines": listOfTliSalesLineMaps,
-  //         },
-  //         onSuccess: (response) async {
-  //           log('******* Sales order created ${response.data} ****');
-
-  //           if (response.data['success']) {
-  //             createdOrders.add({'Attendee Name': attendeeData['name']});
-  //             var salesOrderNo = response.data['data']['no'];
-  //             for (var tliSalesLine in tliSalesLineElement) {
-  //               if (tliSalesLine.comment != null ||
-  //                   tliSalesLine.comment != '') {
-  //                 await BaseClient.safeApiCall(
-  //                     ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
-  //                     headers: await BaseClient.generateHeadersWithToken(),
-  //                     data: {
-  //                       "no": salesOrderNo, // SalesOrder No
-  //                       "documentLineNo": tliSalesLine.lineNo, // Sales Line No
-  //                       "lineNo": 10000, // line no of comments of sales Line
-  //                       "date": currentDate(), // current date
-  //                       "comment": tliSalesLine.comment // comment
-  //                     }, onSuccess: (response) {
-  //                   log('******* Sales Line Comment created ${response.data}');
-  //                 }, onError: (e) {
-  //                   log('******* ON Sales Line Comment Error Block******** \n ${e.message}');
-  //                 });
-  //               }
-  //             }
-  //           }
-  //         },
-  //         onError: (e) {
-  //           if (e.statusCode == 400) {
-  //             // External No already exist for Order No.
-  //             failedOrders.add({'Attendee Name': attendeeData['name']});
-  //             msg.value = e.response!.data["msg"];
-  //           } else if (e.statusCode == 500) {
-  //             // Order already created
-  //             failedOrders.add({'Attendee Name': attendeeData['name']});
-  //             msg.value = e.response!.data["msg"];
-  //           } else {
-  //             msg.value = 'Server Error';
-  //           }
-  //           log('**********Error Message: ${msg.value} *************');
-  //           isLoading.value = false;
-  //         },
-  //       );
-  //     } else {
-  //       failedOrders.add({'Attendee Name': attendeeData['name']});
-  //     }
-  //   }
-  //   isLoading.value = false;
-  //   log('Orders created: $createdOrders');
-  //   log('Orders cancelled: $failedOrders');
-  // }
   Future<void> createSalesOrdersOfSelectedAttendees() async {
     isLoading.value = true;
     createdOrders.clear();
@@ -463,12 +308,10 @@ class CustomerVisitController extends GetxController {
             "tliSalesLines": listOfTliSalesLineMaps,
           },
           onSuccess: (response) async {
-            log('******* Sales order created ${response.data} ****');
-
             // If the sales order creation is successful
             if (response.data['success']) {
+              log('******* Sales order created ${response.data} ****');
               var salesOrderNo = response.data['data']['no'];
-
               // Store order details in createdOrders list
               createdOrders.add({
                 'customerNo': customerNo,
@@ -503,9 +346,12 @@ class CustomerVisitController extends GetxController {
             String reason = '';
             if (e.statusCode == 400) {
               reason = 'Duplicate External Document No.';
+              log('status code 400: ${e.statusCode} ${e.message} ');
             } else if (e.statusCode == 500) {
               reason = 'Sales Order already exists';
+              log('status code 500 ${e.statusCode}: ${e.message}');
             } else {
+              log('status code ${e.statusCode}: ${e.message}');
               reason = 'Server Error';
             }
 

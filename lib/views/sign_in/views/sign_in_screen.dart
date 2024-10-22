@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
+import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/sign_in/controller/sign_in_controller.dart';
 import 'package:sales_person_app/views/sign_in/views/microsoft_login_web_view.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
@@ -19,10 +20,10 @@ class SignInScreen extends GetView<SignInController> {
     return Scaffold(
       key: controller.signInScaffoldKey,
       appBar: customAppBar(
-        backButton: false,
-        context: context,
-        automaticallyImplyLeading: false,
-      ),
+          backButton: false,
+          context: context,
+          automaticallyImplyLeading: false,
+          appBarColor: LightTheme.scaffoldBackgroundColor),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -72,8 +73,6 @@ class SignInScreen extends GetView<SignInController> {
                 title: AppStrings.SIGN_IN,
                 onPressed: () {
                   controller.signInMethod();
-
-                  // controller.getuserToken();
                 },
               ),
               Padding(

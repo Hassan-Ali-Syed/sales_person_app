@@ -583,7 +583,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 onTap: () {
                                   controller.userItemListReferesh.value = true;
                                   controller.itemQntyController.clear();
-                                  // controller.commentController.clear();
                                   controller.selectedAttendee.value = controller
                                       .selectedAttendees[index]['name'];
                                   controller.attendeeSelectedIndex.value =
@@ -831,9 +830,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 ),
                                 CustomElevatedButton(
                                   onPressed: () {
-                                    // controller.scanBarcodeNormal();
-                                    controller
-                                        .getSingleItemFromGraphQL('S10082-002');
+                                    controller.scanBarcodeNormal();
+                                    // controller
+                                    //     .getSingleItemFromGraphQL('S10082-002');
                                   },
                                   title: AppStrings.SCAN,
                                   minWidht: Sizes.WIDTH_120,
