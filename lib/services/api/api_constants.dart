@@ -12,7 +12,7 @@ class ApiConstants {
   //GRAPHQL
   static const String BASE_URL_GRAPHQL = 'https://be2.rs74.net/graphql';
 
-  static const String BASE_URL_API = '${BASE_URL}api/v1/';
+  static const String BASE_URL_API = '${BASE_URL}api/v2/';
 
   // AUTHENTICATION API`s
   static const String LOGIN = '${BASE_URL_API}salesRepLogin';

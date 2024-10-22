@@ -33,7 +33,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       setState(() {});
     });
     widget.controller?.addListener(() {
-      setState(() {}); // Rebuild when the text in the controller changes
+      setState(() {});
     });
   }
 
@@ -66,7 +66,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fontWeight: FontWeight.w600,
             color: const Color(0xff939598),
           ),
-          // hintText: widget.hinttext,
           label: Text(
             widget.hinttext,
             style: context.titleSmall.copyWith(
