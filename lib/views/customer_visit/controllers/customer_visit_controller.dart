@@ -379,8 +379,12 @@ class CustomerVisitController extends GetxController {
     Preferences().setFailedOrders(failedOrders);
 
     isLoading.value = false;
-    log('Orders created: ${Preferences().getCreatedOrders()}');
-    log('Orders failed: ${Preferences().getFailedOrders()}');
+    log(
+      'Orders created: ${Preferences().getCreatedOrders()}',
+    );
+    log(
+      'Orders failed: ${Preferences().getFailedOrders()}',
+    );
   }
 
   // Set Selected Ship to Add

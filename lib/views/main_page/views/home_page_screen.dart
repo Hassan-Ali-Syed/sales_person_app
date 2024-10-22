@@ -109,6 +109,22 @@ class HomePageScreen extends GetView<MainPageController> {
                 ),
               ),
               Padding(
+                padding: const EdgeInsets.only(top: Sizes.PADDING_26),
+                child: ListTile(
+                  leading: Container(
+                    height: Sizes.HEIGHT_100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Sizes.RADIUS_6),
+                      color: const Color(0xffE9E8E7),
+                    ),
+                    child: const Icon(
+                      Icons.account_circle,
+                      size: Sizes.ICON_SIZE_56,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.only(
                     top: Sizes.PADDING_100, bottom: Sizes.HEIGHT_20),
                 child: ListTile(

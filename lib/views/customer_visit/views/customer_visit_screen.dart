@@ -65,8 +65,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               top: Sizes.PADDING_6,
                             ),
                             child: TextField(
-                              style: context.titleMedium
-                                  .copyWith(color: const Color(0xff58595B)),
+                              style: context.bodySmall.copyWith(
+                                fontWeight: FontWeight.w400,
+                                fontSize: Sizes.TEXT_SIZE_16,
+                                color: const Color(0xff58595B),
+                              ),
                               onTap: () =>
                                   controller.isCustomerExpanded.value = true,
                               controller:
@@ -108,7 +111,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   children: [
                                     Expanded(
                                       child: TextField(
-                                        style: context.titleMedium.copyWith(
+                                        style: context.bodySmall.copyWith(
+                                            fontSize: Sizes.TEXT_SIZE_16,
                                             color: const Color(0xff58595B)),
                                         autofocus: true,
                                         onChanged: (value) {
@@ -175,10 +179,14 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                               return ListTile(
                                                 title: Text(
                                                   filteredData!,
-                                                  style: context.titleMedium
+                                                  style: context.bodySmall
                                                       .copyWith(
-                                                          color: const Color(
-                                                              0xff58595B)),
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize:
+                                                        Sizes.TEXT_SIZE_16,
+                                                    color:
+                                                        const Color(0xff58595B),
+                                                  ),
                                                 ),
                                                 onTap: () {
                                                   controller
@@ -229,8 +237,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                     () => controller.isAddressFieldVisible.value
                         ? SizedBox(
                             child: TextField(
-                              style: context.titleMedium
-                                  .copyWith(color: const Color(0xff58595B)),
+                              style: context.bodySmall.copyWith(
+                                fontWeight: FontWeight.w400,
+                                fontSize: Sizes.TEXT_SIZE_16,
+                                color: const Color(0xff58595B),
+                              ),
                               controller: controller.addressController,
                               readOnly: true,
                               decoration: const InputDecoration(
@@ -251,8 +262,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   top: Sizes.PADDING_8,
                                 ),
                                 child: TextField(
-                                  style: context.titleMedium
-                                      .copyWith(color: const Color(0xff58595B)),
+                                  style: context.bodySmall.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: Sizes.TEXT_SIZE_16,
+                                    color: const Color(0xff58595B),
+                                  ),
                                   controller: controller.shipToAddController,
                                   readOnly: true,
                                   textAlign: TextAlign.left,
@@ -410,8 +424,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   top: Sizes.PADDING_8,
                                 ),
                                 child: TextField(
-                                  style: context.titleMedium
-                                      .copyWith(color: const Color(0xff58595B)),
+                                  style: context.bodySmall.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: Sizes.TEXT_SIZE_16,
+                                    color: const Color(0xff58595B),
+                                  ),
                                   controller: controller.attendeeController,
                                   readOnly: true,
                                   textAlign: TextAlign.left,
@@ -449,6 +466,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       children: [
                                         Expanded(
                                           child: TextField(
+                                            style: context.bodySmall.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: Sizes.TEXT_SIZE_16,
+                                              color: const Color(0xff58595B),
+                                            ),
                                             controller: controller
                                                 .searchAttendeeController,
                                             decoration: InputDecoration(
@@ -522,10 +544,15 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                     ),
                                                     title: Text(
                                                       filteredData,
-                                                      style: context.titleMedium
+                                                      style: context.bodySmall
                                                           .copyWith(
-                                                              color: const Color(
-                                                                  0xff58595B)),
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            Sizes.TEXT_SIZE_16,
+                                                        color: const Color(
+                                                            0xff58595B),
+                                                      ),
                                                     ),
                                                   );
                                                 },
@@ -609,8 +636,10 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     child: Text(
                                       controller.selectedAttendees[index]
                                           ['name'],
-                                      style: const TextStyle(
-                                        color: Color(0xff58595B),
+                                      style: context.bodySmall.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: Sizes.TEXT_SIZE_14,
+                                        color: const Color(0xff58595B),
                                       ),
                                     ),
                                   ),
