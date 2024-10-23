@@ -147,7 +147,7 @@ class HomePageScreen extends GetView<MainPageController> {
                             ),
                           ),
                           Text(
-                            'September 19 2024',
+                            controller.currentDate(),
                             style: context.bodyMedium.copyWith(
                               fontSize: Sizes.TEXT_SIZE_16,
                               fontWeight: FontWeight.w500,

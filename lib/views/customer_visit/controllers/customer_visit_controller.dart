@@ -389,7 +389,7 @@ class CustomerVisitController extends GetxController {
 
   // Set Selected Ship to Add
   String setSelectedShipToAdd(int index) {
-    var address = customersShipToAdd[index]['address'] ?? 'Address not found';
+    var address = customersShipToAdd[index]['address'];
     selectedShipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
     log('**** After selecting address from ship to add list ******');
     log('**** Ship to Address: $address');
