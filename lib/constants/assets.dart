@@ -12,6 +12,7 @@ class AppAssets {
   static const String MICROSOFT_LOGO = 'microsoft_logo';
   static const String GOOGLE_LOGO = 'google_logo';
   static const String ACCOUNT_CIRCLE = 'account_circle';
+  static const String CALENDER_ICON = 'calender_icon';
 
   static String getSVGIcon(String iconName) => 'assets/icons/$iconName.svg';
 

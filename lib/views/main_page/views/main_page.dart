@@ -32,13 +32,13 @@ class MainPage extends GetView<MainPageController> {
                 isDrawerIcon: true),
         bottomNavigationBar: Obx(
           () => CustomLineIndicatorBottomNavbar(
-            selectedColor: const Color(0xff0A0A0B),
-            unSelectedColor: const Color(0xff98A2B3),
+            selectedColor: const Color(0xff58595B),
+            unSelectedColor: const Color(0xff7C7A7A),
             backgroundColor: LightTheme.appBarBackgroundColor,
             unselectedIconSize: Sizes.ICON_SIZE_24,
             selectedIconSize: Sizes.ICON_SIZE_28,
-            selectedFontSize: Sizes.TEXT_SIZE_16,
-            unselectedFontSize: Sizes.TEXT_SIZE_14,
+            selectedFontSize: Sizes.TEXT_SIZE_12,
+            unselectedFontSize: Sizes.TEXT_SIZE_12,
             currentIndex: controller.selectedIndex.value,
             onTap: (index) {
               controller.updateSelectedIndex(index);
