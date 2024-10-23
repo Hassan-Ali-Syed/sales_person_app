@@ -74,6 +74,8 @@ class AppStrings {
   static const String SCAN = 'Scan';
   static const String SUCCESS = 'Success';
   static const RECORD_SUCCESSFULLY_SAVED = 'Record Successfully Saved';
+  static const FAILURE = 'Failed';
+  static const String RECORD_FAILED = 'Sales Order has been cancelled';
   static const String BACK = 'Back';
   // Api Message Strings
   static const String LOADING = 'Loading';
