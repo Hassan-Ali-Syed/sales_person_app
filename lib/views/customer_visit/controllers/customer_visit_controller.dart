@@ -8,6 +8,7 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/queries/api_quries/tliitems_query.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/themes/themes.dart';
@@ -43,6 +44,7 @@ class CustomerVisitController extends GetxController {
   RxBool isQtyPressed = false.obs;
   List<Map<String, dynamic>> createdOrders = [];
   List<Map<String, dynamic>> failedOrders = [];
+  RxBool isSalesOrderCreating = false.obs;
   // RxString msg = ''.obs;
 
   TextEditingController commentController = TextEditingController(text: '');
@@ -174,7 +176,7 @@ class CustomerVisitController extends GetxController {
   }
 
   String createExternalDocumentNo(String contactNo) {
-    String formattedDate = DateFormat('yyyyMMdd').format(DateTime.now());
+    String formattedDate = DateFormat('yyyyMMdd HHmmss').format(DateTime.now());
     return "VISIT $formattedDate $contactNo";
   }
 
@@ -271,7 +273,23 @@ class CustomerVisitController extends GetxController {
   }
 
   Future<void> createSalesOrdersOfSelectedAttendees() async {
-    isLoading.value = true;
+    isSalesOrderCreating.value = true;
+    Get.dialog(
+      const Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        elevation: 0,
+        child: SizedBox(
+          height: Sizes.HEIGHT_50,
+          width: Sizes.WIDTH_10,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+    );
     createdOrders.clear();
     failedOrders.clear();
 
@@ -345,7 +363,7 @@ class CustomerVisitController extends GetxController {
           onError: (e) {
             String reason = '';
             if (e.statusCode == 400) {
-              reason = 'Duplicate External Document No.';
+              reason = 'External No already exist';
               log('status code 400: ${e.statusCode} ${e.message} ');
             } else if (e.statusCode == 500) {
               reason = 'Sales Order already exists';
@@ -363,7 +381,7 @@ class CustomerVisitController extends GetxController {
             });
 
             log('**********Error Message: $reason *************');
-            isLoading.value = false;
+            isSalesOrderCreating.value = false;
           },
         );
       } else {
@@ -378,13 +396,16 @@ class CustomerVisitController extends GetxController {
     Preferences().setCreatedOrders(createdOrders);
     Preferences().setFailedOrders(failedOrders);
 
-    isLoading.value = false;
+    isSalesOrderCreating.value = false;
     log(
       'Orders created: ${Preferences().getCreatedOrders()}',
     );
     log(
       'Orders failed: ${Preferences().getFailedOrders()}',
     );
+    if (Get.isDialogOpen!) {
+      Get.back();
+    }
   }
 
   // Set Selected Ship to Add
@@ -537,7 +558,6 @@ class CustomerVisitController extends GetxController {
                   style: context.titleSmall.copyWith(
                     color: const Color(0xff58595B),
                   ),
-                  maxLength: 80,
                   controller: controller,
                   decoration: const InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -587,6 +607,98 @@ class CustomerVisitController extends GetxController {
               ),
             ])
           ],
+        );
+      },
+    );
+  }
+
+  void showCustomDialog(BuildContext context, {bool isSuccessfull = false}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          backgroundColor: const Color(0xffFFFFFF),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              isSuccessfull
+                  ? const Icon(
+                      Icons.check_circle,
+                      color: Color(0xff13C39C),
+                      size: Sizes.ICON_SIZE_70,
+                    )
+                  : const Icon(
+                      Icons.cancel_sharp,
+                      color: Colors.redAccent,
+                      size: Sizes.ICON_SIZE_70,
+                    ),
+              const SizedBox(
+                height: Sizes.HEIGHT_8,
+              ),
+              Text(
+                AppStrings.SUCCESS,
+                style: context.titleLarge.copyWith(
+                  fontSize: Sizes.TEXT_SIZE_26,
+                  color: const Color(0xff7C8691),
+                ),
+              ),
+              const SizedBox(
+                height: Sizes.HEIGHT_12,
+              ),
+              Text(
+                AppStrings.RECORD_SUCCESSFULLY_SAVED,
+                style: context.titleMedium.copyWith(
+                  fontWeight: FontWeight.w100,
+                  color: const Color(0xff7C7A7A),
+                ),
+              ),
+              const SizedBox(
+                height: Sizes.HEIGHT_14,
+              ),
+              Container(
+                  padding: const EdgeInsets.only(
+                      top: Sizes.PADDING_8,
+                      bottom: Sizes.PADDING_12,
+                      left: Sizes.PADDING_10,
+                      right: Sizes.PADDING_10),
+                  color: const Color(0xffF1F5F8),
+                  height: Sizes.HEIGHT_60,
+                  width: double.infinity,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          title: AppStrings.BACK,
+                          minWidht: Sizes.WIDTH_130,
+                          minHeight: Sizes.HEIGHT_30,
+                          backgroundColor: LightTheme.buttonBackgroundColor2,
+                          borderRadiusCircular: BorderRadius.circular(
+                            Sizes.RADIUS_6,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: Sizes.WIDTH_20,
+                        ),
+                        CustomElevatedButton(
+                          onPressed: () {
+                            Get.toNamed(AppRoutes.HOME_PAGE);
+                          },
+                          title: AppStrings.HOME,
+                          minWidht: Sizes.WIDTH_130,
+                          minHeight: Sizes.HEIGHT_30,
+                          backgroundColor: const Color(0xff13C39C),
+                          borderRadiusCircular: BorderRadius.circular(
+                            Sizes.RADIUS_6,
+                          ),
+                        ),
+                      ]))
+            ],
+          ),
         );
       },
     );
