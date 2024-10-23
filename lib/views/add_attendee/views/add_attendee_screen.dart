@@ -300,7 +300,7 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                   controller.clearAllTextFieldsOfContactPage();
                                 },
                                 title: AppStrings.CANCEL,
-                                minWidht: Sizes.WIDTH_100,
+                                minWidht: Sizes.WIDTH_90,
                                 minHeight: Sizes.HEIGHT_30,
                                 backgroundColor:
                                     LightTheme.buttonBackgroundColor2,
@@ -308,14 +308,14 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                     BorderRadius.circular(Sizes.RADIUS_6),
                               ),
                               const SizedBox(
-                                width: Sizes.WIDTH_20,
+                                width: Sizes.WIDTH_26,
                               ),
                               CustomElevatedButton(
                                 onPressed: () {
                                   controller.ateendeeFormValidation();
                                 },
                                 title: AppStrings.SAVE,
-                                minWidht: Sizes.WIDTH_100,
+                                minWidht: Sizes.WIDTH_90,
                                 minHeight: Sizes.HEIGHT_30,
                                 backgroundColor:
                                     LightTheme.buttonBackgroundColor2,

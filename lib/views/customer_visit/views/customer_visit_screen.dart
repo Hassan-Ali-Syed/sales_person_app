@@ -1060,7 +1060,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   },
                                   title: AppStrings.SCAN,
                                   minWidht: Sizes.WIDTH_90,
-                                  minHeight: Sizes.HEIGHT_1,
+                                  minHeight: Sizes.HEIGHT_36,
                                   backgroundColor:
                                       LightTheme.buttonBackgroundColor2,
                                   borderRadiusCircular: BorderRadius.circular(
