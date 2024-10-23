@@ -72,7 +72,9 @@ class AppStrings {
   static const String FINISH = 'Finish';
   static const String UPDATE = 'Update';
   static const String SCAN = 'Scan';
-
+  static const String SUCCESS = 'Success';
+  static const RECORD_SUCCESSFULLY_SAVED = 'Record Successfully Saved';
+  static const String BACK = 'Back';
   // Api Message Strings
   static const String LOADING = 'Loading';
   static const String NO_INTERNET_CONNECTION = 'No internet connection';

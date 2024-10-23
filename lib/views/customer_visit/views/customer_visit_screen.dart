@@ -1029,12 +1029,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                                 CustomElevatedButton(
-                                  onPressed: !controller.isLoading.value
-                                      ? () async {
-                                          await controller
-                                              .createSalesOrdersOfSelectedAttendees();
-                                        }
-                                      : null,
+                                  onPressed:
+                                      !controller.isSalesOrderCreating.value
+                                          ? () async {
+                                              await controller
+                                                  .createSalesOrdersOfSelectedAttendees();
+                                            }
+                                          : null,
                                   title: AppStrings.FINISH,
                                   minWidht: Sizes.WIDTH_90,
                                   minHeight: Sizes.HEIGHT_36,
@@ -1053,9 +1054,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 ),
                                 CustomElevatedButton(
                                   onPressed: () {
-                                    // controller.scanBarcodeNormal();
-                                    controller
-                                        .getSingleItemFromGraphQL('S10082-002');
+                                    controller.scanBarcodeNormal();
+                                    // controller
+                                    //     .getSingleItemFromGraphQL('S10082-002');
                                   },
                                   title: AppStrings.SCAN,
                                   minWidht: Sizes.WIDTH_90,
