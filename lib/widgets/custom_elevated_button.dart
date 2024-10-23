@@ -13,19 +13,20 @@ class CustomElevatedButton extends StatelessWidget {
   final BorderRadius? borderRadiusCircular;
   final Color? borderColor;
   final double? borderWidth;
+  final TextStyle? style;
 
-  const CustomElevatedButton({
-    super.key,
-    required this.title,
-    required this.minWidht,
-    required this.minHeight,
-    this.backgroundColor,
-    this.fontColor,
-    this.onPressed,
-    this.borderRadiusCircular,
-    this.borderColor,
-    this.borderWidth,
-  });
+  const CustomElevatedButton(
+      {super.key,
+      required this.title,
+      required this.minWidht,
+      required this.minHeight,
+      this.backgroundColor,
+      this.fontColor,
+      this.onPressed,
+      this.borderRadiusCircular,
+      this.borderColor,
+      this.borderWidth,
+      this.style});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,11 @@ class CustomElevatedButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         title,
-        style: context.titleMedium
-            .copyWith(color: fontColor ?? LightTheme.buttonTextColor),
+        style: style ??
+            context.bodyMedium.copyWith(
+                color: LightTheme.buttonTextColor,
+                fontSize: Sizes.TEXT_SIZE_16,
+                fontWeight: FontWeight.w400),
       ),
     );
   }

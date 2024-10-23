@@ -54,7 +54,7 @@ class CustomRowCells extends StatelessWidget {
                   onChanged: qtyOnChanged,
                   style: context.bodySmall.copyWith(
                     fontWeight: FontWeight.w400,
-                    fontSize: Sizes.TEXT_SIZE_12,
+                    fontSize: Sizes.TEXT_SIZE_14,
                     color: const Color(0xff58595B),
                   ),
                   textAlign: TextAlign.center,
@@ -88,7 +88,7 @@ class CustomRowCells extends StatelessWidget {
                       qty ?? '0',
                       style: context.bodySmall.copyWith(
                         fontWeight: FontWeight.w400,
-                        fontSize: Sizes.TEXT_SIZE_12,
+                        fontSize: Sizes.TEXT_SIZE_14,
                         color: const Color(0xff58595B),
                       ),
                     ),
@@ -103,7 +103,7 @@ class CustomRowCells extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.PADDING_4),
           height: Sizes.HEIGHT_50,
-          width: Sizes.WIDTH_120,
+          width: Sizes.WIDTH_110,
           decoration: BoxDecoration(
             border: Border.all(
               color: LightTheme.grayColorShade5,
@@ -124,7 +124,7 @@ class CustomRowCells extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: context.bodySmall.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: Sizes.TEXT_SIZE_12,
+                      fontSize: Sizes.TEXT_SIZE_14,
                       color: const Color(0xff58595B),
                     ),
                   ),
@@ -163,7 +163,7 @@ class CustomRowCells extends StatelessWidget {
           textAlign: TextAlign.center,
           style: context.bodySmall.copyWith(
             fontWeight: FontWeight.w400,
-            fontSize: Sizes.TEXT_SIZE_12,
+            fontSize: Sizes.TEXT_SIZE_14,
             color: const Color(0xff58595B),
           ),
         ),

@@ -113,7 +113,7 @@ class HomePageScreen extends GetView<MainPageController> {
                 padding: const EdgeInsets.only(
                     top: Sizes.PADDING_26,
                     left: Sizes.PADDING_24,
-                    bottom: Sizes.PADDING_18),
+                    bottom: Sizes.PADDING_100),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -160,30 +160,39 @@ class HomePageScreen extends GetView<MainPageController> {
                   ],
                 ),
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     Container(
-              //       height: Sizes.HEIGHT_44,
-              //       width: Sizes.WIDTH_44,
-              //       alignment: Alignment.center,
-              //       decoration: BoxDecoration(
-              //         color: const Color(0xff58595B),
-              //         borderRadius: BorderRadius.circular(Sizes.RADIUS_4),
-              //         border: Border.all(
-              //           color: const Color(0xffE0E0E0),
-              //           width: 1.5,
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //       top: Sizes.PADDING_16, right: Sizes.PADDING_26),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.end,
+              //     children: [
+              //       Container(
+              //         height: Sizes.HEIGHT_44,
+              //         width: Sizes.WIDTH_44,
+              //         alignment: Alignment.center,
+              //         decoration: BoxDecoration(
+              //           color: const Color(0xffE9E8E7),
+              //           borderRadius: BorderRadius.circular(Sizes.RADIUS_4),
+              //           border: Border.all(
+              //             color: const Color(0xffE0E0E0),
+              //             width: 1.5,
+              //           ),
               //         ),
-              //       ),
-              //       child: Text(
-              //         'day',
-              //         style: context.bodySmall.copyWith(
-              //           color: const Color(0xff58595B),
-              //           fontWeight: FontWeight.w600,
+              //         child: Row(
+              //           children: [
+              //             Icon(Icons.calendar_month),
+              //             Text(
+              //               'day',
+              //               style: context.bodySmall.copyWith(
+              //                 color: const Color(0xff58595B),
+              //                 fontWeight: FontWeight.w600,
+              //               ),
+              //             ),
+              //           ],
               //         ),
-              //       ),
-              //     )
-              //   ],
+              //       )
+              //     ],
+              //   ),
               // ),
               Padding(
                 padding: const EdgeInsets.only(bottom: Sizes.HEIGHT_20),

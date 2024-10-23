@@ -23,7 +23,7 @@ class CustomHeaderRow extends StatelessWidget {
           text: 'Price',
         ),
         CustomHeaderCell(
-          width: Sizes.WIDTH_120,
+          width: Sizes.WIDTH_110,
           text: 'Notes',
         ),
       ],
