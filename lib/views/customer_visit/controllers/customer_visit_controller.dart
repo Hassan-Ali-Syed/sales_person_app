@@ -45,7 +45,7 @@ class CustomerVisitController extends GetxController {
   List<Map<String, dynamic>> createdOrders = [];
   List<Map<String, dynamic>> failedOrders = [];
   RxBool isSalesOrderCreating = false.obs;
-  // RxString msg = ''.obs;
+  Rx isSuccessfull = false.obs;
 
   TextEditingController commentController = TextEditingController(text: '');
   TextEditingController itemQntyController = TextEditingController();
@@ -58,6 +58,7 @@ class CustomerVisitController extends GetxController {
   RxString selectedAttendee = ''.obs;
   List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
   RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
+
   //selected attendees List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
   RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
@@ -87,7 +88,7 @@ class CustomerVisitController extends GetxController {
   TextEditingController attendeeController = TextEditingController();
   TextEditingController searchAttendeeController = TextEditingController();
 
-// GET ALL CUSTOMERS RECORDS
+  // GET ALL CUSTOMERS RECORDS
   Future<void> getCustomersFromGraphQL() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -326,9 +327,9 @@ class CustomerVisitController extends GetxController {
             "tliSalesLines": listOfTliSalesLineMaps,
           },
           onSuccess: (response) async {
-            // If the sales order creation is successful
             if (response.data['success']) {
               log('******* Sales order created ${response.data} ****');
+              isSuccessfull.value = true;
               var salesOrderNo = response.data['data']['no'];
               // Store order details in createdOrders list
               createdOrders.add({
@@ -406,6 +407,8 @@ class CustomerVisitController extends GetxController {
     if (Get.isDialogOpen!) {
       Get.back();
     }
+
+    showCustomDialog();
   }
 
   // Set Selected Ship to Add
@@ -612,95 +615,197 @@ class CustomerVisitController extends GetxController {
     );
   }
 
-  void showCustomDialog(BuildContext context, {bool isSuccessfull = false}) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          backgroundColor: const Color(0xffFFFFFF),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              isSuccessfull
-                  ? const Icon(
-                      Icons.check_circle,
-                      color: Color(0xff13C39C),
-                      size: Sizes.ICON_SIZE_70,
-                    )
-                  : const Icon(
-                      Icons.cancel_sharp,
-                      color: Colors.redAccent,
-                      size: Sizes.ICON_SIZE_70,
+  void showCustomDialog() {
+    Get.dialog(
+      AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: const Color(0xffFFFFFF),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.check_circle,
+              color: Color(0xff13C39C),
+              size: Sizes.ICON_SIZE_70,
+            ),
+            const SizedBox(
+              height: Sizes.HEIGHT_8,
+            ),
+            Text(
+              AppStrings.SUCCESS,
+              style: Get.textTheme.titleLarge?.copyWith(
+                fontSize: Sizes.TEXT_SIZE_26,
+                color: const Color(0xff7C8691),
+              ),
+            ),
+            const SizedBox(
+              height: Sizes.HEIGHT_12,
+            ),
+            Text(
+              AppStrings.RECORD_SUCCESSFULLY_SAVED,
+              style: Get.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w100,
+                color: const Color(0xff7C7A7A),
+              ),
+            ),
+            const SizedBox(
+              height: Sizes.HEIGHT_14,
+            ),
+            Container(
+                padding: const EdgeInsets.only(
+                    top: Sizes.PADDING_8,
+                    bottom: Sizes.PADDING_12,
+                    left: Sizes.PADDING_10,
+                    right: Sizes.PADDING_10),
+                color: const Color(0xffF1F5F8),
+                height: Sizes.HEIGHT_60,
+                width: double.infinity,
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  CustomElevatedButton(
+                    onPressed: () {
+                      clearCustomerVisitData();
+                      Get.back();
+                    },
+                    title: AppStrings.BACK,
+                    minWidht: Sizes.WIDTH_130,
+                    minHeight: Sizes.HEIGHT_30,
+                    backgroundColor: LightTheme.buttonBackgroundColor2,
+                    borderRadiusCircular: BorderRadius.circular(
+                      Sizes.RADIUS_6,
                     ),
-              const SizedBox(
-                height: Sizes.HEIGHT_8,
-              ),
-              Text(
-                AppStrings.SUCCESS,
-                style: context.titleLarge.copyWith(
-                  fontSize: Sizes.TEXT_SIZE_26,
-                  color: const Color(0xff7C8691),
-                ),
-              ),
-              const SizedBox(
-                height: Sizes.HEIGHT_12,
-              ),
-              Text(
-                AppStrings.RECORD_SUCCESSFULLY_SAVED,
-                style: context.titleMedium.copyWith(
-                  fontWeight: FontWeight.w100,
-                  color: const Color(0xff7C7A7A),
-                ),
-              ),
-              const SizedBox(
-                height: Sizes.HEIGHT_14,
-              ),
-              Container(
-                  padding: const EdgeInsets.only(
-                      top: Sizes.PADDING_8,
-                      bottom: Sizes.PADDING_12,
-                      left: Sizes.PADDING_10,
-                      right: Sizes.PADDING_10),
-                  color: const Color(0xffF1F5F8),
-                  height: Sizes.HEIGHT_60,
-                  width: double.infinity,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomElevatedButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          title: AppStrings.BACK,
-                          minWidht: Sizes.WIDTH_130,
-                          minHeight: Sizes.HEIGHT_30,
-                          backgroundColor: LightTheme.buttonBackgroundColor2,
-                          borderRadiusCircular: BorderRadius.circular(
-                            Sizes.RADIUS_6,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: Sizes.WIDTH_20,
-                        ),
-                        CustomElevatedButton(
-                          onPressed: () {
-                            Get.toNamed(AppRoutes.HOME_PAGE);
-                          },
-                          title: AppStrings.HOME,
-                          minWidht: Sizes.WIDTH_130,
-                          minHeight: Sizes.HEIGHT_30,
-                          backgroundColor: const Color(0xff13C39C),
-                          borderRadiusCircular: BorderRadius.circular(
-                            Sizes.RADIUS_6,
-                          ),
-                        ),
-                      ]))
-            ],
-          ),
-        );
-      },
+                  ),
+                  const SizedBox(
+                    width: Sizes.WIDTH_20,
+                  ),
+                  CustomElevatedButton(
+                    onPressed: () {
+                      clearCustomerVisitData();
+                      Get.offNamed(AppRoutes.HOME_PAGE);
+                    },
+                    title: AppStrings.HOME,
+                    minWidht: Sizes.WIDTH_130,
+                    minHeight: Sizes.HEIGHT_30,
+                    backgroundColor: const Color(0xff13C39C),
+                    borderRadiusCircular: BorderRadius.circular(
+                      Sizes.RADIUS_6,
+                    ),
+                  ),
+                ]))
+          ],
+        ),
+      ),
     );
   }
+
+  clearCustomerVisitData() {
+    customerTextFieldController.clear();
+    addressController.clear();
+    shipToAddController.clear();
+    attendeeController.clear();
+    isAddressFieldVisible.value = false;
+    isShipToAddFieldVisible.value = false;
+    isAttendeeFieldVisible.value = false;
+    selectedAttendees.clear();
+    selectedAttendee.value = '';
+    customerNo = '';
+    customerAddress.value = '';
+    selectedShipToAddCode = '';
+    attendeeSelectedIndex.value = 0;
+    customersShipToAdd.clear();
+    customerContacts.clear();
+  }
+
+  // void showCustomDialog(BuildContext context, {bool isSuccessfull = false}) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         contentPadding: EdgeInsets.zero,
+  //         backgroundColor: const Color(0xffFFFFFF),
+  //         content: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             isSuccessfull
+  //                 ? const Icon(
+  //                     Icons.check_circle,
+  //                     color: Color(0xff13C39C),
+  //                     size: Sizes.ICON_SIZE_70,
+  //                   )
+  //                 : const Icon(
+  //                     Icons.cancel_sharp,
+  //                     color: Colors.redAccent,
+  //                     size: Sizes.ICON_SIZE_70,
+  //                   ),
+  //             const SizedBox(
+  //               height: Sizes.HEIGHT_8,
+  //             ),
+  //             Text(
+  //               AppStrings.SUCCESS,
+  //               style: context.titleLarge.copyWith(
+  //                 fontSize: Sizes.TEXT_SIZE_26,
+  //                 color: const Color(0xff7C8691),
+  //               ),
+  //             ),
+  //             const SizedBox(
+  //               height: Sizes.HEIGHT_12,
+  //             ),
+  //             Text(
+  //               AppStrings.RECORD_SUCCESSFULLY_SAVED,
+  //               style: context.titleMedium.copyWith(
+  //                 fontWeight: FontWeight.w100,
+  //                 color: const Color(0xff7C7A7A),
+  //               ),
+  //             ),
+  //             const SizedBox(
+  //               height: Sizes.HEIGHT_14,
+  //             ),
+  //             Container(
+  //                 padding: const EdgeInsets.only(
+  //                     top: Sizes.PADDING_8,
+  //                     bottom: Sizes.PADDING_12,
+  //                     left: Sizes.PADDING_10,
+  //                     right: Sizes.PADDING_10),
+  //                 color: const Color(0xffF1F5F8),
+  //                 height: Sizes.HEIGHT_60,
+  //                 width: double.infinity,
+  //                 child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       CustomElevatedButton(
+  //                         onPressed: () {
+  //                           Get.back();
+  //                         },
+  //                         title: AppStrings.BACK,
+  //                         minWidht: Sizes.WIDTH_130,
+  //                         minHeight: Sizes.HEIGHT_30,
+  //                         backgroundColor: LightTheme.buttonBackgroundColor2,
+  //                         borderRadiusCircular: BorderRadius.circular(
+  //                           Sizes.RADIUS_6,
+  //                         ),
+  //                       ),
+  //                       const SizedBox(
+  //                         width: Sizes.WIDTH_20,
+  //                       ),
+  //                       CustomElevatedButton(
+  //                         onPressed: () {
+  //                           Get.toNamed(AppRoutes.HOME_PAGE);
+  //                         },
+  //                         title: AppStrings.HOME,
+  //                         minWidht: Sizes.WIDTH_130,
+  //                         minHeight: Sizes.HEIGHT_30,
+  //                         backgroundColor: const Color(0xff13C39C),
+  //                         borderRadiusCircular: BorderRadius.circular(
+  //                           Sizes.RADIUS_6,
+  //                         ),
+  //                       ),
+  //                     ]))
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
