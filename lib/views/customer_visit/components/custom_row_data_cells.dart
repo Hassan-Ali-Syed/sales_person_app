@@ -103,7 +103,7 @@ class CustomRowCells extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.PADDING_4),
           height: Sizes.HEIGHT_50,
-          width: Sizes.WIDTH_110,
+          width: Sizes.WIDTH_118,
           decoration: BoxDecoration(
             border: Border.all(
               color: LightTheme.grayColorShade5,
