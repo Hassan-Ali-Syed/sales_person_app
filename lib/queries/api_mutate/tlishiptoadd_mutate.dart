@@ -2,21 +2,17 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 
 class TliShipToAddMutate {
   static String tliShipToAddMutate({
-    required String name,
     required String customerNo,
+    required String name,
     required String address,
     required String address2,
-    required String code,
+    required String postCode,
     required String city,
     required String countryRegionCode,
     required String county,
-    required String email,
+    required String code,
     required String phoneNo,
-    required String postCode,
-    required String shippingAccountNo,
-    required String shippingAgentCode,
-    required String shippingAgentServiceCode,
-    required String upsAccountNo,
+    required String email,
   }) {
     return """
         mutation createShipToAddress {
@@ -36,10 +32,6 @@ class TliShipToAddMutate {
           postCode: "$postCode"
           locationCode: "SYOSSET"
           shipmentMethodCode: ""
-          shippingAccountNo: "$shippingAccountNo"
-          shippingAgentCode: "$shippingAgentCode"
-          shippingAgentServiceCode: "$shippingAgentServiceCode"
-          upsAccountNo: "$upsAccountNo"
           
         }
       ) {
