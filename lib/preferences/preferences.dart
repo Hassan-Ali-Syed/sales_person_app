@@ -1,4 +1,5 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/views/sign_in/models/sign_in_model.dart'
     as user;
 
@@ -24,8 +25,14 @@ class Preferences {
       storage.write('createdOrders', createdOrders);
 
   getCreatedOrders() => storage.read('createdOrders');
+  // Store Customers Record in cache
+  void setCustomerRecords(TliCustomers? customerRecords) =>
+      storage.write('customerRecords', customerRecords);
 
-  void setFailedOrders(List<Map<String, dynamic>> failedOrders) =>
+  getCustomerRecords() => storage.read('customerRecords');
+  
+   // Store Failed Orders in cache
+   void setFailedOrders(List<Map<String, dynamic>> failedOrders) =>
       storage.write('failedOrders', failedOrders);
 
   getFailedOrders() => storage.read('failedOrders');

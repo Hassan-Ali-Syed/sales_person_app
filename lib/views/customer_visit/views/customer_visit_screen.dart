@@ -514,12 +514,15 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             ),
                                           ),
                                         ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: Sizes.PADDING_8,
-                                        bottom: Sizes.PADDING_8),
-                                    child: GestureDetector(
-                                      onTap: () {},
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.toNamed(
+                                          AppRoutes.ADD_SHIP_TO_ADDRESS);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: Sizes.PADDING_8,
+                                          bottom: Sizes.PADDING_8),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,

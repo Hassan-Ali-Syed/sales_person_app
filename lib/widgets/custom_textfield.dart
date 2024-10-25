@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -49,7 +50,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return TextField(
       controller: widget.controller,
       focusNode: _focusNode,
-      style: context.titleMedium.copyWith(
+      style: context.bodySmall.copyWith(
+        fontSize: Sizes.TEXT_SIZE_16,
+        fontWeight: FontWeight.w400,
         color: const Color(0xff58595B),
       ),
       keyboardType: widget.keyBoardType ?? TextInputType.text,
@@ -62,10 +65,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fontWeight: FontWeight.w600,
             color: const Color(0xff939598),
           ),
-          hintStyle: context.titleSmall.copyWith(
-            fontWeight: FontWeight.w600,
-            color: const Color(0xff939598),
-          ),
           label: Text(
             widget.hinttext,
             style: context.titleSmall.copyWith(
@@ -73,8 +72,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: const Color(0xff939598),
             ),
           ),
-          focusedBorder: const UnderlineInputBorder(),
-          enabledBorder: const UnderlineInputBorder(),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0xff7C7A7A),
+            ),
+          ),
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0xff7C7A7A),
+            ),
+          ),
           suffixIcon: widget.suffixIcon),
     );
   }

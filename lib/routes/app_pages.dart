@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/views/add_attendee/bindings/add_attendee_binding.dart';
 import 'package:sales_person_app/views/add_attendee/views/add_attendee_screen.dart';
+import 'package:sales_person_app/views/add_ship_to_address/bindings/add_ship_to_address_binding.dart';
+import 'package:sales_person_app/views/add_ship_to_address/views/add_ship_to_address_screen.dart';
 import 'package:sales_person_app/views/customer_visit/bindings/customer_visit_binding.dart';
 import 'package:sales_person_app/views/customer_visit/views/customer_visit_screen.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
@@ -66,6 +68,11 @@ class AppPages {
       name: AppRoutes.ADD_ATTENDEE_PAGE,
       page: () => AddAttendeeScreen(),
       binding: AddAttendeeBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.ADD_SHIP_TO_ADDRESS,
+      page: () =>  AddShipToAddressScreen(),
+      binding: AddShipToAddressBinding(),
     ),
   ];
 }

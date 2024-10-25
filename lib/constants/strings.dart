@@ -33,6 +33,7 @@ class AppStrings {
   static const String HOME_TITLE = 'Home';
   static const String CUSTOMER_TITLE = 'Customer';
   static const String CONTACT_TITLE = 'Contact';
+  static const String SHIP_TO_ADD = 'Ship to Add';
   static const String MORE_TITLE = 'More';
   static const String ADD_CONTACT = 'Add contact';
   static const String CUSTOMER_VISIT = 'Customer Visit';
