@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/queries/api_mutate/tlishiptoadd_mutate.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
@@ -10,6 +10,17 @@ import 'package:sales_person_app/utils/custom_snackbar.dart';
 
 class AddShipToAddressController extends GetxController {
   RxBool isLoading = false.obs;
+  RxString customrName = ''.obs;
+  RxString customrNo = ''.obs;
+  late TextEditingController nameController;
+  @override
+  onInit() {
+    super.onInit();
+    customrName.value = Preferences().getSelectedCustomerData()['name'];
+    customrNo.value = Preferences().getSelectedCustomerData()['no'];
+    nameController = TextEditingController(text: customrName.value);
+    log('==CustomerName :  ${customrName.value}==========CustomerNo :  ${customrNo.value}====================');
+  }
 
   Future<void> createTliShipToAdd({
     required String customerNo,

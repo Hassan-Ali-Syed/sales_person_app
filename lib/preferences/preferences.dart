@@ -23,16 +23,21 @@ class Preferences {
   // Store created orders in cache
   void setCreatedOrders(List<Map<String, dynamic>> createdOrders) =>
       storage.write('createdOrders', createdOrders);
-
   getCreatedOrders() => storage.read('createdOrders');
+
+  // Store Selected Customer Data
+  void setSelectedCustomerData(Map<String, dynamic> selectedCustomerData) =>
+      storage.write('selectedCustomerData', selectedCustomerData);
+  getSelectedCustomerData() => storage.read('selectedCustomerData');
+
   // Store Customers Record in cache
   void setCustomerRecords(TliCustomers? customerRecords) =>
       storage.write('customerRecords', customerRecords);
 
   getCustomerRecords() => storage.read('customerRecords');
-  
-   // Store Failed Orders in cache
-   void setFailedOrders(List<Map<String, dynamic>> failedOrders) =>
+
+  // Store Failed Orders in cache
+  void setFailedOrders(List<Map<String, dynamic>> failedOrders) =>
       storage.write('failedOrders', failedOrders);
 
   getFailedOrders() => storage.read('failedOrders');

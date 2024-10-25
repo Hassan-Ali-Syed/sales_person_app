@@ -5,14 +5,12 @@ import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/add_attendee/components/contact_page_textfield.dart';
 import 'package:sales_person_app/views/add_attendee/controllers/add_attendee_controller.dart';
-import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class AddAttendeeScreen extends GetView<AddAttendeeController> {
   static const String routeName = '/add_attendee_screen';
-  AddAttendeeScreen({super.key});
-  final customerVisitController = Get.find<CustomerVisitController>();
+  const AddAttendeeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,12 +98,16 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                       children: [
                                         Expanded(
                                           child: TextField(
+                                            style: context.bodySmall.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: Sizes.TEXT_SIZE_16,
+                                              color: const Color(0xff58595B),
+                                            ),
                                             autofocus: true,
                                             onChanged: (value) {
                                               controller.filterCustomerList(
                                                   value,
-                                                  customerVisitController
-                                                      .tliCustomers);
+                                                  controller.tliCustomers);
                                             },
                                             controller: controller
                                                 .contactCustomerTextFieldController,
@@ -156,12 +158,9 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                         thumbVisibility: true,
                                         controller: controller
                                             .contactCustomerScrollController,
-                                        child: customerVisitController
-                                                        .tliCustomers?.value !=
+                                        child: controller.tliCustomers?.value !=
                                                     null &&
-                                                customerVisitController
-                                                    .tliCustomers!
-                                                    .value
+                                                controller.tliCustomers!.value
                                                     .isNotEmpty
                                             ? ListView.builder(
                                                 controller: controller
@@ -172,22 +171,18 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                     ? controller
                                                         .filteredCustomers
                                                         .length
-                                                    : customerVisitController
-                                                        .tliCustomers
-                                                        ?.value
-                                                        .length,
+                                                    : controller.tliCustomers
+                                                        ?.value.length,
                                                 itemBuilder: (context, index) {
-                                                  final filteredData = controller
+                                                  final customerName = controller
                                                           .filteredCustomers
                                                           .isNotEmpty
                                                       ? controller
                                                           .filteredCustomers[
                                                               index]
                                                           .name
-                                                      : customerVisitController
-                                                          .tliCustomers
-                                                          ?.value[index]
-                                                          .name;
+                                                      : controller.tliCustomers
+                                                          ?.value[index].name;
                                                   return ListTile(
                                                     visualDensity:
                                                         VisualDensity.compact,
@@ -195,7 +190,7 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                     contentPadding:
                                                         EdgeInsets.zero,
                                                     title: Text(
-                                                      filteredData!,
+                                                      customerName!,
                                                       style: context.bodySmall
                                                           .copyWith(
                                                         fontWeight:
@@ -208,21 +203,8 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                                                     ),
                                                     onTap: () {
                                                       controller
-                                                              .filteredCustomers
-                                                              .value =
-                                                          customerVisitController
-                                                              .tliCustomers!
-                                                              .value;
-                                                      // controller
-                                                      //     .setCustomerData(
-                                                      //         index);
-                                                      controller
-                                                          .contactCustomerTextFieldController
-                                                          .text = filteredData;
-
-                                                      controller
-                                                          .isContactCustomerExpanded
-                                                          .value = false;
+                                                          .setCustomerData(
+                                                              index);
                                                     },
                                                   );
                                                 },

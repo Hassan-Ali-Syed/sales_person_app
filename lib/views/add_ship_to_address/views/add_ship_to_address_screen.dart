@@ -3,16 +3,14 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/add_ship_to_address/controller/add_ship_to_address_controller.dart';
-import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_textfield.dart';
 
 class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
   static const String routeName = '/add_ship_to_address_screen';
-  AddShipToAddressScreen({super.key});
-  final CustomerVisitController customerVisitController =
-      Get.find<CustomerVisitController>();
+  const AddShipToAddressScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +27,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
             children: [
               CustomTextField(
                 hinttext: 'Company Name',
-                controller: customerVisitController.customerTextFieldController,
+                controller: controller.nameController,
               ),
               const CustomTextField(hinttext: 'Address'),
               const CustomTextField(hinttext: 'Address 2'),
