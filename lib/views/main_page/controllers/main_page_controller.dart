@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -49,7 +50,7 @@ class MainPageController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    // await getCustomersFromGraphQL();
+    await getCustomersFromGraphQL();
   }
 
   Future<void> getCustomersFromGraphQL() async {
@@ -81,7 +82,7 @@ class MainPageController extends GetxController {
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     Preferences().setCustomerRecords(tliCustomers);
-
+    // log("########Customers Rcords Stored in Cache ############## \n ${Preferences().getCustomerRecords().toJson()}");
     isLoading.value = false;
   }
 

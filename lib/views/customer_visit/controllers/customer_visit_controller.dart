@@ -23,8 +23,8 @@ class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await getCustomersFromGraphQL();
-    // await addTliCustomerModel();
+    // await getCustomersFromGraphQL();
+    await addTliCustomerModel();
   }
 
   final GlobalKey<ScaffoldState> customerVisitScaffoldKey =
@@ -90,31 +90,31 @@ class CustomerVisitController extends GetxController {
   TextEditingController searchAttendeeController = TextEditingController();
 
   // GET ALL CUSTOMERS RECORDS
-  Future<void> getCustomersFromGraphQL() async {
-    await BaseClient.safeApiCall(
-      ApiConstants.BASE_URL_GRAPHQL,
-      RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-      query: TlicustomersQuery.tliCustomersQuery(),
-      onLoading: () {
-        isLoading.value = true;
-      },
-      onSuccessGraph: (response) {
-        addTliCustomerModel(response.data!['tliCustomers']);
-        log("########RESPONSE: ############## \n ${response.data!['tliCustomers']}");
-        isLoading.value = false;
-      },
-      onError: (e) {
-        isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Server Error',
-          message: 'Data not fetched. Try again later',
-          duration: const Duration(seconds: 5),
-        );
-        log('*** onError *** \n ${e.message}');
-      },
-    );
-  }
+  // Future<void> getCustomersFromGraphQL() async {
+  //   await BaseClient.safeApiCall(
+  //     ApiConstants.BASE_URL_GRAPHQL,
+  //     RequestType.query,
+  //     headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+  //     query: TlicustomersQuery.tliCustomersQuery(),
+  //     onLoading: () {
+  //       isLoading.value = true;
+  //     },
+  //     onSuccessGraph: (response) {
+  //       addTliCustomerModel(response.data!['tliCustomers']);
+  //       log("########RESPONSE: ############## \n ${response.data!['tliCustomers']}");
+  //       isLoading.value = false;
+  //     },
+  //     onError: (e) {
+  //       isLoading.value = false;
+  //       CustomSnackBar.showCustomErrorSnackBar(
+  //         title: 'Server Error',
+  //         message: 'Data not fetched. Try again later',
+  //         duration: const Duration(seconds: 5),
+  //       );
+  //       log('*** onError *** \n ${e.message}');
+  //     },
+  //   );
+  // }
 
   Future<void> getCustomerbyIdFromGraphQL(String no) async {
     await BaseClient.safeApiCall(
@@ -422,9 +422,8 @@ class CustomerVisitController extends GetxController {
     return address;
   }
 
-  addTliCustomerModel(response) {
-    tliCustomers = TliCustomers.fromJson(response);
-    // tliCustomers = Preferences().getCustomerRecords();
+  addTliCustomerModel() {
+    tliCustomers = Preferences().getCustomerRecords();
     isLoading.value = false;
   }
 
