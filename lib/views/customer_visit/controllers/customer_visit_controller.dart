@@ -24,6 +24,7 @@ class CustomerVisitController extends GetxController {
   void onInit() async {
     super.onInit();
     await getCustomersFromGraphQL();
+    // await addTliCustomerModel();
   }
 
   final GlobalKey<ScaffoldState> customerVisitScaffoldKey =
@@ -423,6 +424,7 @@ class CustomerVisitController extends GetxController {
 
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
+    // tliCustomers = Preferences().getCustomerRecords();
     isLoading.value = false;
   }
 
