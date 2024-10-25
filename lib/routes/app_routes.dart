@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:sales_person_app/views/add_attendee/views/add_attendee_screen.dart';
+import 'package:sales_person_app/views/add_ship_to_address/views/add_ship_to_address_screen.dart';
 import 'package:sales_person_app/views/customer_visit/views/customer_visit_screen.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
@@ -22,4 +23,5 @@ class AppRoutes {
   static const String MORE_PAGE = MorePageScreen.routeName;
   static const String ADD_ATTENDEE_PAGE = AddAttendeeScreen.routeName;
   static const String CUSTOMER_VISIT = CustomerVisitScreen.routeName;
+  static const String ADD_SHIP_TO_ADDRESS = AddShipToAddressScreen.routeName;
 }
