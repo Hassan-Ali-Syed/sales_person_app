@@ -23,7 +23,7 @@ class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    // await getCustomersFromGraphQL();
+
     await addTliCustomerModel();
   }
 
@@ -88,33 +88,6 @@ class CustomerVisitController extends GetxController {
   ScrollController attendeeScrollController = ScrollController();
   TextEditingController attendeeController = TextEditingController();
   TextEditingController searchAttendeeController = TextEditingController();
-
-  // GET ALL CUSTOMERS RECORDS
-  // Future<void> getCustomersFromGraphQL() async {
-  //   await BaseClient.safeApiCall(
-  //     ApiConstants.BASE_URL_GRAPHQL,
-  //     RequestType.query,
-  //     headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
-  //     query: TlicustomersQuery.tliCustomersQuery(),
-  //     onLoading: () {
-  //       isLoading.value = true;
-  //     },
-  //     onSuccessGraph: (response) {
-  //       addTliCustomerModel(response.data!['tliCustomers']);
-  //       log("########RESPONSE: ############## \n ${response.data!['tliCustomers']}");
-  //       isLoading.value = false;
-  //     },
-  //     onError: (e) {
-  //       isLoading.value = false;
-  //       CustomSnackBar.showCustomErrorSnackBar(
-  //         title: 'Server Error',
-  //         message: 'Data not fetched. Try again later',
-  //         duration: const Duration(seconds: 5),
-  //       );
-  //       log('*** onError *** \n ${e.message}');
-  //     },
-  //   );
-  // }
 
   Future<void> getCustomerbyIdFromGraphQL(String no) async {
     await BaseClient.safeApiCall(
@@ -197,13 +170,18 @@ class CustomerVisitController extends GetxController {
     isAddressFieldVisible.value = false;
     isShipToAddFieldVisible.value = false;
     isAttendeeFieldVisible.value = false;
-    filteredCustomers.value = tliCustomers!.value;
+   
     customerAddress.value =
         "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
     addressController = TextEditingController(text: customerAddress.value);
+    Preferences().setSelectedCustomerData(
+      tliCustomers!.value[indexNo].toJson(),
+    );
     isAddressFieldVisible.value = true;
     customerNo = tliCustomers!.value[indexNo].no!;
-    log('Customer No: $customerNo');
+    // log('Customer No: $customerNo==============index  $indexNo');
+
+    log('====Selected Customer Map from cache======${Preferences().getSelectedCustomerData()}======================');
 
     await getCustomerbyIdFromGraphQL(customerNo);
     setCustomerShipToAdd();

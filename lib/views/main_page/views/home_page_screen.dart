@@ -25,31 +25,11 @@ class HomePageScreen extends GetView<MainPageController> {
       body: SafeArea(
         child: Obx(
           () => controller.isLoading.value
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: Sizes.PADDING_22),
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.PADDING_22),
                   child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(Sizes.PADDING_10),
-                      decoration: BoxDecoration(
-                          color: LightTheme.appBarBackgroundColor,
-                          borderRadius: BorderRadius.circular(Sizes.RADIUS_6)),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            'Getting Customer Records From API',
-                            style: TextStyle(
-                              fontSize: Sizes.TEXT_SIZE_16,
-                              fontWeight: FontWeight.normal,
-                              color: LightTheme.appBarTextColor,
-                            ),
-                          ),
-                          CircularProgressIndicator(
-                            color: Colors.black45,
-                          )
-                        ],
-                      ),
+                    child: CircularProgressIndicator(
+                      color: Colors.black45,
                     ),
                   ),
                 )
