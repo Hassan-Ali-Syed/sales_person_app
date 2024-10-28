@@ -4,18 +4,19 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
 
 class CustomTextField extends StatefulWidget {
-  const CustomTextField({
-    super.key,
-    required this.hinttext,
-    this.suffixIcon,
-    this.obscureText = false,
-    this.keyBoardType,
-    this.controller,
-  });
-  final String hinttext;
+  const CustomTextField(
+      {super.key,
+      required this.hintText,
+      this.suffixIcon,
+      this.obscureText = false,
+      this.keyBoardType,
+      this.controller,
+      this.readOnly = false});
+  final String hintText;
   final Widget? suffixIcon;
   final bool obscureText;
   final TextInputType? keyBoardType;
+  final bool readOnly;
   final TextEditingController? controller;
 
   @override
@@ -48,6 +49,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     bool shouldShowLabel = (widget.controller?.text.isNotEmpty ?? false);
     return TextField(
+      readOnly: widget.readOnly,
       controller: widget.controller,
       focusNode: _focusNode,
       style: context.bodySmall.copyWith(
@@ -66,7 +68,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             color: const Color(0xff939598),
           ),
           label: Text(
-            widget.hinttext,
+            widget.hintText,
             style: context.titleSmall.copyWith(
               fontWeight: FontWeight.w600,
               color: const Color(0xff939598),

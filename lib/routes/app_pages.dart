@@ -66,12 +66,12 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.ADD_ATTENDEE_PAGE,
-      page: () => AddAttendeeScreen(),
+      page: () => const AddAttendeeScreen(),
       binding: AddAttendeeBinding(),
     ),
     GetPage(
       name: AppRoutes.ADD_SHIP_TO_ADDRESS,
-      page: () =>  AddShipToAddressScreen(),
+      page: () =>  const AddShipToAddressScreen(),
       binding: AddShipToAddressBinding(),
     ),
   ];

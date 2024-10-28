@@ -5,7 +5,7 @@ class TliCustomers {
   String? message;
   int? status;
   bool? success;
-  List<Value> value;
+  List<CustomerValue> value;
 
   TliCustomers({
     this.message,
@@ -20,7 +20,8 @@ class TliCustomers {
       message: json['message'],
       status: json['status'],
       success: json['success'],
-      value: List<Value>.from(json['value'].map((x) => Value.fromJson(x))),
+      value: List<CustomerValue>.from(
+          json['value'].map((x) => CustomerValue.fromJson(x))),
     );
   }
 
@@ -35,7 +36,7 @@ class TliCustomers {
   }
 }
 
-class Value {
+class CustomerValue {
   String? systemId;
   String? name;
   String? no;
@@ -46,7 +47,7 @@ class Value {
   List<TliContact>? tliContact;
   List<TliShipToAddress>? tliShipToAdds;
 
-  Value({
+  CustomerValue({
     this.systemId,
     this.name,
     this.no,
@@ -59,8 +60,8 @@ class Value {
   });
 
   // From JSON
-  factory Value.fromJson(Map<String, dynamic> json) {
-    return Value(
+  factory CustomerValue.fromJson(Map<String, dynamic> json) {
+    return CustomerValue(
       systemId: json['systemId'],
       name: json['name'],
       no: json['no'],
@@ -101,7 +102,7 @@ class Value {
 // class TliCustomers {
 //   String message;
 //   bool success;
-//   List<Value> value;
+//   List<CustomerValue> value;
 //   int? status;
 
 //   TliCustomers({

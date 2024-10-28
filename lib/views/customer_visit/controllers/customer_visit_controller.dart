@@ -23,7 +23,7 @@ class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-
+    filteredCustomers;
     await addTliCustomerModel();
   }
 
@@ -47,6 +47,8 @@ class CustomerVisitController extends GetxController {
   List<Map<String, dynamic>> failedOrders = [];
   RxBool isSalesOrderCreating = false.obs;
   Rx isSuccessfull = false.obs;
+  RxString filteredData = ''.obs;
+  CustomerValue? selectedCustomer;
 
   TextEditingController commentController = TextEditingController(text: '');
   TextEditingController itemQntyController = TextEditingController();
@@ -165,25 +167,25 @@ class CustomerVisitController extends GetxController {
     selectedAttendees.clear();
     commentController.clear();
     isCustomerExpanded.value = false;
-    filteredCustomers.value = tliCustomers!.value;
     isCustomerExpanded.value = false;
     isAddressFieldVisible.value = false;
     isShipToAddFieldVisible.value = false;
     isAttendeeFieldVisible.value = false;
-   
-    customerAddress.value =
-        "${tliCustomers!.value[indexNo].address}  ${tliCustomers!.value[indexNo].address2}";
-    addressController = TextEditingController(text: customerAddress.value);
+
+    // customerAddress.value =
+    //     "${selectedCustomer!.address}  ${selectedCustomer!.address2}";
+    addressController = TextEditingController(
+        text: "${selectedCustomer!.address}  ${selectedCustomer!.address2}");
     Preferences().setSelectedCustomerData(
-      tliCustomers!.value[indexNo].toJson(),
+      selectedCustomer!.toJson(),
     );
     isAddressFieldVisible.value = true;
-    customerNo = tliCustomers!.value[indexNo].no!;
-    // log('Customer No: $customerNo==============index  $indexNo');
+    // customerNo = selectedCustomer!.no!;
+    // log('Customer No: $customerNo');
 
     log('====Selected Customer Map from cache======${Preferences().getSelectedCustomerData()}======================');
 
-    await getCustomerbyIdFromGraphQL(customerNo);
+    await getCustomerbyIdFromGraphQL(selectedCustomer!.no!);
     setCustomerShipToAdd();
     setCustomerContacts();
     shipToAddController = TextEditingController(text: '');
@@ -193,16 +195,30 @@ class CustomerVisitController extends GetxController {
   }
 
   // search query list and Method
-  var filteredCustomers = [].obs;
-  void filterCustomerList(String query) {
+  List<CustomerValue> filteredCustomers = <CustomerValue>[].obs;
+  RxBool customerFieldRefresh = false.obs;
+  void filterCustomerList() {
+    customerFieldRefresh.value = true;
     if (tliCustomers?.value == null) return;
-    if (query.isEmpty || query == ' ') {
-      filteredCustomers.value = tliCustomers!.value;
+    if (customerTextFieldController.text.isEmpty ||
+        customerTextFieldController.text == '') {
+      filteredCustomers = tliCustomers!.value;
     } else {
-      filteredCustomers.value = tliCustomers!.value
-          .where((customer) =>
-              customer.name!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      filteredCustomers = [];
+      for (var element in tliCustomers!.value) {
+        if (element.name!.toLowerCase().contains(
+              customerTextFieldController.text.toLowerCase(),
+            )) {
+          filteredCustomers.add(element);
+        }
+      }
+      customerFieldRefresh.value = false;
+
+      // filteredCustomers = tliCustomers!.value
+      //     .where(
+      //       (customer){ }
+      //     )
+      //     .toList();
     }
     log('List $filteredCustomers');
   }
@@ -243,13 +259,13 @@ class CustomerVisitController extends GetxController {
               'type': element.type,
               'tliSalesLine': []
             });
-            log("====After Adding Contacts======$customerContacts");
           }
         }
         checkBoxStates.value =
             List.generate(customerContacts.length, (index) => false);
       }
     }
+    log("====After Adding Contacts======$customerContacts");
   }
 
   Future<void> createSalesOrdersOfSelectedAttendees() async {
@@ -402,6 +418,7 @@ class CustomerVisitController extends GetxController {
 
   addTliCustomerModel() {
     tliCustomers = Preferences().getCustomerRecords();
+    filteredCustomers = tliCustomers!.value;
     isLoading.value = false;
   }
 

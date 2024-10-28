@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
@@ -26,16 +28,32 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
           child: Column(
             children: [
               CustomTextField(
-                hinttext: 'Company Name',
-                controller: controller.nameController,
+                readOnly: true,
+                hintText: 'Company Name',
+                controller: controller.companyNameController,
               ),
-              const CustomTextField(hinttext: 'Address'),
-              const CustomTextField(hinttext: 'Address 2'),
-              const CustomTextField(hinttext: 'Zip Code'),
-              const CustomTextField(hinttext: 'City'),
-              const CustomTextField(hinttext: 'State'),
               CustomTextField(
-                hinttext: 'Country/Region Code',
+                hintText: 'Address',
+                controller: controller.addressController,
+              ),
+              CustomTextField(
+                hintText: 'Address 2',
+                controller: controller.address2Controller,
+              ),
+              CustomTextField(
+                hintText: 'Zip Code',
+                controller: controller.zipCodeController,
+              ),
+              CustomTextField(
+                hintText: 'City',
+                controller: controller.cityController,
+              ),
+              CustomTextField(
+                hintText: 'State',
+                controller: controller.countyController,
+              ),
+              CustomTextField(
+                hintText: 'Country/Region Code',
                 suffixIcon: IconButton(
                   onPressed: () {},
                   icon: const Icon(
@@ -45,9 +63,18 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                   ),
                 ),
               ),
-              const CustomTextField(hinttext: 'Contact'),
-              const CustomTextField(hinttext: 'Phone Number'),
-              const CustomTextField(hinttext: 'Email'),
+              CustomTextField(
+                hintText: 'Contact',
+                controller: controller.contactController,
+              ),
+              CustomTextField(
+                hintText: 'Phone Number',
+                controller: controller.phoneNumberController,
+              ),
+              CustomTextField(
+                hintText: 'Email',
+                controller: controller.emailController,
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: Sizes.PADDING_40),
                 child:
@@ -64,7 +91,10 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                     width: Sizes.WIDTH_26,
                   ),
                   CustomElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      log("on pressed");
+                      // controller.createTliShipToAdd(countryRegionCode: countryRegionCode)
+                    },
                     title: AppStrings.SAVE,
                     minWidht: Sizes.WIDTH_90,
                     minHeight: Sizes.HEIGHT_30,

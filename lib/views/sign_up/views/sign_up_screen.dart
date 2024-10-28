@@ -46,26 +46,26 @@ class SignUpScreen extends GetView<SignUpController> {
                 height: Sizes.HEIGHT_42,
               ),
               const CustomTextField(
-                hinttext: AppStrings.EMAIL,
+                hintText: AppStrings.EMAIL,
               ),
               const Padding(
                 padding: EdgeInsets.only(top: Sizes.PADDING_6),
                 child: CustomTextField(
-                  hinttext: AppStrings.NAME,
+                  hintText: AppStrings.NAME,
                 ),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: Sizes.PADDING_6),
                 child: CustomTextField(
                   keyBoardType: TextInputType.number,
-                  hinttext: AppStrings.PH_NUMBER,
+                  hintText: AppStrings.PH_NUMBER,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: Sizes.PADDING_6),
                 child: Obx(
                   () => CustomTextField(
-                    hinttext: AppStrings.PASSWORD,
+                    hintText: AppStrings.PASSWORD,
                     obscureText: controller.isObscurePaswword.value,
                     suffixIcon: GestureDetector(
                       onTap: controller.togglePasswordObscure,
@@ -78,7 +78,7 @@ class SignUpScreen extends GetView<SignUpController> {
               ),
               Obx(
                 () => CustomTextField(
-                  hinttext: AppStrings.CONFIRM_PASSWORD,
+                  hintText: AppStrings.CONFIRM_PASSWORD,
                   obscureText: controller.isObscureConfirmPaswword.value,
                   suffixIcon: GestureDetector(
                     onTap: controller.toggleConfirmPasswordObscure,
