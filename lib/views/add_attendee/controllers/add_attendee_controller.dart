@@ -2,13 +2,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
-import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
-import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/queries/api_mutate/tlicontact_mutate.dart';
 
 class AddAttendeeController extends GetxController {
@@ -18,8 +16,6 @@ class AddAttendeeController extends GetxController {
   // TliCustomers? tliCustomers;
   TextEditingController contactFullNameTextFieldController =
       TextEditingController();
-  TextEditingController contactSearchTextFieldController =
-      TextEditingController();
   TextEditingController contactCustomerTextFieldController =
       TextEditingController();
   TextEditingController contactEmailTextFieldController =
@@ -28,21 +24,14 @@ class AddAttendeeController extends GetxController {
       TextEditingController();
 
   RxBool isLoading = false.obs;
-// CONTACT PAGE's SCROLL CONTROLLERS
-  ScrollController contactCustomerScrollController = ScrollController();
-
-  //FLAGS OF CUSTOMER's TEXTFIELD
-  RxBool isContactCustomerExpanded = false.obs;
 
   @override
   void onInit() async {
     super.onInit();
     mainPageController = Get.find<MainPageController>();
     customerVisitController = Get.find<CustomerVisitController>();
-
     contactCustomerTextFieldController = TextEditingController(
         text: customerVisitController.selectedCustomer!.name!);
-    // log('==CustomerName :  ${customrName.value}==========CustomerNo :  ${customrNo.value}====================');
   }
 
   @override
@@ -51,21 +40,16 @@ class AddAttendeeController extends GetxController {
     clearAllTextFieldsOfContactPage();
   }
 
-  Future<void> createTliContacts({
-    required String name,
-    required String customerNo,
-    required String email,
-    required String phoneNo,
-  }) async {
+  Future<void> createTliContacts() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicontactMutate.tliContactMutate(
-        name: name,
-        customerNo: customerNo,
-        email: email,
-        phoneNo: phoneNo,
+        name: contactFullNameTextFieldController.text,
+        customerNo: customerVisitController.selectedCustomer!.no!,
+        email: contactEmailTextFieldController.text,
+        phoneNo: contactPhoneNoTextFieldController.text,
       ),
       onLoading: () {
         isLoading.value = true;
@@ -109,19 +93,13 @@ class AddAttendeeController extends GetxController {
           title: 'Alert', message: 'please enter All Fields');
       return;
     } else {
-      createTliContacts(
-        name: contactFullNameTextFieldController.text,
-        customerNo: customerVisitController.selectedCustomer!.no!,
-        email: contactEmailTextFieldController.text,
-        phoneNo: contactPhoneNoTextFieldController.text,
-      );
+      createTliContacts();
     }
   }
 
   void clearAllTextFieldsOfContactPage() {
     contactFullNameTextFieldController.clear();
     contactCustomerTextFieldController.clear();
-    // contactAddressTextFieldController.clear();
     contactEmailTextFieldController.clear();
     contactPhoneNoTextFieldController.clear();
   }
