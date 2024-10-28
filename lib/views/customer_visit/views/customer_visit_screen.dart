@@ -152,7 +152,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                           color: const Color(0xff58595B)),
                                       autofocus: true,
                                       onChanged: (value) {
-                                        controller.filterCustomerList(value);
+                                        controller.filterCustomerList();
                                       },
                                       controller: controller
                                           .customerTextFieldController,
@@ -199,78 +199,94 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               ),
                               Expanded(
                                 child: Scrollbar(
-                                  radius: const Radius.circular(Sizes.RADIUS_6),
-                                  interactive: true,
-                                  thickness: 12,
-                                  thumbVisibility: true,
-                                  controller:
-                                      controller.customerScrollController,
-                                  child: controller.tliCustomers?.value !=
-                                              null &&
-                                          controller
-                                              .tliCustomers!.value.isNotEmpty
-                                      ? ListView.builder(
-                                          controller: controller
-                                              .customerScrollController,
-                                          itemCount: controller
-                                                  .filteredCustomers.isNotEmpty
-                                              ? controller
-                                                  .filteredCustomers.length
-                                              : controller
-                                                  .tliCustomers?.value.length,
-                                          itemBuilder: (context, index) {
-                                            final filteredData = controller
-                                                    .filteredCustomers
-                                                    .isNotEmpty
-                                                ? controller
-                                                    .filteredCustomers[index]
-                                                    .name
-                                                : controller.tliCustomers
-                                                    ?.value[index].name;
-                                            return ListTile(
-                                              visualDensity:
-                                                  VisualDensity.compact,
-                                              dense: true,
-                                              horizontalTitleGap: 0,
-                                              contentPadding: EdgeInsets.zero,
-                                              title: Text(
-                                                filteredData!,
-                                                style:
-                                                    context.bodySmall.copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: Sizes.TEXT_SIZE_16,
-                                                  color:
-                                                      const Color(0xff58595B),
-                                                ),
-                                              ),
-                                              onTap: () {
-                                                controller
-                                                    .setCustomerData(index);
-                                                controller
-                                                    .customerTextFieldController
-                                                    .text = filteredData;
-                                              },
-                                            );
-                                          },
-                                        )
-                                      : controller.isLoading.value
+                                    radius:
+                                        const Radius.circular(Sizes.RADIUS_6),
+                                    interactive: true,
+                                    thickness: 12,
+                                    thumbVisibility: true,
+                                    controller:
+                                        controller.customerScrollController,
+                                    child: Obx(
+                                      () => controller
+                                              .customerFieldRefresh.value
                                           ? const Center(
                                               child:
                                                   CircularProgressIndicator(),
                                             )
-                                          : Center(
-                                              child: Text(
-                                                AppStrings.NO_CUST_AVAIL,
-                                                style:
-                                                    context.bodySmall.copyWith(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: Sizes.TEXT_SIZE_14,
-                                                  color:
-                                                      const Color(0xff58595B),
-                                                ),
-                                              ),
-                                            ),
-                                ),
+                                          : controller.tliCustomers?.value !=
+                                                      null &&
+                                                  controller.tliCustomers!.value
+                                                      .isNotEmpty
+                                              ? ListView.builder(
+                                                  controller: controller
+                                                      .customerScrollController,
+                                                  itemCount: controller
+                                                      .filteredCustomers.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return ListTile(
+                                                      visualDensity:
+                                                          VisualDensity.compact,
+                                                      dense: true,
+                                                      horizontalTitleGap: 0,
+                                                      contentPadding:
+                                                          EdgeInsets.zero,
+                                                      title: Text(
+                                                        controller
+                                                            .filteredCustomers[
+                                                                index]
+                                                            .name!,
+                                                        style: context.bodySmall
+                                                            .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: Sizes
+                                                              .TEXT_SIZE_16,
+                                                          color: const Color(
+                                                              0xff58595B),
+                                                        ),
+                                                      ),
+                                                      onTap: () {
+                                                        controller
+                                                                .selectedCustomer =
+                                                            controller
+                                                                    .filteredCustomers[
+                                                                index];
+                                                        controller
+                                                                .customerTextFieldController
+                                                                .text =
+                                                            controller
+                                                                .filteredCustomers[
+                                                                    index]
+                                                                .name!;
+                                                        controller
+                                                            .setCustomerData(
+                                                                index);
+                                                      },
+                                                    );
+                                                  },
+                                                )
+                                              : controller.isLoading.value
+                                                  ? const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    )
+                                                  : Center(
+                                                      child: Text(
+                                                        AppStrings
+                                                            .NO_CUST_AVAIL,
+                                                        style: context.bodySmall
+                                                            .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: Sizes
+                                                              .TEXT_SIZE_14,
+                                                          color: const Color(
+                                                              0xff58595B),
+                                                        ),
+                                                      ),
+                                                    ),
+                                    )),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(

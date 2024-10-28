@@ -48,7 +48,7 @@ class SignInScreen extends GetView<SignInController> {
                 height: Sizes.HEIGHT_62,
               ),
               CustomTextField(
-                hinttext: AppStrings.EMAIL,
+                hintText: AppStrings.EMAIL,
                 controller: controller.emailController,
               ),
               Padding(
@@ -56,7 +56,7 @@ class SignInScreen extends GetView<SignInController> {
                     top: Sizes.PADDING_6, bottom: Sizes.PADDING_44),
                 child: Obx(
                   () => CustomTextField(
-                    hinttext: AppStrings.PASSWORD,
+                    hintText: AppStrings.PASSWORD,
                     controller: controller.passwordController,
                     obscureText: controller.isObscure.value,
                     suffixIcon: GestureDetector(

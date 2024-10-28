@@ -3,7 +3,7 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 class TliShipToAddMutate {
   static String tliShipToAddMutate({
     required String customerNo,
-    required String name,
+    required String companyName,
     required String address,
     required String address2,
     required String postCode,
@@ -13,26 +13,25 @@ class TliShipToAddMutate {
     required String code,
     required String phoneNo,
     required String email,
+    required String contact,
   }) {
     return """
         mutation createShipToAddress {
       createtliShipToAdd(
         companyId: "${ApiConstants.POSH_ID}"
         requestData: {
-          customerNo: "$customerNo"
-          name: "$name"
-          eMail: "$email"
-          phoneNo: "$phoneNo"
           code: "$code"
+          customerNo: "$customerNo"
+          name: "$companyName"
           address: "$address"
           address2: "$address2"
           city: "$city"
+          postCode: "$postCode"
           countryRegionCode: "$countryRegionCode"
           county: "$county"
-          postCode: "$postCode"
-          locationCode: "SYOSSET"
-          shipmentMethodCode: ""
-          
+          contact: "$contact"
+          phoneNo: "$phoneNo"
+          eMail: "$email"
         }
       ) {
         message
@@ -41,8 +40,6 @@ class TliShipToAddMutate {
         value {
           companyId
           name
-          phoneNo
-          eMail
           address
           address2
           addressValidated
@@ -51,21 +48,8 @@ class TliShipToAddMutate {
           countryRegionCode
           county
           contact
-          customerPriceGroup
-          locationCode
-          paymentTermsCode
-          shipmentMethodCode
-          shippingAccountNo
-          shippingAgentCode
-          shippingAgentServiceCode
-          systemCreatedAt
-          systemCreatedBy
-          systemModifiedAt
-          systemId
-          systemModifiedBy
-          taxAreaCode
-          taxLiable
-          upsAccountNo
+          phoneNo
+          eMail
         }
       }
     }

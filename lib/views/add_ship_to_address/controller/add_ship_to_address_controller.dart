@@ -2,60 +2,58 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
-import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/queries/api_mutate/tlishiptoadd_mutate.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
+import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
 
 class AddShipToAddressController extends GetxController {
   RxBool isLoading = false.obs;
-  RxString customrName = ''.obs;
-  RxString customrNo = ''.obs;
-  late TextEditingController nameController;
+  late TextEditingController companyNameController;
+  late CustomerVisitController customerVisitController;
+  TextEditingController addressController = TextEditingController();
+  TextEditingController address2Controller = TextEditingController();
+  TextEditingController zipCodeController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController countyController = TextEditingController();
+  TextEditingController contactController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   @override
   onInit() {
     super.onInit();
-    customrName.value = Preferences().getSelectedCustomerData()['name'];
-    customrNo.value = Preferences().getSelectedCustomerData()['no'];
-    nameController = TextEditingController(text: customrName.value);
-    log('==CustomerName :  ${customrName.value}==========CustomerNo :  ${customrNo.value}====================');
+    customerVisitController = Get.find<CustomerVisitController>();
+    companyNameController = TextEditingController(
+        text: customerVisitController.selectedCustomer!.name);
+    log('==CustomerName :  ${customerVisitController.selectedCustomer!.name}==========CustomerNo :  ${customerVisitController.selectedCustomer!.no}====================');
   }
 
-  Future<void> createTliShipToAdd({
-    required String customerNo,
-    required String name,
-    required String address,
-    required String address2,
-    required String postCode,
-    required String city,
-    required String countryRegionCode,
-    required String county,
-    required String code,
-    required String phoneNo,
-    required String email,
-  }) async {
+  Future<void> createTliShipToAdd({required String countryRegionCode}) async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliShipToAddMutate.tliShipToAddMutate(
-        name: name,
-        customerNo: customerNo,
-        address: address,
-        address2: address2,
-        code: code,
-        city: city,
+        code: '',
+        companyName: companyNameController.text,
+        customerNo: customerVisitController.selectedCustomer!.no!,
+        address: addressController.text,
+        address2: address2Controller.text,
+        city: cityController.text,
+        postCode: zipCodeController.text,
         countryRegionCode: countryRegionCode,
-        county: county,
-        email: email,
-        phoneNo: phoneNo,
-        postCode: postCode,
+        county: countyController.text,
+        contact: contactController.text,
+        phoneNo: phoneNumberController.text,
+        email: emailController.text,
       ),
       onLoading: () {
         isLoading.value = true;
       },
       onSuccessGraph: (response) {
+        customerVisitController.getCustomerbyIdFromGraphQL(
+            customerVisitController.selectedCustomer!.no!);
         log("******* RESPONSE: *********\n ${response.data!['message']}");
 
         if (response.data!['createtliContact']['status'] == 400) {

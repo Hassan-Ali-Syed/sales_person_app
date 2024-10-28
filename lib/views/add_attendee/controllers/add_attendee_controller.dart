@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
@@ -7,12 +6,16 @@ import 'package:sales_person_app/preferences/preferences.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
+import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
+import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/queries/api_mutate/tlicontact_mutate.dart';
 
 class AddAttendeeController extends GetxController {
-  // TliCustomers? tliCustomers;
+  late MainPageController mainPageController;
+  late CustomerVisitController customerVisitController;
 
+  // TliCustomers? tliCustomers;
   TextEditingController contactFullNameTextFieldController =
       TextEditingController();
   TextEditingController contactSearchTextFieldController =
@@ -23,7 +26,6 @@ class AddAttendeeController extends GetxController {
       TextEditingController();
   TextEditingController contactPhoneNoTextFieldController =
       TextEditingController();
-  TliCustomers? tliCustomers;
 
   RxBool isLoading = false.obs;
 // CONTACT PAGE's SCROLL CONTROLLERS
@@ -31,47 +33,22 @@ class AddAttendeeController extends GetxController {
 
   //FLAGS OF CUSTOMER's TEXTFIELD
   RxBool isContactCustomerExpanded = false.obs;
-  RxBool isContactCustomerSearch = false.obs;
-
-  var filteredCustomers = [].obs; // Filtered customers list
-
-  RxString customerName = ''.obs;
-  RxString customerNo = ''.obs;
 
   @override
   void onInit() async {
     super.onInit();
-    customerName.value = Preferences().getSelectedCustomerData()['name'];
-    customerNo.value = Preferences().getSelectedCustomerData()['no'];
-    contactCustomerTextFieldController =
-        TextEditingController(text: customerName.value);
-    // log('==CustomerName :  ${customrName.value}==========CustomerNo :  ${customrNo.value}====================');
+    mainPageController = Get.find<MainPageController>();
+    customerVisitController = Get.find<CustomerVisitController>();
 
-    await addTliCustomerModel();
+    contactCustomerTextFieldController = TextEditingController(
+        text: customerVisitController.selectedCustomer!.name!);
+    // log('==CustomerName :  ${customrName.value}==========CustomerNo :  ${customrNo.value}====================');
   }
 
   @override
   void onClose() {
     super.onClose();
     clearAllTextFieldsOfContactPage();
-  }
-
-  addTliCustomerModel() {
-    tliCustomers = Preferences().getCustomerRecords();
-  }
-
-  void setCustomerData(var indexNo) async {
-    filteredCustomers.value = tliCustomers!.value;
-
-    contactCustomerTextFieldController.text =
-        tliCustomers!.value[indexNo].name!;
-
-    isContactCustomerExpanded.value = false;
-
-    customerNo.value = tliCustomers!.value[indexNo].no!;
-    log('====customer no======${customerNo}======================');
-
-    log('====Selected Customer Map from cache======${Preferences().getSelectedCustomerData()}======================');
   }
 
   Future<void> createTliContacts({
@@ -95,6 +72,7 @@ class AddAttendeeController extends GetxController {
       },
       onSuccessGraph: (response) {
         log("******* RESPONSE: *********\n ${response.data!}");
+        mainPageController.getCustomersFromGraphQL();
 
         if (response.data!['createtliContact']['status'] == 400) {
           CustomSnackBar.showCustomToast(
@@ -124,45 +102,16 @@ class AddAttendeeController extends GetxController {
   }
 
   void ateendeeFormValidation() {
-    if (contactCustomerTextFieldController.text.isNotEmpty) {
-      var list = tliCustomers!.value
-          .where(
-            (customer) =>
-                customer.name!.toLowerCase() ==
-                contactCustomerTextFieldController.text.toLowerCase(),
-          )
-          .toList();
-      if (list.isEmpty) {
-        CustomSnackBar.showCustomErrorSnackBar(
-            title: 'Alert', message: 'Invalid Customer Name');
-      }
-    }
-    if (contactCustomerTextFieldController.text == '' &&
-        contactFullNameTextFieldController.text == '' &&
-        contactPhoneNoTextFieldController.text == '' &&
-        contactEmailTextFieldController.text == '') {
+    if (contactFullNameTextFieldController.text == '' ||
+        contactEmailTextFieldController.text == '' ||
+        contactPhoneNoTextFieldController.text == '') {
       CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Alert', message: 'please fill all fields');
-    } else if (contactFullNameTextFieldController.text == '') {
-      CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Alert', message: 'please enter Full Name');
-      return;
-    } else if (contactCustomerTextFieldController.text == '') {
-      CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Alert', message: 'please enter customer');
-      return;
-    } else if (contactEmailTextFieldController.text == '') {
-      CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Alert', message: 'please enter an email ');
-      return;
-    } else if (contactPhoneNoTextFieldController.text == '') {
-      CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Alert', message: 'please enter Phone Number');
+          title: 'Alert', message: 'please enter All Fields');
       return;
     } else {
       createTliContacts(
         name: contactFullNameTextFieldController.text,
-        customerNo: customerNo.value,
+        customerNo: customerVisitController.selectedCustomer!.no!,
         email: contactEmailTextFieldController.text,
         phoneNo: contactPhoneNoTextFieldController.text,
       );
@@ -175,22 +124,5 @@ class AddAttendeeController extends GetxController {
     // contactAddressTextFieldController.clear();
     contactEmailTextFieldController.clear();
     contactPhoneNoTextFieldController.clear();
-    filteredCustomers.clear();
-  }
-
-  void filterCustomerList(String query, TliCustomers? tliCustomers) {
-    if (tliCustomers?.value == null) return;
-    if (query.isEmpty) {
-      filteredCustomers.value = List.from(tliCustomers!.value);
-    } else {
-      filteredCustomers.value = tliCustomers!.value
-          .where((customer) =>
-              customer.name!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
-  }
-
-  void clearFilteredCustomers(TliCustomers? tliCustomers) {
-    filteredCustomers.value = List.from(tliCustomers!.value);
   }
 }
