@@ -35,7 +35,9 @@ class AddShipToAddressController extends GetxController {
       RequestType.mutate,
       headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliShipToAddMutate.tliShipToAddMutate(
-        code: '',
+        code: customerVisitController.customersShipToAdd.length + 1 > 9
+            ? "${customerVisitController.customersShipToAdd.length + 1}"
+            : "0${customerVisitController.customersShipToAdd.length + 1}",
         companyName: companyNameController.text,
         customerNo: customerVisitController.selectedCustomer!.no!,
         address: addressController.text,
