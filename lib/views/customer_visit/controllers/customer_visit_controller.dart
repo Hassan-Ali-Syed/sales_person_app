@@ -166,32 +166,20 @@ class CustomerVisitController extends GetxController {
     attendeeController.clear();
     selectedAttendees.clear();
     commentController.clear();
-    isCustomerExpanded.value = false;
+
     isCustomerExpanded.value = false;
     isAddressFieldVisible.value = false;
-    isShipToAddFieldVisible.value = false;
-    isAttendeeFieldVisible.value = false;
 
-    // customerAddress.value =
-    //     "${selectedCustomer!.address}  ${selectedCustomer!.address2}";
     addressController = TextEditingController(
         text: "${selectedCustomer!.address}  ${selectedCustomer!.address2}");
+
     Preferences().setSelectedCustomerData(
       selectedCustomer!.toJson(),
     );
-    isAddressFieldVisible.value = true;
-    // customerNo = selectedCustomer!.no!;
-    // log('Customer No: $customerNo');
 
-    log('====Selected Customer Map from cache======${Preferences().getSelectedCustomerData()}======================');
+    isAddressFieldVisible.value = true;
 
     await getCustomerbyIdFromGraphQL(selectedCustomer!.no!);
-    setCustomerShipToAdd();
-    setCustomerContacts();
-    shipToAddController = TextEditingController(text: '');
-    isShipToAddFieldVisible.value = true;
-    isShipToAddFieldVisible.value = true;
-    isAttendeeFieldVisible.value = true;
   }
 
   // search query list and Method
@@ -213,18 +201,13 @@ class CustomerVisitController extends GetxController {
         }
       }
       customerFieldRefresh.value = false;
-
-      // filteredCustomers = tliCustomers!.value
-      //     .where(
-      //       (customer){ }
-      //     )
-      //     .toList();
     }
     log('List $filteredCustomers');
   }
 
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
+    isShipToAddFieldVisible.value = false;
     customersShipToAdd.clear();
     var instanceCustomerShipToAdd = tliCustomerById?.value;
     if (instanceCustomerShipToAdd != null &&
@@ -242,10 +225,13 @@ class CustomerVisitController extends GetxController {
         }
       }
     }
+    shipToAddController = TextEditingController(text: '');
+    isShipToAddFieldVisible.value = true;
   }
 
 // SET CUSTOMER'S CONTACTS
   void setCustomerContacts() {
+    isAttendeeFieldVisible.value = false;
     customerContacts.clear();
     var instanceCustomer = tliCustomerById!.value;
     if (instanceCustomer.isNotEmpty) {
@@ -265,6 +251,7 @@ class CustomerVisitController extends GetxController {
             List.generate(customerContacts.length, (index) => false);
       }
     }
+    isAttendeeFieldVisible.value = true;
     log("====After Adding Contacts======$customerContacts");
   }
 
@@ -423,7 +410,12 @@ class CustomerVisitController extends GetxController {
   }
 
   addTliCustomerByIdModel(response) {
+    tliCustomerById = null;
     tliCustomerById = TliCustomers.fromJson(response);
+    if (tliCustomerById != null) {
+      setCustomerShipToAdd();
+      setCustomerContacts();
+    }
     isLoading.value = false;
   }
 
@@ -525,6 +517,35 @@ class CustomerVisitController extends GetxController {
             '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
         .listen((barcode) => print(barcode));
   }
+
+  // Future<void> scanBarcodeNormal() async {
+  //   String? barcodeScanRes;
+  //   barcodeScanned.value = true;
+  //   try {
+  //     FlutterBarcodeScanner.getBarcodeStreamReceiver(
+  //             '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
+  //         .listen(
+  //       (barcode) {
+  //         barcodeScanRes = barcode;
+  //         log('Barcode: $barcode ');
+  //       },
+  //       onDone: () async {
+  //         if (barcodeScanRes!.isEmpty) {
+  //           barcodeScanRes = 'Please scan Barcode again';
+  //           CustomSnackBar.showCustomErrorSnackBar(
+  //             title: 'Scan failed',
+  //             message: barcodeScanRes!,
+  //           );
+  //           barcodeScanned.value = false;
+  //         } else {
+  //           await getSingleItemFromGraphQL(barcodeScanRes!);
+  //         }
+  //       },
+  //     );
+  //   } on PlatformException {
+  //     barcodeScanRes = 'Failed to get platform version.';
+  //   }
+  // }
 
   void showCommentDialog(BuildContext context,
       {required TextEditingController controller, void Function()? onPressed}) {

@@ -112,21 +112,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 ),
                               ),
                             ),
-                            //  InputDecoration(
-                            //   labelText: AppStrings.CUSTOMER_NAME,
-                            //   suffixIcon:
-                            // IconButton(
-                            //     onPressed: () {
-                            //       controller.isCustomerExpanded.value = true;
-                            //     },
-                            //     icon:
-                            // const Icon(
-                            //       Icons.arrow_drop_down,
-                            //       size: Sizes.WIDTH_30,
-                            //       color: Color(0xff7C7A7A),
-                            //     ),
-                            //   ),
-                            // ),
                           ),
                         )
                       : Container(
@@ -624,7 +609,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Expanded(
+                                      SizedBox(
+                                        width: Sizes.WIDTH_200,
                                         child: TextField(
                                           style: context.bodySmall.copyWith(
                                             fontWeight: FontWeight.w400,
@@ -650,30 +636,20 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             ),
                                             suffixIcon: IconButton(
                                                 icon: const Icon(Icons.search),
-                                                onPressed: () {
-                                                  controller.isAttendeeSearch
-                                                      .value = false;
-                                                  controller
-                                                      .searchAttendeeController
-                                                      .clear();
-                                                }),
+                                                onPressed: () {}),
                                           ),
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              controller.isAttendeeExpanded
-                                                  .value = false;
-                                            },
-                                            child: const Icon(
-                                              Icons.arrow_drop_up,
-                                              size: Sizes.ICON_SIZE_26,
-                                              color: Color(0xff7C7A7A),
-                                            ),
-                                          ),
-                                        ],
+                                      GestureDetector(
+                                        onTap: () {
+                                          controller.isAttendeeExpanded.value =
+                                              false;
+                                        },
+                                        child: const Icon(
+                                          Icons.arrow_drop_up,
+                                          size: Sizes.ICON_SIZE_26,
+                                          color: Color(0xff7C7A7A),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -926,7 +902,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
 
                                             controller.userItemListReferesh
                                                 .value = false;
-                                            log('===Attendee Indeex ON CHANGED  ${controller.attendeeSelectedIndex.value}============');
+                                            log('===Attendee Index ON CHANGED  ${controller.attendeeSelectedIndex.value}============');
                                           },
                                           qtyOnTap: () {
                                             controller.userItemListReferesh
@@ -941,7 +917,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             controller.itemIndex.value = index;
                                             controller.userItemListReferesh
                                                 .value = false;
-                                            log('===Attendee Indeex ON TAP  ${controller.attendeeSelectedIndex.value}============');
+                                            log('===Attendee Index ON TAP  ${controller.attendeeSelectedIndex.value}============');
                                           },
                                           isQtyPressed:
                                               controller.isQtyPressed.value,
