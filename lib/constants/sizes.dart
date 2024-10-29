@@ -184,6 +184,7 @@ class Sizes {
   static const double WIDTH_224 = 224.0;
   static const double WIDTH_220 = 220.0;
   static const double WIDTH_210 = 210.0;
+  static const double WIDTH_206 = 206.0;
   static const double WIDTH_200 = 200.0;
   static const double WIDTH_192 = 192.0;
   static const double WIDTH_190 = 190.0;
