@@ -130,7 +130,6 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                       fontSize: Sizes.TEXT_SIZE_16,
                                       color: const Color(0xff58595B),
                                     ),
-                                    // autofocus: true,
                                     onChanged: (value) {},
                                     controller:
                                         controller.countryRegionController,
@@ -176,7 +175,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                             Row(
                               children: [
                                 Text(
-                                  'Code',
+                                  AppStrings.CODE,
                                   style: context.bodySmall.copyWith(
                                     fontWeight: FontWeight.w400,
                                     fontSize: Sizes.TEXT_SIZE_12,
@@ -187,7 +186,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                   padding: const EdgeInsets.only(
                                       left: Sizes.PADDING_74),
                                   child: Text(
-                                    'Name',
+                                    AppStrings.NAME,
                                     style: context.bodySmall.copyWith(
                                       fontWeight: FontWeight.w400,
                                       fontSize: Sizes.TEXT_SIZE_12,
@@ -287,15 +286,15 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                       ),
               ),
               CustomTextField(
-                hintText: 'Contact',
+                hintText: AppStrings.CONTACT,
                 controller: controller.contactController,
               ),
               CustomTextField(
-                hintText: 'Phone Number',
+                hintText: AppStrings.PH_NUMBER,
                 controller: controller.phoneNumberController,
               ),
               CustomTextField(
-                hintText: 'Email',
+                hintText: AppStrings.EMAIL,
                 controller: controller.emailController,
               ),
               Padding(
@@ -315,7 +314,6 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                   ),
                   CustomElevatedButton(
                     onPressed: () {
-                      log("on pressed");
                       controller.createTliShipToAdd();
                     },
                     title: AppStrings.SAVE,

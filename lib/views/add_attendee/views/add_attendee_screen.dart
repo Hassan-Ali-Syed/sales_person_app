@@ -286,7 +286,7 @@ class AddAttendeeScreen extends GetView<AddAttendeeController> {
                             children: [
                               CustomElevatedButton(
                                 onPressed: () {
-                                  controller.clearAllTextFieldsOfContactPage();
+                                  Get.back();
                                 },
                                 title: AppStrings.CANCEL,
                                 minWidht: Sizes.WIDTH_90,

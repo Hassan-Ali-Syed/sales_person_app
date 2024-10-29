@@ -6,11 +6,9 @@ import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
-import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 import 'package:sales_person_app/queries/api_mutate/tlicontact_mutate.dart';
 
 class AddAttendeeController extends GetxController {
-  late MainPageController mainPageController;
   late CustomerVisitController customerVisitController;
 
   // TliCustomers? tliCustomers;
@@ -28,16 +26,18 @@ class AddAttendeeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    mainPageController = Get.find<MainPageController>();
     customerVisitController = Get.find<CustomerVisitController>();
     contactCustomerTextFieldController = TextEditingController(
         text: customerVisitController.selectedCustomer!.name!);
   }
 
   @override
-  void onClose() {
-    super.onClose();
-    clearAllTextFieldsOfContactPage();
+  void dispose() {
+    contactFullNameTextFieldController.dispose();
+    contactCustomerTextFieldController.dispose();
+    contactEmailTextFieldController.dispose();
+    contactPhoneNoTextFieldController.dispose();
+    super.dispose();
   }
 
   Future<void> createTliContacts() async {
@@ -54,22 +54,29 @@ class AddAttendeeController extends GetxController {
       onLoading: () {
         isLoading.value = true;
       },
-      onSuccessGraph: (response) {
-        log("******* RESPONSE: *********\n ${response.data!}");
-        mainPageController.getCustomersFromGraphQL();
-
-        if (response.data!['createtliContact']['status'] == 400) {
+      onSuccessGraph: (response) async {
+        if ((response.data!['createtliContact']['status'] == 200)) {
+          {
+            log("******* RESPONSE: *********\n ${response.data!}");
+            await customerVisitController.getCustomerbyIdFromGraphQL(
+                customerVisitController.selectedCustomer!.no!);
+            Get.back();
+            isLoading.value = false;
+          }
+        } else if (response.data!['createtliContact']['status'] == 400) {
+          log("******* else If Block *********\n ${response.data!}");
           CustomSnackBar.showCustomToast(
+              title: 'Invalid Format',
               message: '${response.data!['createtliContact']['message']}',
               duration: const Duration(seconds: 3),
               color: AppColors.redShade5);
           isLoading.value = false;
         } else {
+          log("******* Else Block: *********\n ${response.data!}");
           CustomSnackBar.showCustomToast(
-            message: '${response.data!['createtliContact']['message']}',
-            duration: const Duration(seconds: 3),
-            color: Colors.green,
-          );
+              message: '${response.data!['createtliContact']['message']}',
+              duration: const Duration(seconds: 3),
+              color: AppColors.redShade5);
           isLoading.value = false;
         }
       },
