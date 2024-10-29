@@ -124,14 +124,17 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
+                                SizedBox(
+                                  width: Sizes.WIDTH_206,
                                   child: TextField(
                                     style: context.bodySmall.copyWith(
                                       fontSize: Sizes.TEXT_SIZE_16,
                                       color: const Color(0xff58595B),
                                     ),
                                     // autofocus: true,
-                                    onChanged: (value) {},
+                                    onChanged: (value) {
+                                      controller.filterCountryRegionCode();
+                                    },
                                     controller:
                                         controller.countryRegionController,
                                     onTapOutside: (event) {},
@@ -173,35 +176,39 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                             const SizedBox(
                               height: Sizes.HEIGHT_10,
                             ),
-                            Row(
+                            Column(
                               children: [
-                                Text(
-                                  'Code',
-                                  style: context.bodySmall.copyWith(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: Sizes.TEXT_SIZE_12,
-                                    color: const Color(0xff58595B),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: Sizes.PADDING_74),
-                                  child: Text(
-                                    'Name',
-                                    style: context.bodySmall.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: Sizes.TEXT_SIZE_12,
-                                      color: const Color(0xff58595B),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Code',
+                                      style: context.bodySmall.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: Sizes.TEXT_SIZE_12,
+                                        color: const Color(0xff58595B),
+                                      ),
                                     ),
-                                  ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: Sizes.PADDING_74),
+                                      child: Text(
+                                        'Name',
+                                        style: context.bodySmall.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: Sizes.TEXT_SIZE_12,
+                                          color: const Color(0xff58595B),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(
+                                  endIndent: 30,
+                                  thickness: 1,
+                                  color: Color(0xff939598),
+                                  height: Sizes.HEIGHT_16,
                                 ),
                               ],
-                            ),
-                            const Divider(
-                              endIndent: 30,
-                              thickness: 1,
-                              color: Color(0xff939598),
-                              height: Sizes.HEIGHT_16,
                             ),
                             Expanded(
                               child: Scrollbar(
@@ -211,75 +218,89 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                 thumbVisibility: true,
                                 controller:
                                     controller.countryRegionScrollController,
-                                child: ListView.builder(
-                                  controller:
-                                      controller.countryRegionScrollController,
-                                  itemCount:
-                                      controller.tliCountrys!.value.length,
-                                  itemBuilder: (context, index) {
-                                    return Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: Sizes.PADDING_2),
-                                          child: InkWell(
-                                            onTap: () {
-                                              controller.countryRegionController
-                                                      .text =
-                                                  controller.tliCountrys!
-                                                      .value[index].code!;
-                                              controller.isCountryRegionExpanded
-                                                  .value = false;
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  controller.tliCountrys!
-                                                      .value[index].code!,
-                                                  style: context.bodySmall
-                                                      .copyWith(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize:
-                                                        Sizes.TEXT_SIZE_12,
-                                                    color:
-                                                        const Color(0xff58595B),
-                                                  ),
-                                                ),
-                                                Padding(
+                                child: Obx(() => controller
+                                        .countryRegionFieldRefresh.value
+                                    ? const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : ListView.builder(
+                                        controller: controller
+                                            .countryRegionScrollController,
+                                        itemCount:
+                                            controller.filteredCountry.length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  controller
+                                                          .countryRegionController
+                                                          .text =
+                                                      controller
+                                                          .filteredCountry[
+                                                              index]
+                                                          .code!;
+                                                  controller
+                                                      .isCountryRegionExpanded
+                                                      .value = false;
+                                                },
+                                                child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          left:
-                                                              Sizes.PADDING_86),
-                                                  child: Text(
-                                                    controller
-                                                        .tliCountrys!
-                                                        .value[index]
-                                                        .description!,
-                                                    style: context.bodySmall
-                                                        .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize:
-                                                          Sizes.TEXT_SIZE_12,
-                                                      color: const Color(
-                                                          0xff58595B),
-                                                    ),
+                                                          top: Sizes.PADDING_2),
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        controller
+                                                            .filteredCountry[
+                                                                index]
+                                                            .code!,
+                                                        style: context.bodySmall
+                                                            .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: Sizes
+                                                              .TEXT_SIZE_12,
+                                                          color: const Color(
+                                                              0xff58595B),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets
+                                                            .only(
+                                                            left: Sizes
+                                                                .PADDING_86),
+                                                        child: Text(
+                                                          controller
+                                                              .filteredCountry[
+                                                                  index]
+                                                              .description!,
+                                                          style: context
+                                                              .bodySmall
+                                                              .copyWith(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: Sizes
+                                                                .TEXT_SIZE_12,
+                                                            color: const Color(
+                                                                0xff58595B),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        const Divider(
-                                          endIndent: 30,
-                                          thickness: 1,
-                                          color: Color(0xff939598),
-                                          height: Sizes.HEIGHT_16,
-                                        )
-                                      ],
-                                    );
-                                  },
-                                ),
+                                              ),
+                                              const Divider(
+                                                endIndent: 30,
+                                                thickness: 1,
+                                                color: Color(0xff939598),
+                                                height: Sizes.HEIGHT_16,
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      )),
                               ),
                             ),
                           ],
