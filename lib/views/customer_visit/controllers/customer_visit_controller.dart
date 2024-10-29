@@ -23,7 +23,7 @@ class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    filteredCustomers;
+    
     await addTliCustomerModel();
   }
 
