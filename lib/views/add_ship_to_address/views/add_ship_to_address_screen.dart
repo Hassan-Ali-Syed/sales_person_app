@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
+import 'package:sales_person_app/extensions/context_extension.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/add_ship_to_address/controller/add_ship_to_address_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
@@ -52,16 +53,238 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                 hintText: 'State',
                 controller: controller.countyController,
               ),
-              CustomTextField(
-                hintText: 'Country/Region Code',
-                suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.arrow_drop_down,
-                    size: Sizes.WIDTH_30,
-                    color: Color(0xff7C7A7A),
-                  ),
-                ),
+              Obx(
+                () => !controller.isCountryRegionExpanded.value
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                          top: Sizes.PADDING_6,
+                        ),
+                        child: TextField(
+                          scrollPadding: EdgeInsets.zero,
+                          style: context.bodySmall.copyWith(
+                            fontWeight: FontWeight.w400,
+                            fontSize: Sizes.TEXT_SIZE_16,
+                            color: const Color(0xff58595B),
+                          ),
+                          onTap: () =>
+                              controller.isCountryRegionExpanded.value = true,
+                          controller: controller.countryRegionController,
+                          textAlign: TextAlign.left,
+                          decoration: InputDecoration(
+                            floatingLabelStyle: context.titleLarge.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xff939598),
+                            ),
+                            hintStyle: context.titleSmall.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xff939598),
+                            ),
+                            label: Text(
+                              AppStrings.COUNTRY_REGION_CODE,
+                              style: context.titleSmall.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xff939598),
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xff7C7A7A),
+                              ),
+                            ),
+                            enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xff7C7A7A),
+                              ),
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                controller.isCountryRegionExpanded.value = true;
+                              },
+                              child: const Icon(
+                                Icons.arrow_drop_down,
+                                size: Sizes.WIDTH_26,
+                                color: Color(0xff7C7A7A),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: Sizes.HEIGHT_250,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    style: context.bodySmall.copyWith(
+                                      fontSize: Sizes.TEXT_SIZE_16,
+                                      color: const Color(0xff58595B),
+                                    ),
+                                    // autofocus: true,
+                                    onChanged: (value) {},
+                                    controller:
+                                        controller.countryRegionController,
+                                    onTapOutside: (event) {},
+                                    decoration: InputDecoration(
+                                      labelText: AppStrings.COUNTRY_REGION_CODE,
+                                      focusedBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Color(0xff7C7A7A),
+                                        ),
+                                      ),
+                                      enabledBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Color(0xff7C7A7A),
+                                        ),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(
+                                          Icons.search,
+                                          color: Color(0xff58595B),
+                                        ),
+                                        onPressed: () {},
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.isCountryRegionExpanded.value =
+                                        false;
+                                  },
+                                  child: const Icon(
+                                    Icons.arrow_drop_up,
+                                    size: Sizes.WIDTH_26,
+                                    color: Color(0xff7C7A7A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: Sizes.HEIGHT_10,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Code',
+                                  style: context.bodySmall.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: Sizes.TEXT_SIZE_12,
+                                    color: const Color(0xff58595B),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: Sizes.PADDING_74),
+                                  child: Text(
+                                    'Name',
+                                    style: context.bodySmall.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: Sizes.TEXT_SIZE_12,
+                                      color: const Color(0xff58595B),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(
+                              endIndent: 30,
+                              thickness: 1,
+                              color: Color(0xff939598),
+                              height: Sizes.HEIGHT_16,
+                            ),
+                            Expanded(
+                              child: Scrollbar(
+                                radius: const Radius.circular(Sizes.RADIUS_6),
+                                interactive: true,
+                                thickness: 12,
+                                thumbVisibility: true,
+                                controller:
+                                    controller.countryRegionScrollController,
+                                child: ListView.builder(
+                                  controller:
+                                      controller.countryRegionScrollController,
+                                  itemCount:
+                                      controller.tliCountrys!.value.length,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: Sizes.PADDING_2),
+                                          child: InkWell(
+                                            onTap: () {
+                                              controller.countryRegionController
+                                                      .text =
+                                                  controller.tliCountrys!
+                                                      .value[index].code!;
+                                              controller.isCountryRegionExpanded
+                                                  .value = false;
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  controller.tliCountrys!
+                                                      .value[index].code!,
+                                                  style: context.bodySmall
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize:
+                                                        Sizes.TEXT_SIZE_12,
+                                                    color:
+                                                        const Color(0xff58595B),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left:
+                                                              Sizes.PADDING_86),
+                                                  child: Text(
+                                                    controller
+                                                        .tliCountrys!
+                                                        .value[index]
+                                                        .description!,
+                                                    style: context.bodySmall
+                                                        .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize:
+                                                          Sizes.TEXT_SIZE_12,
+                                                      color: const Color(
+                                                          0xff58595B),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(
+                                          endIndent: 30,
+                                          thickness: 1,
+                                          color: Color(0xff939598),
+                                          height: Sizes.HEIGHT_16,
+                                        )
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
               ),
               CustomTextField(
                 hintText: 'Contact',
@@ -93,7 +316,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                   CustomElevatedButton(
                     onPressed: () {
                       log("on pressed");
-                      // controller.createTliShipToAdd(countryRegionCode: countryRegionCode)
+                      controller.createTliShipToAdd();
                     },
                     title: AppStrings.SAVE,
                     minWidht: Sizes.WIDTH_90,
