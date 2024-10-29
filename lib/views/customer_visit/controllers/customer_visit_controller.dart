@@ -37,7 +37,6 @@ class CustomerVisitController extends GetxController {
   TliSalesLine? tliSalesLine;
 
   RxBool isLoading = false.obs;
-  RxBool isServerError = false.obs;
   RxInt itemIndex = 0.obs;
   RxBool barcodeScanned = false.obs;
   RxBool userItemListReferesh = false.obs;
@@ -47,7 +46,6 @@ class CustomerVisitController extends GetxController {
   List<Map<String, dynamic>> failedOrders = [];
   RxBool isSalesOrderCreating = false.obs;
   Rx isSuccessfull = false.obs;
-  RxString filteredData = ''.obs;
   CustomerValue? selectedCustomer;
 
   TextEditingController commentController = TextEditingController(text: '');
@@ -66,7 +64,7 @@ class CustomerVisitController extends GetxController {
   RxList<bool> checkBoxStates = <bool>[].obs;
   RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
 
-  //customer's text field & flags
+  // customer's text field & flags
   RxBool isCustomerExpanded = false.obs;
   ScrollController customerScrollController = ScrollController();
   TextEditingController customerTextFieldController = TextEditingController();

@@ -66,6 +66,7 @@ class AppStrings {
   static const String SEARCH_ATTENDEE = 'Search Attendee';
   static const String NO_CONTACTS_AVAILABLE = 'No Contacts Available';
   static const String COMING_SOON = 'Coming Soon..';
+  static const String COUNTRY_REGION_CODE = 'Country/Region Code';
 
   //ELEVATED BUTTONS CONST STRING
   static const String CANCEL = 'Cancel';

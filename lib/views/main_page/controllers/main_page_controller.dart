@@ -98,13 +98,21 @@ class MainPageController extends GetxController {
         isLoading.value = false;
         Get.offAllNamed(AppRoutes.SIGN_IN);
       },
-      onError: (p0) {
+      onError: (e) {
         isLoading.value = false;
-        CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Error',
-          message: p0.message,
-          duration: const Duration(seconds: 2),
-        );
+        if (e.statusCode == 302) {
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Server Error',
+            message: 'Please try again later',
+            duration: const Duration(seconds: 2),
+          );
+        } else {
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Server Error',
+            message: 'Please try again later',
+            duration: const Duration(seconds: 2),
+          );
+        }
       },
     );
   }

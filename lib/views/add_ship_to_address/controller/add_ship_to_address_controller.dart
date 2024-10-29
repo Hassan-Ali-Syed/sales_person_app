@@ -1,15 +1,17 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/queries/api_mutate/tlishiptoadd_mutate.dart';
+import 'package:sales_person_app/queries/api_quries/tlicountrys_query.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
+import 'package:sales_person_app/views/add_ship_to_address/models/tlicountrys_model.dart';
 import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
 
 class AddShipToAddressController extends GetxController {
   RxBool isLoading = false.obs;
+
   late TextEditingController companyNameController;
   late CustomerVisitController customerVisitController;
   TextEditingController addressController = TextEditingController();
@@ -20,16 +22,45 @@ class AddShipToAddressController extends GetxController {
   TextEditingController contactController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController countryRegionController = TextEditingController();
+  RxBool isCountryRegionExpanded = false.obs;
+  ScrollController countryRegionScrollController = ScrollController();
+
+  TliCountrys? tliCountrys;
   @override
   onInit() {
     super.onInit();
     customerVisitController = Get.find<CustomerVisitController>();
+    getTliCountrys();
     companyNameController = TextEditingController(
         text: customerVisitController.selectedCustomer!.name);
-    log('==CustomerName :  ${customerVisitController.selectedCustomer!.name}==========CustomerNo :  ${customerVisitController.selectedCustomer!.no}====================');
   }
 
-  Future<void> createTliShipToAdd({required String countryRegionCode}) async {
+  addTliCountrys(response) {
+    tliCountrys = TliCountrys.fromJson(response);
+  }
+
+  Future<void> getTliCountrys() async {
+    await BaseClient.safeApiCall(
+      ApiConstants.BASE_URL_GRAPHQL,
+      RequestType.query,
+      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      query: TliCountrysQuery.tliCountrysQuery(),
+      onLoading: () {
+        isLoading.value = true;
+      },
+      onSuccessGraph: (response) {
+        log("******* RESPONSE: *********\n ${response.data}");
+        addTliCountrys(response.data!['tliCountrys']);
+      },
+      onError: (e) {
+        isLoading.value = false;
+        log('*** onError *** \n ${e.message}');
+      },
+    );
+  }
+
+  Future<void> createTliShipToAdd() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
@@ -44,7 +75,7 @@ class AddShipToAddressController extends GetxController {
         address2: address2Controller.text,
         city: cityController.text,
         postCode: zipCodeController.text,
-        countryRegionCode: countryRegionCode,
+        countryRegionCode: countryRegionController.text,
         county: countyController.text,
         contact: contactController.text,
         phoneNo: phoneNumberController.text,
@@ -54,23 +85,26 @@ class AddShipToAddressController extends GetxController {
         isLoading.value = true;
       },
       onSuccessGraph: (response) {
-        customerVisitController.getCustomerbyIdFromGraphQL(
-            customerVisitController.selectedCustomer!.no!);
-        log("******* RESPONSE: *********\n ${response.data!['message']}");
-
-        if (response.data!['createtliContact']['status'] == 400) {
-          CustomSnackBar.showCustomToast(
-              message: '${response.data!['createtliContact']['message']}',
-              duration: const Duration(seconds: 3),
-              color: AppColors.redShade5);
+        if (response.data!['createtliShipToAdd']['status'] == 200) {
+          log("******* RESPONSE SUCCESS: *********\n ${response.data}");
+          customerVisitController.getCustomerbyIdFromGraphQL(
+              customerVisitController.selectedCustomer!.no!);
+          clearAllFields();
+          Get.back();
+        } else if (response.data!['createtliShipToAdd']['status'] == 400) {
           isLoading.value = false;
-        } else {
-          CustomSnackBar.showCustomToast(
-            message: '${response.data!['createtliContact']['message']}',
-            duration: const Duration(seconds: 3),
-            color: Colors.green,
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Record Exists',
+            message: response.data!['createtliShipToAdd']['message'],
+            duration: const Duration(seconds: 5),
           );
+        } else {
           isLoading.value = false;
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Error',
+            message: response.data!['createtliShipToAdd']['message'],
+            duration: const Duration(seconds: 5),
+          );
         }
       },
       onError: (e) {
@@ -83,5 +117,18 @@ class AddShipToAddressController extends GetxController {
         log('*** onError *** \n ${e.message}');
       },
     );
+  }
+
+  void clearAllFields() {
+    companyNameController.clear();
+    addressController.clear();
+    address2Controller.clear();
+    zipCodeController.clear();
+    cityController.clear();
+    countyController.clear();
+    contactController.clear();
+    phoneNumberController.clear();
+    emailController.clear();
+    countryRegionController.clear();
   }
 }
