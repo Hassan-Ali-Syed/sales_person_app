@@ -495,30 +495,35 @@ class CustomerVisitController extends GetxController {
 
   // Method for scanning barcode
   Future<void> scanBarcodeNormal() async {
-    String barcodeScanRes;
+    String? barcodeScanRes;
     barcodeScanned.value = true;
     try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
+      FlutterBarcodeScanner.getBarcodeStreamReceiver(
+              '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
+          .listen(
+        (barcode) => barcodeScanRes = barcode,
+        onDone: () async {
+          if (barcodeScanRes!.isEmpty) {
+            barcodeScanRes = 'Please scan Barcode again';
+            CustomSnackBar.showCustomErrorSnackBar(
+              title: 'Scan failed',
+              message: barcodeScanRes!,
+            );
+            barcodeScanned.value = false;
+          } else {
+            await getSingleItemFromGraphQL(barcodeScanRes!);
+          }
+        },
+      );
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-    if (barcodeScanRes == 'Failed to get platform version.') {
-      barcodeScanned.value = false;
-      CustomSnackBar.showCustomErrorSnackBar(
-        title: 'Scan failed',
-        message: barcodeScanRes,
-      );
-    } else if (barcodeScanRes.isEmpty) {
-      barcodeScanRes = 'Please scan Barcode again';
-      CustomSnackBar.showCustomErrorSnackBar(
-        title: 'Scan failed',
-        message: barcodeScanRes,
-      );
-      barcodeScanned.value = false;
-    } else {
-      await getSingleItemFromGraphQL(barcodeScanRes);
-    }
+  }
+
+  Future<void> startBarcodeScanStream() async {
+    FlutterBarcodeScanner.getBarcodeStreamReceiver(
+            '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
+        .listen((barcode) => print(barcode));
   }
 
   void showCommentDialog(BuildContext context,
