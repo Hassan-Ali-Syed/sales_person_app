@@ -56,20 +56,27 @@ class MainPageController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicustomersQuery.tliCustomersQuery(),
       onLoading: () {
         isLoading.value = true;
+        log('loading...................................');
       },
       onSuccessGraph: (response) async {
-        await addTliCustomerModel(response.data!['tliCustomers']);
+        
+        log("===Query of getCustomersFromGraphQL ====${TlicustomersQuery.tliCustomersQuery()}");
+        log("===Header For getCustomersFromGraphQL ====${await BaseClient.generateHeadersWithTokenForGraphQL()}");
+        log("===Response of customer on Success ====${response.data}");
+
+        addTliCustomerModel(response.data!['tliCustomers']);
+
         isLoading.value = false;
       },
       onError: (e) {
         isLoading.value = false;
         CustomSnackBar.showCustomErrorSnackBar(
           title: 'Server Error',
-          message: 'Data not fetched. Try again later',
+          message: e.message,
           duration: const Duration(seconds: 5),
         );
         log('*** onError *** \n ${e.message}');
@@ -80,7 +87,7 @@ class MainPageController extends GetxController {
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     Preferences().setCustomerRecords(tliCustomers);
-    log("########Customers Rcords Stored in Cache ############## \n ${Preferences().getCustomerRecords().toJson()}");
+    log("******************addTliCustomerModel****************");
     isLoading.value = false;
   }
 

@@ -47,11 +47,12 @@ class BaseClient {
     return headers;
   }
 
-  static Map<String, String>? generateHeadersWithTokenForGraphQL() {
+  static Future<Map<String, String>>?
+      generateHeadersWithTokenForGraphQL() async {
     Map<String, String> headers = {
       "Accept": "*/*",
       "Content-Type": "application/json",
-      "Authorization": "Bearer ${Preferences().getUserToken()}"
+      "Authorization": "Bearer ${await Preferences().getUserToken()}"
     };
     return headers;
   }

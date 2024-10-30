@@ -71,7 +71,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.ADD_SHIP_TO_ADDRESS,
-      page: () =>  const AddShipToAddressScreen(),
+      page: () => AddShipToAddressScreen(),
       binding: AddShipToAddressBinding(),
     ),
   ];

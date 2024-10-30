@@ -184,94 +184,90 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               ),
                               Expanded(
                                 child: Scrollbar(
-                                    radius:
-                                        const Radius.circular(Sizes.RADIUS_6),
-                                    interactive: true,
-                                    thickness: 12,
-                                    thumbVisibility: true,
-                                    controller:
-                                        controller.customerScrollController,
-                                    child: Obx(
-                                      () => controller
-                                              .customerFieldRefresh.value
-                                          ? const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : controller.tliCustomers?.value !=
-                                                      null &&
-                                                  controller.tliCustomers!.value
-                                                      .isNotEmpty
-                                              ? ListView.builder(
-                                                  controller: controller
-                                                      .customerScrollController,
-                                                  itemCount: controller
-                                                      .filteredCustomers.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return ListTile(
-                                                      visualDensity:
-                                                          VisualDensity.compact,
-                                                      dense: true,
-                                                      horizontalTitleGap: 0,
-                                                      contentPadding:
-                                                          EdgeInsets.zero,
-                                                      title: Text(
-                                                        controller
-                                                            .filteredCustomers[
-                                                                index]
-                                                            .name!,
-                                                        style: context.bodySmall
-                                                            .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: Sizes
-                                                              .TEXT_SIZE_16,
-                                                          color: const Color(
-                                                              0xff58595B),
-                                                        ),
-                                                      ),
-                                                      onTap: () {
-                                                        controller
-                                                                .selectedCustomer =
-                                                            controller
-                                                                    .filteredCustomers[
-                                                                index];
-                                                        controller
-                                                                .customerTextFieldController
-                                                                .text =
-                                                            controller
-                                                                .filteredCustomers[
-                                                                    index]
-                                                                .name!;
-                                                        controller
-                                                            .setCustomerData(
-                                                                index);
-                                                      },
-                                                    );
-                                                  },
-                                                )
-                                              : controller.isLoading.value
-                                                  ? const Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    )
-                                                  : Center(
-                                                      child: Text(
-                                                        AppStrings
-                                                            .NO_CUST_AVAIL,
-                                                        style: context.bodySmall
-                                                            .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: Sizes
-                                                              .TEXT_SIZE_14,
-                                                          color: const Color(
-                                                              0xff58595B),
-                                                        ),
+                                  radius: const Radius.circular(Sizes.RADIUS_6),
+                                  interactive: true,
+                                  thickness: 12,
+                                  thumbVisibility: true,
+                                  controller:
+                                      controller.customerScrollController,
+                                  child: Obx(
+                                    () => controller.customerFieldRefresh.value
+                                        ? const Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : controller.tliCustomers?.value !=
+                                                    null &&
+                                                controller.tliCustomers!.value
+                                                    .isNotEmpty
+                                            ? ListView.builder(
+                                                controller: controller
+                                                    .customerScrollController,
+                                                itemCount: controller
+                                                    .filteredCustomers.length,
+                                                itemBuilder: (context, index) {
+                                                  return ListTile(
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    dense: true,
+                                                    horizontalTitleGap: 0,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    title: Text(
+                                                      controller
+                                                          .filteredCustomers[
+                                                              index]
+                                                          .name!,
+                                                      style: context.bodySmall
+                                                          .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            Sizes.TEXT_SIZE_16,
+                                                        color: const Color(
+                                                            0xff58595B),
                                                       ),
                                                     ),
-                                    )),
+                                                    onTap: () {
+                                                      controller
+                                                              .selectedCustomer =
+                                                          controller
+                                                                  .filteredCustomers[
+                                                              index];
+                                                      controller
+                                                              .customerTextFieldController
+                                                              .text =
+                                                          controller
+                                                              .filteredCustomers[
+                                                                  index]
+                                                              .name!;
+                                                      controller
+                                                          .setCustomerData(
+                                                              index);
+                                                    },
+                                                  );
+                                                },
+                                              )
+                                            : controller.isLoading.value
+                                                ? const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  )
+                                                : Center(
+                                                    child: Text(
+                                                      AppStrings.NO_CUST_AVAIL,
+                                                      style: context.bodySmall
+                                                          .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize:
+                                                            Sizes.TEXT_SIZE_14,
+                                                        color: const Color(
+                                                            0xff58595B),
+                                                      ),
+                                                    ),
+                                                  ),
+                                  ),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -400,8 +396,12 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             fontSize: Sizes.TEXT_SIZE_16,
                                             color: const Color(0xff58595B),
                                           ),
-                                          controller:
-                                              controller.shipToAddController,
+                                          onChanged: (value) {
+                                            controller
+                                                .filterShipToAddressList();
+                                          },
+                                          controller: controller
+                                              .searchShipToAddController,
                                           decoration: InputDecoration(
                                             labelText:
                                                 AppStrings.SEARCH_SHIP_TO_ADD,
@@ -448,7 +448,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   const SizedBox(
                                     height: Sizes.HEIGHT_10,
                                   ),
-                                  controller.customersShipToAdd.isNotEmpty
+                                  controller.filteredShipToAddress.isNotEmpty
                                       ? Expanded(
                                           child: Scrollbar(
                                             interactive: true,
@@ -458,47 +458,65 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             thumbVisibility: true,
                                             controller: controller
                                                 .shipToAddScrollController,
-                                            child: ListView.builder(
-                                              controller: controller
-                                                  .shipToAddScrollController,
-                                              itemCount: controller
-                                                  .customersShipToAdd.length,
-                                              itemBuilder: (context, index) {
-                                                final filteredData = controller
-                                                    .setSelectedShipToAdd(
-                                                        index);
-                                                return ListTile(
-                                                  visualDensity:
-                                                      VisualDensity.compact,
-                                                  dense: true,
-                                                  horizontalTitleGap: 0,
-                                                  contentPadding:
-                                                      EdgeInsets.zero,
-                                                  title: Text(
-                                                    filteredData,
-                                                    style: context.bodySmall
-                                                        .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize:
-                                                          Sizes.TEXT_SIZE_16,
-                                                      color: const Color(
-                                                          0xff58595B),
+                                            child: Obx(
+                                              () => controller
+                                                      .shipToAddressFieldRefresh
+                                                      .value
+                                                  ? const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    )
+                                                  : ListView.builder(
+                                                      controller: controller
+                                                          .shipToAddScrollController,
+                                                      itemCount: controller
+                                                          .filteredShipToAddress
+                                                          .length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        String filteredData =
+                                                            '${controller.filteredShipToAddress[index].address} ${controller.filteredShipToAddress[index].address2}';
+                                                        return ListTile(
+                                                          visualDensity:
+                                                              VisualDensity
+                                                                  .compact,
+                                                          dense: true,
+                                                          horizontalTitleGap: 0,
+                                                          contentPadding:
+                                                              EdgeInsets.zero,
+                                                          title: Text(
+                                                            filteredData,
+                                                            style: context
+                                                                .bodySmall
+                                                                .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: Sizes
+                                                                  .TEXT_SIZE_16,
+                                                              color: const Color(
+                                                                  0xff58595B),
+                                                            ),
+                                                          ),
+                                                          onTap: () {
+                                                            controller
+                                                                .setSelectedShipToAdd(
+                                                                    index);
+                                                            controller
+                                                                    .shipToAddController
+                                                                    .text =
+                                                                filteredData;
+                                                            controller
+                                                                    .searchShipToAddController
+                                                                    .text =
+                                                                filteredData;
+                                                            controller
+                                                                .isShipToAddExpanded
+                                                                .value = false;
+                                                          },
+                                                        );
+                                                      },
                                                     ),
-                                                  ),
-                                                  onTap: () {
-                                                    controller
-                                                        .shipToAddController
-                                                        .text = filteredData;
-                                                    controller
-                                                        .isShipToAddExpanded
-                                                        .value = false;
-                                                    controller
-                                                        .searchShipToAddController
-                                                        .clear();
-                                                  },
-                                                );
-                                              },
                                             ),
                                           ),
                                         )
@@ -517,8 +535,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                         ),
                                   GestureDetector(
                                     onTap: () {
-                                      Get.toNamed(
-                                          AppRoutes.ADD_SHIP_TO_ADDRESS);
+                                      Get.toNamed(AppRoutes.ADD_SHIP_TO_ADDRESS,
+                                          arguments: 'customerVisit');
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(
@@ -617,6 +635,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             fontSize: Sizes.TEXT_SIZE_16,
                                             color: const Color(0xff58595B),
                                           ),
+                                          onChanged: (value) {
+                                            controller.filterAttendeeList();
+                                          },
                                           controller: controller
                                               .searchAttendeeController,
                                           decoration: InputDecoration(
@@ -656,7 +677,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   const SizedBox(
                                     height: Sizes.HEIGHT_10,
                                   ),
-                                  controller.customerContacts.isNotEmpty
+                                  controller.filteredAttendees.isNotEmpty
                                       ? Expanded(
                                           child: Scrollbar(
                                             radius: const Radius.circular(
@@ -666,48 +687,65 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             thumbVisibility: true,
                                             controller: controller
                                                 .attendeeScrollController,
-                                            child: ListView.builder(
-                                              controller: controller
-                                                  .attendeeScrollController,
-                                              itemCount: controller
-                                                  .customerContacts.length,
-                                              itemBuilder: (context, index) {
-                                                final filteredData = controller
-                                                        .customerContacts[index]
-                                                    ['name'];
-                                                return ListTile(
-                                                  visualDensity:
-                                                      VisualDensity.compact,
-                                                  dense: true,
-                                                  horizontalTitleGap: 6,
-                                                  contentPadding:
-                                                      EdgeInsets.zero,
-                                                  leading: Obx(
-                                                    () => Checkbox(
-                                                      value: controller
-                                                              .checkBoxStates[
-                                                          index],
-                                                      onChanged: (value) {
-                                                        controller
-                                                            .onCheckboxChanged(
-                                                                value, index);
+                                            child: Obx(
+                                              () => controller
+                                                      .attendeeFieldRefresh
+                                                      .value
+                                                  ? const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    )
+                                                  : ListView.builder(
+                                                      controller: controller
+                                                          .attendeeScrollController,
+                                                      itemCount: controller
+                                                          .filteredAttendees
+                                                          .length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        final filteredData =
+                                                            controller
+                                                                    .filteredAttendees[
+                                                                index];
+                                                        return ListTile(
+                                                          visualDensity:
+                                                              VisualDensity
+                                                                  .compact,
+                                                          dense: true,
+                                                          horizontalTitleGap: 6,
+                                                          contentPadding:
+                                                              EdgeInsets.zero,
+                                                          leading: Obx(
+                                                            () => Checkbox(
+                                                              value: controller
+                                                                      .checkBoxStates[
+                                                                  index],
+                                                              onChanged:
+                                                                  (value) {
+                                                                controller
+                                                                    .onCheckboxChanged(
+                                                                        value,
+                                                                        index);
+                                                              },
+                                                            ),
+                                                          ),
+                                                          title: Text(
+                                                            filteredData,
+                                                            style: context
+                                                                .bodySmall
+                                                                .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: Sizes
+                                                                  .TEXT_SIZE_16,
+                                                              color: const Color(
+                                                                  0xff58595B),
+                                                            ),
+                                                          ),
+                                                        );
                                                       },
                                                     ),
-                                                  ),
-                                                  title: Text(
-                                                    filteredData,
-                                                    style: context.bodySmall
-                                                        .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize:
-                                                          Sizes.TEXT_SIZE_16,
-                                                      color: const Color(
-                                                          0xff58595B),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
                                             ),
                                           ),
                                         )

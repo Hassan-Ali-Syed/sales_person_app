@@ -13,17 +13,18 @@ class AddShipToAddressController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool countryRegionFieldRefresh = false.obs;
 
-  late TextEditingController companyNameController;
   late CustomerVisitController customerVisitController;
-  TextEditingController addressController = TextEditingController();
-  TextEditingController address2Controller = TextEditingController();
-  TextEditingController zipCodeController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController countyController = TextEditingController();
-  TextEditingController contactController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController countryRegionController = TextEditingController();
+
+  late TextEditingController companyNameController;
+  late TextEditingController addressController;
+  late TextEditingController address2Controller;
+  late TextEditingController zipCodeController;
+  late TextEditingController cityController;
+  late TextEditingController countyController;
+  late TextEditingController contactController;
+  late TextEditingController phoneNumberController;
+  late TextEditingController emailController;
+  late TextEditingController countryRegionController;
   RxBool isCountryRegionExpanded = false.obs;
   ScrollController countryRegionScrollController = ScrollController();
 
@@ -31,6 +32,17 @@ class AddShipToAddressController extends GetxController {
   @override
   onInit() {
     super.onInit();
+    companyNameController = TextEditingController();
+    addressController = TextEditingController();
+    address2Controller = TextEditingController();
+    zipCodeController = TextEditingController();
+    cityController = TextEditingController();
+    countyController = TextEditingController();
+    contactController = TextEditingController();
+    phoneNumberController = TextEditingController();
+    emailController = TextEditingController();
+    countryRegionController = TextEditingController();
+
     customerVisitController = Get.find<CustomerVisitController>();
     getTliCountrys();
     companyNameController = TextEditingController(
@@ -63,7 +75,7 @@ class AddShipToAddressController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL:await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliCountrysQuery.tliCountrysQuery(),
       onLoading: () {
         isLoading.value = true;
@@ -106,11 +118,11 @@ class AddShipToAddressController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL:await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliShipToAddMutate.tliShipToAddMutate(
-        code: customerVisitController.customersShipToAdd.length + 1 > 9
-            ? "${customerVisitController.customersShipToAdd.length + 1}"
-            : "0${customerVisitController.customersShipToAdd.length + 1}",
+        code: customerVisitController.tliShipToAddresses!.length + 1 > 9
+            ? "${customerVisitController.tliShipToAddresses!.length + 1}"
+            : "0${customerVisitController.tliShipToAddresses!.length + 1}",
         companyName: companyNameController.text,
         customerNo: customerVisitController.selectedCustomer!.no!,
         address: addressController.text,
