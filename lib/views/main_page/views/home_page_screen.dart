@@ -285,7 +285,9 @@ class HomePageScreen extends GetView<MainPageController> {
                           ),
                         ),
                         trailing: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            controller.getCustomersFromGraphQL();
+                          },
                           child: const Icon(Icons.add_circle),
                         ),
                       ),

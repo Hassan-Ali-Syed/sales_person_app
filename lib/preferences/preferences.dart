@@ -16,7 +16,7 @@ class Preferences {
   void setUser(user.Data user) => storage.write("user", user);
   getUser() => storage.read("user");
 
-  void setUserToken(String token) => storage.write("token", token);
+  Future<void> setUserToken(String token) => storage.write("token", token);
   getUserToken() => storage.read("token");
   removeToken() => storage.remove("token");
 
