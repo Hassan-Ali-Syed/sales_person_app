@@ -63,7 +63,6 @@ class MainPageController extends GetxController {
       },
       onSuccessGraph: (response) async {
         await addTliCustomerModel(response.data!['tliCustomers']);
-        // log("########Customers Rcords Stored in Cache ############## \n ${Preferences().getCustomerRecords().toJon()}");
         isLoading.value = false;
       },
       onError: (e) {
@@ -81,7 +80,7 @@ class MainPageController extends GetxController {
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     Preferences().setCustomerRecords(tliCustomers);
-    // log("########Customers Rcords Stored in Cache ############## \n ${Preferences().getCustomerRecords().toJson()}");
+    log("########Customers Rcords Stored in Cache ############## \n ${Preferences().getCustomerRecords().toJson()}");
     isLoading.value = false;
   }
 

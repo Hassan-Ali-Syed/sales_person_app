@@ -23,7 +23,7 @@ class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    
+
     await addTliCustomerModel();
   }
 
@@ -52,7 +52,7 @@ class CustomerVisitController extends GetxController {
   TextEditingController itemQntyController = TextEditingController();
 
   // Reactive variables
-  String customerNo = '';
+  // String customerNo = '';
   RxString customerAddress = ''.obs;
   String selectedShipToAddCode = '';
   RxInt attendeeSelectedIndex = 0.obs;
@@ -253,6 +253,35 @@ class CustomerVisitController extends GetxController {
     log("====After Adding Contacts======$customerContacts");
   }
 
+  // // Function to split the comment into lines of 80 characters
+  // List<String> splitComment(String comment, int maxLength) {
+  //   List<String> lines = [];
+  //   for (int i = 0; i < comment.length; i += maxLength) {
+  //     lines.add(comment.substring(
+  //         i, i + maxLength > comment.length ? comment.length : i + maxLength));
+  //   }
+  //   return lines;
+  // }
+
+  List<String> splitComment(String comment, int maxLength) {
+    List<String> lines = [];
+    int start = 0;
+    while (start < comment.length) {
+      int end = (start + maxLength > comment.length)
+          ? comment.length
+          : start + maxLength;
+      if (end < comment.length && comment[end] != ' ') {
+        int lastSpace = comment.lastIndexOf(' ', end);
+        if (lastSpace > start) {
+          end = lastSpace;
+        }
+      }
+      lines.add(comment.substring(start, end).trim());
+      start = end + 1;
+    }
+    return lines;
+  }
+
   Future<void> createSalesOrdersOfSelectedAttendees() async {
     isSalesOrderCreating.value = true;
     Get.dialog(
@@ -299,7 +328,7 @@ class CustomerVisitController extends GetxController {
           headers: await BaseClient.generateHeadersWithToken(),
           data: {
             "no": "",
-            "sellToCustomerNo": customerNo,
+            "sellToCustomerNo": selectedCustomer!.no!,
             "contact": contactNo,
             "externalDocumentNo": createExternalDocumentNo(contactNo),
             "locationCode": "SYOSSET",
@@ -313,7 +342,7 @@ class CustomerVisitController extends GetxController {
               var salesOrderNo = response.data['data']['no'];
               // Store order details in createdOrders list
               createdOrders.add({
-                'customerNo': customerNo,
+                'customerNo': selectedCustomer!.no!,
                 'attendeeName': attendeeName,
                 'contactNo': contactNo,
                 'orderNo': salesOrderNo
@@ -323,20 +352,25 @@ class CustomerVisitController extends GetxController {
               for (var tliSalesLine in tliSalesLineElement) {
                 if (tliSalesLine.comment != null &&
                     tliSalesLine.comment.isNotEmpty) {
-                  await BaseClient.safeApiCall(
-                      ApiConstants.CREATE_SALES_LINES_COMMENT, RequestType.post,
-                      headers: await BaseClient.generateHeadersWithToken(),
-                      data: {
-                        "no": salesOrderNo, // SalesOrder No
-                        "documentLineNo": tliSalesLine.lineNo, // Sales Line No
-                        "lineNo": 10000, // line no of comments of sales Line
-                        "date": currentDate(), // current date
-                        "comment": tliSalesLine.comment // comment
-                      }, onSuccess: (response) {
-                    log('******* Sales Line Comment created ${response.data}');
-                  }, onError: (e) {
-                    log('******* ON Sales Line Comment Error Block******** \n ${e.message}');
-                  });
+                  List<String> commentLines =
+                      splitComment(tliSalesLine.comment, 80);
+                  for (var i = 1; i <= commentLines.length; i++) {
+                    await BaseClient.safeApiCall(
+                        ApiConstants.CREATE_SALES_LINES_COMMENT,
+                        RequestType.post,
+                        headers: await BaseClient.generateHeadersWithToken(),
+                        data: {
+                          "no": salesOrderNo,
+                          "documentLineNo": tliSalesLine.lineNo,
+                          "lineNo": i * 10000,
+                          "date": currentDate(),
+                          "comment": commentLines[i]
+                        }, onSuccess: (response) {
+                      log('******* Sales Line Comment created ${response.data}');
+                    }, onError: (e) {
+                      log('******* ON Sales Line Comment Error Block******** \n ${e.message}');
+                    });
+                  }
                 }
               }
             }
@@ -344,18 +378,18 @@ class CustomerVisitController extends GetxController {
           onError: (e) {
             String reason = '';
             if (e.statusCode == 400) {
-              reason = 'External No already exist';
+              reason = e.message;
               log('status code 400: ${e.statusCode} ${e.message} ');
             } else if (e.statusCode == 500) {
-              reason = 'Sales Order already exists';
+              reason = e.message;
               log('status code 500 ${e.statusCode}: ${e.message}');
             } else {
-              log('status code ${e.statusCode}: ${e.message}');
-              reason = 'Server Error';
+              log(' Else status code ${e.statusCode}: ${e.message}');
+              reason = e.message;
             }
 
             failedOrders.add({
-              'customerNo': customerNo,
+              'customerNo': selectedCustomer!.no!,
               'attendeeName': attendeeName,
               'contactNo': contactNo,
               'reason': reason,
@@ -367,7 +401,7 @@ class CustomerVisitController extends GetxController {
         );
       } else {
         failedOrders.add({
-          'customerNo': customerNo,
+          'customerNo': selectedCustomer!.no!,
           'attendeeName': attendeeName,
           'contactNo': contactNo,
           'reason': 'No Sales Lines Provided',
@@ -485,65 +519,24 @@ class CustomerVisitController extends GetxController {
 
   // Method for scanning barcode
   Future<void> scanBarcodeNormal() async {
-    String? barcodeScanRes;
-    barcodeScanned.value = true;
+    String barcodeScanRes;
     try {
-      FlutterBarcodeScanner.getBarcodeStreamReceiver(
-              '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-          .listen(
-        (barcode) => barcodeScanRes = barcode,
-        onDone: () async {
-          if (barcodeScanRes!.isEmpty) {
-            barcodeScanRes = 'Please scan Barcode again';
-            CustomSnackBar.showCustomErrorSnackBar(
-              title: 'Scan failed',
-              message: barcodeScanRes!,
-            );
-            barcodeScanned.value = false;
-          } else {
-            await getSingleItemFromGraphQL(barcodeScanRes!);
-          }
-        },
-      );
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
+    if (barcodeScanRes.isEmpty) {
+      barcodeScanRes = 'Please scan Barcode again';
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Scan failed',
+        message: barcodeScanRes,
+      );
+      barcodeScanned.value = false;
+    } else {
+      await getSingleItemFromGraphQL(barcodeScanRes);
+    }
   }
-
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-        .listen((barcode) => print(barcode));
-  }
-
-  // Future<void> scanBarcodeNormal() async {
-  //   String? barcodeScanRes;
-  //   barcodeScanned.value = true;
-  //   try {
-  //     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-  //             '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-  //         .listen(
-  //       (barcode) {
-  //         barcodeScanRes = barcode;
-  //         log('Barcode: $barcode ');
-  //       },
-  //       onDone: () async {
-  //         if (barcodeScanRes!.isEmpty) {
-  //           barcodeScanRes = 'Please scan Barcode again';
-  //           CustomSnackBar.showCustomErrorSnackBar(
-  //             title: 'Scan failed',
-  //             message: barcodeScanRes!,
-  //           );
-  //           barcodeScanned.value = false;
-  //         } else {
-  //           await getSingleItemFromGraphQL(barcodeScanRes!);
-  //         }
-  //       },
-  //     );
-  //   } on PlatformException {
-  //     barcodeScanRes = 'Failed to get platform version.';
-  //   }
-  // }
 
   void showCommentDialog(BuildContext context,
       {required TextEditingController controller, void Function()? onPressed}) {
@@ -729,7 +722,6 @@ class CustomerVisitController extends GetxController {
     isAttendeeFieldVisible.value = false;
     selectedAttendees.clear();
     selectedAttendee.value = '';
-    customerNo = '';
     customerAddress.value = '';
     selectedShipToAddCode = '';
     attendeeSelectedIndex.value = 0;

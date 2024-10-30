@@ -38,7 +38,7 @@ class AddShipToAddressController extends GetxController {
   }
 
   @override
-  void dispose() {
+  void onClose() {
     customerVisitController.dispose();
     companyNameController.dispose();
     addressController.dispose();
@@ -51,7 +51,7 @@ class AddShipToAddressController extends GetxController {
     emailController.dispose();
     countryRegionController.dispose();
     log("Dispose controllers of ship to add ");
-    super.dispose();
+    super.onClose();
   }
 
   addTliCountrys(response) {
