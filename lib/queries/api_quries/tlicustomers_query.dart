@@ -5,7 +5,7 @@ class TlicustomersQuery {
     return """query MyQuery {
       tliCustomers(companyId: "${ApiConstants.POSH_ID}",
       page: 1,
-      perPage: 10000,  
+      perPage: 10000,
       orderBy: { column: name, order: ASC })
       {
         message

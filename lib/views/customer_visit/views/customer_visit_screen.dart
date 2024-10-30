@@ -1062,8 +1062,6 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               CustomElevatedButton(
                                 onPressed: () {
                                   controller.scanBarcodeNormal();
-                                  // controller
-                                  // .getSingleItemFromGraphQL('S10082-002');
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_90,
