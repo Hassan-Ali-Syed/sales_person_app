@@ -36,6 +36,23 @@ class AddShipToAddressController extends GetxController {
         text: customerVisitController.selectedCustomer!.name);
   }
 
+  @override
+  void dispose() {
+    customerVisitController.dispose();
+    companyNameController.dispose();
+    addressController.dispose();
+    address2Controller.dispose();
+    zipCodeController.dispose();
+    cityController.dispose();
+    countyController.dispose();
+    contactController.dispose();
+    phoneNumberController.dispose();
+    emailController.dispose();
+    countryRegionController.dispose();
+    log("Dispose controllers of ship to add ");
+    super.dispose();
+  }
+
   addTliCountrys(response) {
     tliCountrys = TliCountrys.fromJson(response);
   }
@@ -89,7 +106,7 @@ class AddShipToAddressController extends GetxController {
           log("******* RESPONSE SUCCESS: *********\n ${response.data}");
           customerVisitController.getCustomerbyIdFromGraphQL(
               customerVisitController.selectedCustomer!.no!);
-          clearAllFields();
+          // clearAllFields();
           Get.back();
         } else if (response.data!['createtliShipToAdd']['status'] == 400) {
           isLoading.value = false;

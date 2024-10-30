@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
@@ -31,7 +31,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.initState();
 
     _focusNode.addListener(() {
-      log('Focus changed: ${_focusNode.hasFocus}');
+      // log('Focus changed: ${_focusNode.hasFocus}');
       setState(() {});
     });
     widget.controller?.addListener(() {

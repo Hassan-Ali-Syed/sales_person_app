@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -302,7 +302,9 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   CustomElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.back();
+                    },
                     title: AppStrings.CANCEL,
                     minWidht: Sizes.WIDTH_90,
                     minHeight: Sizes.HEIGHT_30,
