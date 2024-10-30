@@ -17,13 +17,14 @@ import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/queries/api_quries/tlicustomers_query.dart';
+import 'package:sales_person_app/views/main_page/models/tlishiptoadds_model.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
 class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    
+
     await addTliCustomerModel();
   }
 
@@ -57,8 +58,12 @@ class CustomerVisitController extends GetxController {
   String selectedShipToAddCode = '';
   RxInt attendeeSelectedIndex = 0.obs;
   RxString selectedAttendee = ''.obs;
-  List<Map<String, dynamic>> customersShipToAdd = <Map<String, dynamic>>[];
-  RxList<Map<String, dynamic>> customerContacts = <Map<String, dynamic>>[].obs;
+
+  List<String>? customersShipToAddList = <String>[];
+  RxList<Map<String, dynamic>> customerContactsMap =
+      <Map<String, dynamic>>[].obs;
+  RxList<String>? customerContactsList = <String>[].obs;
+  RxList<TliShipToAddress>? tliShipToAddresses = <TliShipToAddress>[].obs;
 
   //selected attendees List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
@@ -93,7 +98,7 @@ class CustomerVisitController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicustomersQuery.tliCustomerGetByIdQuery(no),
       onLoading: () {
         isLoading.value = true;
@@ -120,7 +125,7 @@ class CustomerVisitController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliItemsQuery.tliItemsQuery(no),
       onLoading: () {
         userItemListReferesh.value = true;
@@ -180,7 +185,7 @@ class CustomerVisitController extends GetxController {
     await getCustomerbyIdFromGraphQL(selectedCustomer!.no!);
   }
 
-  // search query list and Method
+  // customer search query list and Method
   List<CustomerValue> filteredCustomers = <CustomerValue>[].obs;
   RxBool customerFieldRefresh = false.obs;
   void filterCustomerList() {
@@ -189,8 +194,10 @@ class CustomerVisitController extends GetxController {
     if (customerTextFieldController.text.isEmpty ||
         customerTextFieldController.text == '') {
       filteredCustomers = tliCustomers!.value;
+      customerFieldRefresh.value = false;
     } else {
       filteredCustomers = [];
+
       for (var element in tliCustomers!.value) {
         if (element.name!.toLowerCase().contains(
               customerTextFieldController.text.toLowerCase(),
@@ -203,41 +210,100 @@ class CustomerVisitController extends GetxController {
     log('List $filteredCustomers');
   }
 
+// Ship to Address search query list and Method
+  List<TliShipToAddress> filteredShipToAddress = <TliShipToAddress>[].obs;
+  RxBool shipToAddressFieldRefresh = false.obs;
+  void filterShipToAddressList() {
+    shipToAddressFieldRefresh.value = true;
+    if (tliShipToAddresses == null) return;
+    if (searchShipToAddController.text.isEmpty ||
+        searchShipToAddController.text == '') {
+      filteredShipToAddress = tliShipToAddresses!;
+      shipToAddressFieldRefresh.value = false;
+    } else {
+      filteredShipToAddress = [];
+      for (var element in tliShipToAddresses!) {
+        var address = '${element.address} ${element.address2}';
+        if (address.toLowerCase().contains(
+              searchShipToAddController.text.toLowerCase(),
+            )) {
+          filteredShipToAddress.add(element);
+        }
+      }
+      shipToAddressFieldRefresh.value = false;
+    }
+    log('List $filteredShipToAddress');
+  }
+
+// Attendee search query list and Method
+  List<String> filteredAttendees = <String>[].obs;
+  RxBool attendeeFieldRefresh = false.obs;
+  void filterAttendeeList() {
+    attendeeFieldRefresh.value = true;
+    if (customerContactsList == null) return;
+    if (searchAttendeeController.text.isEmpty ||
+        searchAttendeeController.text == '') {
+      filteredAttendees = customerContactsList!;
+      attendeeFieldRefresh.value = false;
+    } else {
+      filteredAttendees = [];
+      for (var element in customerContactsList!) {
+        if (element.toLowerCase().contains(
+              searchAttendeeController.text.toLowerCase(),
+            )) {
+          filteredAttendees.add(element);
+        }
+      }
+      attendeeFieldRefresh.value = false;
+    }
+    log('List $filteredAttendees');
+  }
+
 // SET CUSTOMER'S SHIP TO ADDRESSES
   void setCustomerShipToAdd() {
     isShipToAddFieldVisible.value = false;
-    customersShipToAdd.clear();
+    tliShipToAddresses!.clear();
+    customersShipToAddList!.clear();
     var instanceCustomerShipToAdd = tliCustomerById?.value;
     if (instanceCustomerShipToAdd != null &&
         instanceCustomerShipToAdd.isNotEmpty) {
       for (var values in instanceCustomerShipToAdd) {
-        var tliShipToAddresses = values.tliShipToAdds;
-        if (tliShipToAddresses != null) {
-          for (var element in tliShipToAddresses) {
-            customersShipToAdd.add({
-              'address':
-                  '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
-              'shipToAddsCode': element.code ?? '',
-            });
-          }
-        }
+        tliShipToAddresses!.addAll(values.tliShipToAdds!);
+        //   if (tliShipToAddresses != null) {
+        //     for (var element in tliShipToAddresses) {
+        //       customersShipToAddList!.add(
+        //         '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
+        //       );
+        //       customersShipToAddMap.add({
+        //         'address':
+        //             '${element.address ?? ''} ${element.address2 ?? ''}'.trim(),
+        //         'shipToAddsCode': element.code ?? '',
+        //       });
+        //     }
+        //   }
       }
+
+      filteredShipToAddress = tliShipToAddresses!;
+      log('****filterShipToAddress**********$filteredShipToAddress*************');
     }
     shipToAddController = TextEditingController(text: '');
+
     isShipToAddFieldVisible.value = true;
   }
 
 // SET CUSTOMER'S CONTACTS
   void setCustomerContacts() {
     isAttendeeFieldVisible.value = false;
-    customerContacts.clear();
+    customerContactsMap.clear();
+    customerContactsList!.clear();
     var instanceCustomer = tliCustomerById!.value;
     if (instanceCustomer.isNotEmpty) {
       for (var values in instanceCustomer) {
         var tliContacts = values.tliContact;
         for (var element in tliContacts!) {
           if (element.type == 'Person' || element.type == 'person') {
-            customerContacts.add({
+            customerContactsList!.add(element.name!);
+            customerContactsMap.add({
               'name': element.name,
               'contactNo': element.no,
               'type': element.type,
@@ -246,11 +312,12 @@ class CustomerVisitController extends GetxController {
           }
         }
         checkBoxStates.value =
-            List.generate(customerContacts.length, (index) => false);
+            List.generate(customerContactsMap.length, (index) => false);
       }
     }
+    filteredAttendees = customerContactsList!;
     isAttendeeFieldVisible.value = true;
-    log("====After Adding Contacts======$customerContacts");
+    log("====After Adding Contacts======$customerContactsMap");
   }
 
   Future<void> createSalesOrdersOfSelectedAttendees() async {
@@ -392,13 +459,13 @@ class CustomerVisitController extends GetxController {
   }
 
   // Set Selected Ship to Add
-  String setSelectedShipToAdd(int index) {
-    var address = customersShipToAdd[index]['address'];
-    selectedShipToAddCode = customersShipToAdd[index]['shipToAddsCode'];
+  void setSelectedShipToAdd(int index) {
+    String address =
+        '${filteredShipToAddress[index].address} ${filteredShipToAddress[index].address2}';
+    selectedShipToAddCode = filteredShipToAddress[index].code!;
     log('**** After selecting address from ship to add list ******');
     log('**** Ship to Address: $address');
     log('**** Ship to Code: $selectedShipToAddCode');
-    return address;
   }
 
   addTliCustomerModel() {
@@ -463,18 +530,19 @@ class CustomerVisitController extends GetxController {
     if (value == true) {
       checkBoxStates[index] = true;
       selectedAttendees.add({
-        'name': customerContacts[index]['name'],
-        'contactNo': customerContacts[index]['contactNo'],
-        'tliSalesLine': customerContacts[index]['tliSalesLine']
+        'name': filteredAttendees[index],
+        'contactNo': customerContactsMap[index]['contactNo'],
+        'tliSalesLine': customerContactsMap[index]['tliSalesLine']
       });
       log('**** SELECTED attendeeS $selectedAttendees ******');
     } else {
       checkBoxStates[index] = false;
 
       selectedAttendees.removeWhere((attendee) =>
-          attendee['name'] == customerContacts[index]['name'] &&
-          attendee['contactNo'] == customerContacts[index]['contactNo'] &&
-          attendee['tliSalesLine'] == customerContacts[index]['tliSalesLine']);
+          attendee['name'] == filteredAttendees[index] &&
+          attendee['contactNo'] == customerContactsMap[index]['contactNo'] &&
+          attendee['tliSalesLine'] ==
+              customerContactsMap[index]['tliSalesLine']);
 
       log('**** SELECTED attendeeS $selectedAttendees ******');
     }
@@ -484,66 +552,26 @@ class CustomerVisitController extends GetxController {
   }
 
   // Method for scanning barcode
+
   Future<void> scanBarcodeNormal() async {
-    String? barcodeScanRes;
-    barcodeScanned.value = true;
+    String barcodeScanRes;
     try {
-      FlutterBarcodeScanner.getBarcodeStreamReceiver(
-              '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-          .listen(
-        (barcode) => barcodeScanRes = barcode,
-        onDone: () async {
-          if (barcodeScanRes!.isEmpty) {
-            barcodeScanRes = 'Please scan Barcode again';
-            CustomSnackBar.showCustomErrorSnackBar(
-              title: 'Scan failed',
-              message: barcodeScanRes!,
-            );
-            barcodeScanned.value = false;
-          } else {
-            await getSingleItemFromGraphQL(barcodeScanRes!);
-          }
-        },
-      );
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
+    if (barcodeScanRes.isEmpty) {
+      barcodeScanRes = 'Please scan Barcode again';
+      CustomSnackBar.showCustomErrorSnackBar(
+        title: 'Scan failed',
+        message: barcodeScanRes,
+      );
+      barcodeScanned.value = false;
+    } else {
+      await getSingleItemFromGraphQL(barcodeScanRes);
+    }
   }
-
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-        .listen((barcode) => print(barcode));
-  }
-
-  // Future<void> scanBarcodeNormal() async {
-  //   String? barcodeScanRes;
-  //   barcodeScanned.value = true;
-  //   try {
-  //     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-  //             '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-  //         .listen(
-  //       (barcode) {
-  //         barcodeScanRes = barcode;
-  //         log('Barcode: $barcode ');
-  //       },
-  //       onDone: () async {
-  //         if (barcodeScanRes!.isEmpty) {
-  //           barcodeScanRes = 'Please scan Barcode again';
-  //           CustomSnackBar.showCustomErrorSnackBar(
-  //             title: 'Scan failed',
-  //             message: barcodeScanRes!,
-  //           );
-  //           barcodeScanned.value = false;
-  //         } else {
-  //           await getSingleItemFromGraphQL(barcodeScanRes!);
-  //         }
-  //       },
-  //     );
-  //   } on PlatformException {
-  //     barcodeScanRes = 'Failed to get platform version.';
-  //   }
-  // }
 
   void showCommentDialog(BuildContext context,
       {required TextEditingController controller, void Function()? onPressed}) {
@@ -733,8 +761,8 @@ class CustomerVisitController extends GetxController {
     customerAddress.value = '';
     selectedShipToAddCode = '';
     attendeeSelectedIndex.value = 0;
-    customersShipToAdd.clear();
-    customerContacts.clear();
+    tliShipToAddresses!.clear();
+    customerContactsMap.clear();
   }
 
   // void showCustomDialog(BuildContext context, {bool isSuccessfull = false}) {

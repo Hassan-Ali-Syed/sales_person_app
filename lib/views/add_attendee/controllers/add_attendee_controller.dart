@@ -44,7 +44,7 @@ class AddAttendeeController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
-      headersForGraphQL: BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL:await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicontactMutate.tliContactMutate(
         name: contactFullNameTextFieldController.text,
         customerNo: customerVisitController.selectedCustomer!.no!,

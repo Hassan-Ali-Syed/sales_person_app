@@ -94,7 +94,7 @@ class SignInController extends GetxController {
     isLoading.value = true;
     userLoginData = SignInModel.fromJson(data);
     Preferences().setUser(userLoginData!.data!);
-    Preferences().setUserToken(userLoginData!.data!.token!);
+    await Preferences().setUserToken(userLoginData!.data!.token!);
     log('Token: ${Preferences().getUserToken()}');
     log('User: ${Preferences().getUser().name}');
     isLoading.value = false;

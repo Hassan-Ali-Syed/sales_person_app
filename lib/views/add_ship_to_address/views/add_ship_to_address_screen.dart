@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
@@ -12,7 +10,8 @@ import 'package:sales_person_app/widgets/custom_textfield.dart';
 
 class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
   static const String routeName = '/add_ship_to_address_screen';
-  const AddShipToAddressScreen({super.key});
+  AddShipToAddressScreen({super.key});
+  final String argument = Get.arguments ?? 'Unknown';
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +27,13 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
               horizontal: Sizes.PADDING_22, vertical: Sizes.PADDING_20),
           child: Column(
             children: [
-              CustomTextField(
-                readOnly: true,
-                hintText: 'Company Name',
-                controller: controller.companyNameController,
-              ),
+              argument == 'customerVisit'
+                  ? CustomTextField(
+                      readOnly: true,
+                      hintText: 'Company Name',
+                      controller: controller.companyNameController,
+                    )
+                  : const SizedBox(),
               CustomTextField(
                 hintText: 'Address',
                 controller: controller.addressController,
@@ -131,12 +132,10 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                       fontSize: Sizes.TEXT_SIZE_16,
                                       color: const Color(0xff58595B),
                                     ),
-
-                                    // autofocus: true,
+                                    autofocus: true,
                                     onChanged: (value) {
                                       controller.filterCountryRegionCode();
                                     },
-
                                     controller:
                                         controller.countryRegionController,
                                     onTapOutside: (event) {},
@@ -180,7 +179,6 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                             ),
                             Column(
                               children: [
-
                                 Row(
                                   children: [
                                     Text(
@@ -190,7 +188,6 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                         fontSize: Sizes.TEXT_SIZE_12,
                                         color: const Color(0xff58595B),
                                       ),
-
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(
@@ -328,7 +325,9 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   CustomElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.back();
+                    },
                     title: AppStrings.CANCEL,
                     minWidht: Sizes.WIDTH_90,
                     minHeight: Sizes.HEIGHT_30,
