@@ -11,6 +11,7 @@ import 'package:sales_person_app/views/customer_visit/controllers/customer_visit
 
 class AddShipToAddressController extends GetxController {
   RxBool isLoading = false.obs;
+  RxBool countryRegionFieldRefresh = false.obs;
 
   late TextEditingController companyNameController;
   late CustomerVisitController customerVisitController;
@@ -55,6 +56,7 @@ class AddShipToAddressController extends GetxController {
 
   addTliCountrys(response) {
     tliCountrys = TliCountrys.fromJson(response);
+    filteredCountry = tliCountrys!.value;
   }
 
   Future<void> getTliCountrys() async {
@@ -75,6 +77,29 @@ class AddShipToAddressController extends GetxController {
         log('*** onError *** \n ${e.message}');
       },
     );
+  }
+
+  List<TliCountrysValue> filteredCountry = <TliCountrysValue>[].obs;
+
+  void filterCountryRegionCode() {
+    countryRegionFieldRefresh.value = true;
+    if (tliCountrys?.value == null) return;
+    if (countryRegionController.text.isEmpty ||
+        countryRegionController.text == '') {
+      filteredCountry = tliCountrys!.value;
+      countryRegionFieldRefresh.value = false;
+    } else {
+      filteredCountry = [];
+      for (var element in tliCountrys!.value) {
+        if (element.code!.toLowerCase().contains(
+              countryRegionController.text.toLowerCase(),
+            )) {
+          filteredCountry.add(element);
+        }
+      }
+      countryRegionFieldRefresh.value = false;
+    }
+    log('List $filteredCountry');
   }
 
   Future<void> createTliShipToAdd() async {
