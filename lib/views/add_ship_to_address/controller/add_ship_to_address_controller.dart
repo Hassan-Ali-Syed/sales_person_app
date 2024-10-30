@@ -143,7 +143,7 @@ class AddShipToAddressController extends GetxController {
           log("******* RESPONSE SUCCESS: *********\n ${response.data}");
           customerVisitController.getCustomerbyIdFromGraphQL(
               customerVisitController.selectedCustomer!.no!);
-          clearAllFields();
+          // clearAllFields();
           Get.back();
         } else if (response.data!['createtliShipToAdd']['status'] == 400) {
           isLoading.value = false;
