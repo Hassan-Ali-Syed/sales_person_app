@@ -191,6 +191,10 @@ class AddShipToAddressController extends GetxController {
         int.tryParse(phoneNumberController.text) == null) {
       CustomSnackBar.showCustomErrorSnackBar(
           title: 'Alert', message: 'Phone Number should be in digits');
+    } else if (int.tryParse(zipCodeController.text) == null ||
+        int.tryParse(zipCodeController.text) == null) {
+      CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Alert', message: 'Zip Code should be in digits');
     } else {
       createTliShipToAdd();
     }
