@@ -5,11 +5,11 @@ import 'package:sales_person_app/constants/constants.dart';
 class CalenderDateWidget extends StatelessWidget {
   const CalenderDateWidget({
     super.key,
-    this.rightMargin,
+
     required this.day,
     required this.date,
   });
-  final double? rightMargin;
+  
   final String day;
   final String date;
   @override
@@ -29,8 +29,9 @@ class CalenderDateWidget extends StatelessWidget {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(
-              top: Sizes.MARGIN_6, right: rightMargin ?? Sizes.MARGIN_20),
+          margin: const EdgeInsets.only(
+            top: Sizes.MARGIN_6,
+          ),
           height: Sizes.HEIGHT_32,
           width: Sizes.WIDTH_32,
           decoration: BoxDecoration(

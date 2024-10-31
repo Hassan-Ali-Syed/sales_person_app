@@ -187,6 +187,10 @@ class AddShipToAddressController extends GetxController {
       CustomSnackBar.showCustomErrorSnackBar(
           title: 'Alert', message: 'Please enter all fields');
       return;
+    } else if (int.tryParse(phoneNumberController.text) == null ||
+        int.tryParse(phoneNumberController.text) == null) {
+      CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Alert', message: 'Phone Number should be in digits');
     } else {
       createTliShipToAdd();
     }
