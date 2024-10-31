@@ -75,7 +75,7 @@ class AddShipToAddressController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
-      headersForGraphQL:await BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliCountrysQuery.tliCountrysQuery(),
       onLoading: () {
         isLoading.value = true;
@@ -118,7 +118,7 @@ class AddShipToAddressController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
-      headersForGraphQL:await BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TliShipToAddMutate.tliShipToAddMutate(
         code: customerVisitController.tliShipToAddresses!.length + 1 > 9
             ? "${customerVisitController.tliShipToAddresses!.length + 1}"
@@ -171,6 +171,25 @@ class AddShipToAddressController extends GetxController {
         log('*** onError *** \n ${e.message}');
       },
     );
+  }
+
+  void shipToAddressFormValidation() {
+    if (companyNameController.text.isEmpty ||
+        addressController.text.isEmpty ||
+        address2Controller.text.isEmpty ||
+        zipCodeController.text.isEmpty ||
+        cityController.text.isEmpty ||
+        countyController.text.isEmpty ||
+        countryRegionController.text.isEmpty ||
+        contactController.text.isEmpty ||
+        phoneNumberController.text.isEmpty ||
+        emailController.text.isEmpty) {
+      CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Alert', message: 'Please enter all fields');
+      return;
+    } else {
+      createTliShipToAdd();
+    }
   }
 
   void clearAllFields() {
