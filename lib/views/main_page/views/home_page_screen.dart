@@ -289,63 +289,66 @@ class HomePageScreen extends GetView<MainPageController> {
                           child: const Icon(Icons.add_circle),
                         ),
                       ),
-                      SizedBox(
-                        height: Sizes.HEIGHT_100,
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: 4,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  left: Sizes.PADDING_22,
-                                  top: Sizes.PADDING_12),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Company Name',
-                                        style: context.bodySmall.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: Sizes.TEXT_SIZE_16,
-                                          color: const Color(0xff58595B),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: Sizes.PADDING_20,
-                                            left: Sizes.PADDING_28),
-                                        child: Text(
-                                          '8:00 PM',
-                                          style: context.bodySmall.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: Sizes.TEXT_SIZE_16,
-                                            color: const Color(0xff58595B),
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        'Title',
-                                        style: context.bodySmall.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: Sizes.TEXT_SIZE_16,
-                                          color: const Color(0xff58595B),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  const Divider(
-                                    endIndent: 30,
-                                    thickness: 1,
-                                    color: Color(0xff939598),
-                                    height: Sizes.HEIGHT_16,
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      const SizedBox(
+                          height: Sizes.HEIGHT_100,
+                          child: Center(
+                            child: Text('No Meetings for this day'),
+                          )
+                          // ListView.builder(
+                          //   scrollDirection: Axis.vertical,
+                          //   itemCount: 4,
+                          //   itemBuilder: (context, index) {
+                          //     return Padding(
+                          //       padding: const EdgeInsets.only(
+                          //           left: Sizes.PADDING_22,
+                          //           top: Sizes.PADDING_12),
+                          //       child: Column(
+                          //         children: [
+                          //           Row(
+                          //             children: [
+                          //               Text(
+                          //                 'Company Name',
+                          //                 style: context.bodySmall.copyWith(
+                          //                   fontWeight: FontWeight.w500,
+                          //                   fontSize: Sizes.TEXT_SIZE_16,
+                          //                   color: const Color(0xff58595B),
+                          //                 ),
+                          //               ),
+                          //               Padding(
+                          //                 padding: const EdgeInsets.only(
+                          //                     right: Sizes.PADDING_20,
+                          //                     left: Sizes.PADDING_28),
+                          //                 child: Text(
+                          //                   '8:00 PM',
+                          //                   style: context.bodySmall.copyWith(
+                          //                     fontWeight: FontWeight.w500,
+                          //                     fontSize: Sizes.TEXT_SIZE_16,
+                          //                     color: const Color(0xff58595B),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //               Text(
+                          //                 'Title',
+                          //                 style: context.bodySmall.copyWith(
+                          //                   fontWeight: FontWeight.w500,
+                          //                   fontSize: Sizes.TEXT_SIZE_16,
+                          //                   color: const Color(0xff58595B),
+                          //                 ),
+                          //               )
+                          //             ],
+                          //           ),
+                          //           const Divider(
+                          //             endIndent: 30,
+                          //             thickness: 1,
+                          //             color: Color(0xff939598),
+                          //             height: Sizes.HEIGHT_16,
+                          //           )
+                          //         ],
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          ),
                       // Center(
                       //   child: Text(
                       //     'No Meetings For this day',
@@ -374,52 +377,55 @@ class HomePageScreen extends GetView<MainPageController> {
                           child: const Icon(Icons.add_circle),
                         ),
                       ),
-                      SizedBox(
-                        height: Sizes.HEIGHT_100,
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: 4,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  left: Sizes.PADDING_22,
-                                  top: Sizes.PADDING_12,
-                                  right: Sizes.PADDING_26),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Company Name',
-                                        style: context.bodySmall.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: Sizes.TEXT_SIZE_16,
-                                          color: const Color(0xff58595B),
-                                        ),
-                                      ),
-                                      Text(
-                                        'Number of Order',
-                                        style: context.bodySmall.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: Sizes.TEXT_SIZE_16,
-                                          color: const Color(0xff58595B),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  const Divider(
-                                    thickness: 1,
-                                    color: Color(0xff939598),
-                                    height: Sizes.HEIGHT_16,
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      const SizedBox(
+                          height: Sizes.HEIGHT_100,
+                          child: Center(
+                            child: Text('No Customer Visits for this day'),
+                          )
+                          // ListView.builder(
+                          //   scrollDirection: Axis.vertical,
+                          //   itemCount: 4,
+                          //   itemBuilder: (context, index) {
+                          //     return Padding(
+                          //       padding: const EdgeInsets.only(
+                          //           left: Sizes.PADDING_22,
+                          //           top: Sizes.PADDING_12,
+                          //           right: Sizes.PADDING_26),
+                          //       child: Column(
+                          //         children: [
+                          //           Row(
+                          //             mainAxisAlignment:
+                          //                 MainAxisAlignment.spaceBetween,
+                          //             children: [
+                          //               Text(
+                          //                 'Company Name',
+                          //                 style: context.bodySmall.copyWith(
+                          //                   fontWeight: FontWeight.w500,
+                          //                   fontSize: Sizes.TEXT_SIZE_16,
+                          //                   color: const Color(0xff58595B),
+                          //                 ),
+                          //               ),
+                          //               Text(
+                          //                 'Number of Order',
+                          //                 style: context.bodySmall.copyWith(
+                          //                   fontWeight: FontWeight.w500,
+                          //                   fontSize: Sizes.TEXT_SIZE_16,
+                          //                   color: const Color(0xff58595B),
+                          //                 ),
+                          //               )
+                          //             ],
+                          //           ),
+                          //           const Divider(
+                          //             thickness: 1,
+                          //             color: Color(0xff939598),
+                          //             height: Sizes.HEIGHT_16,
+                          //           )
+                          //         ],
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          ),
                       // Center(
                       //   child: Text(
                       //     'No Visit for this day',
