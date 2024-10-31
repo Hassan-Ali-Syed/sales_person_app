@@ -984,6 +984,10 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             controller.itemIndex.value = index;
                                             controller.showCommentDialog(
                                                 context, onPressed: () {
+                                              controller.splitComment(
+                                                  controller
+                                                      .commentController.text,
+                                                  80);
                                               controller.itemsListRefresh
                                                   .value = true;
                                               salesLineItem.comment = controller
