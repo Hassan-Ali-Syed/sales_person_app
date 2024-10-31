@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
@@ -340,7 +339,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                   ),
                   CustomElevatedButton(
                     onPressed: () {
-                      controller.createTliShipToAdd();
+                      controller.shipToAddressFormValidation();
                     },
                     title: AppStrings.SAVE,
                     minWidht: Sizes.WIDTH_90,
