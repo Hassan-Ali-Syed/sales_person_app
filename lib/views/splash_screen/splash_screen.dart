@@ -39,7 +39,9 @@ class _SplashScreenState extends State<SplashScreen>
     fadeControllerLogo = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
-    )..repeat(reverse: true, );
+    )..repeat(
+        reverse: true,
+      );
 
     fadeAnimationLogo = Tween<double>(begin: 0.2, end: 1).animate(
       CurvedAnimation(
@@ -69,32 +71,46 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffE9E8E7),
-      body: Center(
-        child: Column(children: [
-          FadeTransition(
-            opacity: fadeAnimationTitle,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: Sizes.PADDING_80, bottom: Sizes.PADDING_144),
-              child: Text(
-                'posh textiles',
-                style: context.titleLarge.copyWith(
-                  fontSize: Sizes.TEXT_SIZE_50,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xff58595B),
-                  fontFamily: 'Nunito Sans',
-                ),
+      body: SafeArea(
+        child: OrientationBuilder(
+          builder: (context, orientation) {
+            bool isPortrait = orientation == Orientation.portrait;
+
+            return Center(
+              child: Column(
+                mainAxisAlignment: isPortrait
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (isPortrait) const SizedBox(height: Sizes.PADDING_80),
+                  FadeTransition(
+                    opacity: fadeAnimationTitle,
+                    child: Text(
+                      'posh textiles',
+                      style: context.titleLarge.copyWith(
+                        fontSize: Sizes.TEXT_SIZE_50,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xff58595B),
+                        fontFamily: 'Nunito Sans',
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      height:
+                          isPortrait ? Sizes.PADDING_144 : Sizes.PADDING_24),
+                  FadeTransition(
+                    opacity: fadeAnimationLogo,
+                    child: Image.asset(
+                      height: Sizes.HEIGHT_260,
+                      AppAssets.getPNGIcon(AppAssets.SPLASH_SCREEN_LOGO),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ),
-          FadeTransition(
-            opacity: fadeAnimationLogo,
-            child: Image.asset(
-              height: Sizes.HEIGHT_260,
-              AppAssets.getPNGIcon(AppAssets.SPLASH_SCREEN_LOGO),
-            ),
-          ),
-        ]),
+            );
+          },
+        ),
       ),
     );
   }

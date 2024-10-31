@@ -10,21 +10,29 @@ class CustomHeaderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        CustomHeaderCell(
-          width: Sizes.WIDTH_120,
-          text: 'Item Name',
+        Expanded(
+          flex: 3,
+          child: CustomHeaderCell(
+            text: 'Item Name',
+          ),
         ),
-        CustomHeaderCell(
-          width: Sizes.WIDTH_50,
-          text: 'Qty',
+        Expanded(
+          flex: 2,
+          child: CustomHeaderCell(
+            text: 'Qty',
+          ),
         ),
-        CustomHeaderCell(
-          width: Sizes.WIDTH_60,
-          text: 'Price',
+        Expanded(
+          flex: 2,
+          child: CustomHeaderCell(
+            text: 'Price',
+          ),
         ),
-        CustomHeaderCell(
-          width: Sizes.WIDTH_118,
-          text: 'Notes',
+        Expanded(
+          flex: 4,
+          child: CustomHeaderCell(
+            text: 'Notes',
+          ),
         ),
       ],
     );
@@ -32,12 +40,10 @@ class CustomHeaderRow extends StatelessWidget {
 }
 
 class CustomHeaderCell extends StatelessWidget {
-  final double width;
   final String text;
 
   const CustomHeaderCell({
     super.key,
-    required this.width,
     required this.text,
   });
 
@@ -45,7 +51,6 @@ class CustomHeaderCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: Sizes.HEIGHT_30,
-      width: width,
       decoration: BoxDecoration(
         color: LightTheme.headingColor,
         border: Border.all(

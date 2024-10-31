@@ -31,6 +31,7 @@ class SignInController extends GetxController {
   void onInit() {
     super.onInit();
     Preferences().clearAll();
+
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }

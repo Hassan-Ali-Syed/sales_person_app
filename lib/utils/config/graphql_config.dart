@@ -1,16 +1,18 @@
 import 'dart:developer';
- 
 import 'package:graphql_flutter/graphql_flutter.dart';
- 
+
 class GraphQLConfig {
   final _loggerLink = LoggerLink();
   GraphQLClient clientToQuery(String url, Map<String, String>? headers) =>
       GraphQLClient(
         cache: GraphQLCache(),
-        link: _loggerLink.concat(HttpLink(
-          url,
-          defaultHeaders: headers!,
-        )),
+        link: _loggerLink.concat(
+          HttpLink(
+            url,
+            defaultHeaders: headers!,
+          ),
+        ),
+        queryRequestTimeout: const Duration(seconds: 10),
         defaultPolicies: DefaultPolicies(
           watchQuery: Policies(fetch: FetchPolicy.networkOnly),
           query: Policies(fetch: FetchPolicy.networkOnly),
@@ -18,7 +20,7 @@ class GraphQLConfig {
         ),
       );
 }
- 
+
 class LoggerLink extends Link {
   @override
   Stream<Response> request(
@@ -34,9 +36,9 @@ class LoggerLink extends Link {
     }).handleError((error) {
       // throw error;
     });
- 
+
     return response;
   }
- 
+
   LoggerLink();
 }
