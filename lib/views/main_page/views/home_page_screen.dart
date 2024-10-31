@@ -25,12 +25,9 @@ class HomePageScreen extends GetView<MainPageController> {
       body: SafeArea(
         child: Obx(
           () => controller.isLoading.value
-              ? const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Sizes.PADDING_22),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black45,
-                    ),
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black45,
                   ),
                 )
               : SingleChildScrollView(
@@ -127,8 +124,8 @@ class HomePageScreen extends GetView<MainPageController> {
                       Padding(
                         padding: const EdgeInsets.only(
                             top: Sizes.PADDING_26,
-                            left: Sizes.PADDING_24,
-                            bottom: Sizes.PADDING_18),
+                            bottom: Sizes.PADDING_18,
+                            left: Sizes.PADDING_24),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -181,8 +178,8 @@ class HomePageScreen extends GetView<MainPageController> {
                       Padding(
                         padding: const EdgeInsets.only(
                             top: Sizes.PADDING_2,
-                            right: Sizes.PADDING_26,
-                            bottom: Sizes.PADDING_12),
+                            bottom: Sizes.PADDING_14,
+                            right: Sizes.PADDING_24),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -236,40 +233,61 @@ class HomePageScreen extends GetView<MainPageController> {
                       ),
                       const Padding(
                         padding: EdgeInsets.only(
+                          left: Sizes.PADDING_24,
+                          right: Sizes.PADDING_24,
                           bottom: Sizes.PADDING_20,
-                          left: Sizes.PADDING_20,
                         ),
                         child: Row(
                           children: [
-                            CalenderDateWidget(
-                              day: 'Sun',
-                              date: '15',
+                            Expanded(
+                              flex: 1,
+                              child: CalenderDateWidget(
+                                day: 'Sun',
+                                date: '15',
+                              ),
                             ),
-                            CalenderDateWidget(
-                              day: 'Mon',
-                              date: '16',
+                            Expanded(
+                              flex: 1,
+                              child: CalenderDateWidget(
+                                day: 'Mon',
+                                date: '16',
+                              ),
                             ),
-                            CalenderDateWidget(
-                              day: 'Tue',
-                              date: '17',
+                            Expanded(
+                              flex: 1,
+                              child: CalenderDateWidget(
+                                day: 'Tue',
+                                date: '17',
+                              ),
                             ),
-                            CalenderDateWidget(
-                              day: 'Wed',
-                              date: '18',
+                            Expanded(
+                              flex: 1,
+                              child: CalenderDateWidget(
+                                day: 'Wed',
+                                date: '18',
+                              ),
                             ),
-                            CalenderDateWidget(
-                              day: 'Thu',
-                              date: '19',
+                            Expanded(
+                              flex: 1,
+                              child: CalenderDateWidget(
+                                day: 'Thu',
+                                date: '19',
+                              ),
                             ),
-                            CalenderDateWidget(
-                              day: 'Fri',
-                              date: '20',
+                            Expanded(
+                              flex: 1,
+                              child: CalenderDateWidget(
+                                day: 'Fri',
+                                date: '20',
+                              ),
                             ),
-                            CalenderDateWidget(
-                              rightMargin: Sizes.MARGIN_0,
-                              day: 'Sat',
-                              date: '21',
-                            ),
+                            Expanded(
+                              flex: 0,
+                              child: CalenderDateWidget(
+                                day: 'Sat',
+                                date: '21,',
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -290,7 +308,8 @@ class HomePageScreen extends GetView<MainPageController> {
                         ),
                       ),
                       const SizedBox(
-                          height: Sizes.HEIGHT_100,
+                          height: Sizes.HEIGHT_62,
+                          // height: Sizes.HEIGHT_100,
                           child: Center(
                             child: Text('No Meetings for this day'),
                           )
@@ -378,7 +397,7 @@ class HomePageScreen extends GetView<MainPageController> {
                         ),
                       ),
                       const SizedBox(
-                          height: Sizes.HEIGHT_100,
+                          height: Sizes.HEIGHT_62,
                           child: Center(
                             child: Text('No Customer Visits for this day'),
                           )

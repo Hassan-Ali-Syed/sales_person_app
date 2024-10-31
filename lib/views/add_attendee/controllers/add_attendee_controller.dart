@@ -44,7 +44,7 @@ class AddAttendeeController extends GetxController {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.mutate,
-      headersForGraphQL:await BaseClient.generateHeadersWithTokenForGraphQL(),
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
       query: TlicontactMutate.tliContactMutate(
         name: contactFullNameTextFieldController.text,
         customerNo: customerVisitController.selectedCustomer!.no!,
@@ -99,6 +99,10 @@ class AddAttendeeController extends GetxController {
       CustomSnackBar.showCustomErrorSnackBar(
           title: 'Alert', message: 'please enter All Fields');
       return;
+    } else if (int.tryParse(contactPhoneNoTextFieldController.text) == null ||
+        int.tryParse(contactPhoneNoTextFieldController.text) == null) {
+      CustomSnackBar.showCustomErrorSnackBar(
+          title: 'Alert', message: 'Phone Number should be in digits');
     } else {
       createTliContacts();
     }
