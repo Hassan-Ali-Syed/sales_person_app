@@ -15,6 +15,7 @@ import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/main_page/models/tli_items_model.dart';
 import 'package:sales_person_app/views/main_page/models/tli_sales_line.dart';
+import 'package:sales_person_app/views/main_page/models/tlicontacts_model.dart';
 import 'package:sales_person_app/views/main_page/models/tlicustomers_model.dart';
 import 'package:sales_person_app/queries/api_quries/tlicustomers_query.dart';
 import 'package:sales_person_app/views/main_page/models/tlishiptoadds_model.dart';
@@ -62,8 +63,9 @@ class CustomerVisitController extends GetxController {
   List<String>? customersShipToAddList = <String>[];
   RxList<Map<String, dynamic>> customerContactsMap =
       <Map<String, dynamic>>[].obs;
-  RxList<String>? customerContactsList = <String>[].obs;
+
   RxList<TliShipToAddress>? tliShipToAddresses = <TliShipToAddress>[].obs;
+  RxList<TliContact>? tliContacts = <TliContact>[].obs;
 
   //selected attendees List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
@@ -236,27 +238,29 @@ class CustomerVisitController extends GetxController {
   }
 
 // Attendee search query list and Method
-  List<String> filteredAttendees = <String>[].obs;
+  List<TliContact> filteredAttendees = <TliContact>[].obs;
   RxBool attendeeFieldRefresh = false.obs;
-  void filterAttendeeList() {
+  List<TliContact> filterAttendeeList() {
     attendeeFieldRefresh.value = true;
-    if (customerContactsList == null) return;
-    if (searchAttendeeController.text.isEmpty ||
-        searchAttendeeController.text == '') {
-      filteredAttendees = customerContactsList!;
-      attendeeFieldRefresh.value = false;
-    } else {
-      filteredAttendees = [];
-      for (var element in customerContactsList!) {
-        if (element.toLowerCase().contains(
-              searchAttendeeController.text.toLowerCase(),
-            )) {
-          filteredAttendees.add(element);
+    if (tliContacts != null) {
+      if (searchAttendeeController.text.isEmpty ||
+          searchAttendeeController.text == '') {
+        filteredAttendees = tliContacts!;
+        attendeeFieldRefresh.value = false;
+      } else {
+        filteredAttendees = [];
+        for (var element in tliContacts!) {
+          if (element.name!.toLowerCase().contains(
+                searchAttendeeController.text.toLowerCase(),
+              )) {
+            filteredAttendees.add(element);
+          }
         }
+        attendeeFieldRefresh.value = false;
       }
-      attendeeFieldRefresh.value = false;
+      log('List $filteredAttendees');
     }
-    log('List $filteredAttendees');
+    return filteredAttendees;
   }
 
 // SET CUSTOMER'S SHIP TO ADDRESSES
@@ -295,27 +299,23 @@ class CustomerVisitController extends GetxController {
   void setCustomerContacts() {
     isAttendeeFieldVisible.value = false;
     customerContactsMap.clear();
-    customerContactsList!.clear();
+    tliContacts!.clear();
+
     var instanceCustomer = tliCustomerById!.value;
     if (instanceCustomer.isNotEmpty) {
       for (var values in instanceCustomer) {
-        var tliContacts = values.tliContact;
-        for (var element in tliContacts!) {
+        var tempTliContact = values.tliContact!;
+        for (var element in tempTliContact) {
           if (element.type == 'Person' || element.type == 'person') {
-            customerContactsList!.add(element.name!);
-            customerContactsMap.add({
-              'name': element.name,
-              'contactNo': element.no,
-              'type': element.type,
-              'tliSalesLine': []
-            });
+            tliContacts!.add(element);
+            customerContactsMap.add({'tliSalesLine': []});
           }
         }
-        checkBoxStates.value =
-            List.generate(customerContactsMap.length, (index) => false);
       }
     }
-    filteredAttendees = customerContactsList!;
+    filteredAttendees = tliContacts!;
+    checkBoxStates.value =
+        List.generate(filterAttendeeList().length, (index) => false);
     isAttendeeFieldVisible.value = true;
     log("====After Adding Contacts======$customerContactsMap");
   }
@@ -554,8 +554,8 @@ class CustomerVisitController extends GetxController {
     if (value == true) {
       checkBoxStates[index] = true;
       selectedAttendees.add({
-        'name': filteredAttendees[index],
-        'contactNo': customerContactsMap[index]['contactNo'],
+        'name': filteredAttendees[index].name,
+        'contactNo': filteredAttendees[index].no,
         'tliSalesLine': customerContactsMap[index]['tliSalesLine']
       });
       log('**** SELECTED attendeeS $selectedAttendees ******');
@@ -563,8 +563,8 @@ class CustomerVisitController extends GetxController {
       checkBoxStates[index] = false;
 
       selectedAttendees.removeWhere((attendee) =>
-          attendee['name'] == filteredAttendees[index] &&
-          attendee['contactNo'] == customerContactsMap[index]['contactNo'] &&
+          attendee['name'] == filteredAttendees[index].name &&
+          attendee['contactNo'] == filteredAttendees[index].no &&
           attendee['tliSalesLine'] ==
               customerContactsMap[index]['tliSalesLine']);
 

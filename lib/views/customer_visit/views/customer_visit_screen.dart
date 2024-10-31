@@ -636,7 +636,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             color: const Color(0xff58595B),
                                           ),
                                           onChanged: (value) {
-                                            controller.filterAttendeeList();
+                                            // controller.filterAttendeeList();
                                           },
                                           controller: controller
                                               .searchAttendeeController,
@@ -705,8 +705,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                           (context, index) {
                                                         final filteredData =
                                                             controller
-                                                                    .filteredAttendees[
-                                                                index];
+                                                                .filteredAttendees[
+                                                                    index]
+                                                                .name;
                                                         return ListTile(
                                                           visualDensity:
                                                               VisualDensity
@@ -730,7 +731,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                             ),
                                                           ),
                                                           title: Text(
-                                                            filteredData,
+                                                            filteredData!,
                                                             style: context
                                                                 .bodySmall
                                                                 .copyWith(
@@ -913,6 +914,12 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                       log("***** Description *********${salesLineItem.itemDescription}");
                                       return Obx(
                                         () => CustomRowCells(
+                                          onSubmitted: (p0) {
+                                            controller.userItemListReferesh
+                                                .value = true;
+                                            controller.userItemListReferesh
+                                                .value = false;
+                                          },
                                           rowIndex: index,
                                           selectedIndex:
                                               controller.itemIndex.value,
@@ -922,20 +929,24 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             if (p0.isNotEmpty) {
                                               salesLineItem.quantity =
                                                   num.parse(p0);
-                                              controller
-                                                  .selectedAttendees[controller
-                                                          .attendeeSelectedIndex
-                                                          .value]
-                                                      ['tliSalesLine'][index]
-                                                  .quantity = num.parse(p0);
+                                              // controller
+                                              //     .selectedAttendees[controller
+                                              //             .attendeeSelectedIndex
+                                              //             .value]
+                                              //         ['tliSalesLine'][index]
+                                              //     .quantity = num.parse(p0);
+                                              log(
+                                                salesLineItem.quantity
+                                                    .toString(),
+                                              );
                                             } else {
                                               salesLineItem.quantity = 1;
-                                              controller
-                                                  .selectedAttendees[controller
-                                                          .attendeeSelectedIndex
-                                                          .value]
-                                                      ['tliSalesLine'][index]
-                                                  .quantity = 1;
+                                              // controller
+                                              //     .selectedAttendees[controller
+                                              //             .attendeeSelectedIndex
+                                              //             .value]
+                                              //         ['tliSalesLine'][index]
+                                              //     .quantity = 1;
                                             }
 
                                             controller.userItemListReferesh
@@ -1060,8 +1071,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 width: Sizes.WIDTH_26,
                               ),
                               CustomElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  controller.itemsListRefresh.value = true;
                                   controller.scanBarcodeNormal();
+                                  // await controller
+                                  //     .getSingleItemFromGraphQL('S10082-002');
+                                  // log('======CURRENT SALES LINE=========\n=${controller.selectedAttendees[controller.attendeeSelectedIndex.value]['tliSalesLine'][0].quantity}=========');
+                                  // controller.itemsListRefresh.value = false;
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_90,
