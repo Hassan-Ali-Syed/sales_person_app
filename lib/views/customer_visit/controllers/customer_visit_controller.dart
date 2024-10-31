@@ -25,7 +25,6 @@ class CustomerVisitController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-
     await addTliCustomerModel();
   }
 
@@ -44,17 +43,15 @@ class CustomerVisitController extends GetxController {
   RxBool userItemListReferesh = false.obs;
   RxBool itemsListRefresh = false.obs;
   RxBool isQtyPressed = false.obs;
-  List<Map<String, dynamic>> createdOrders = [];
-  List<Map<String, dynamic>> failedOrders = [];
+  // List<Map<String, dynamic>> createdOrders = [];
+  // List<Map<String, dynamic>> failedOrders = [];
   RxBool isSalesOrderCreating = false.obs;
-  Rx isSuccessfull = false.obs;
+  // Rx isSuccessfull = false.obs;
   CustomerValue? selectedCustomer;
 
   TextEditingController commentController = TextEditingController(text: '');
   TextEditingController itemQntyController = TextEditingController();
 
-  // Reactive variables
-  // String customerNo = '';
   RxString customerAddress = ''.obs;
   String selectedShipToAddCode = '';
   RxInt attendeeSelectedIndex = 0.obs;
@@ -336,6 +333,10 @@ class CustomerVisitController extends GetxController {
       lines.add(comment.substring(start, end).trim());
       start = end + 1;
     }
+    for (int i = 0; i < lines.length; i++) {
+      log('****** Lines ******* \n ${lines[i]} ** \n ');
+    }
+
     return lines;
   }
 
@@ -357,12 +358,12 @@ class CustomerVisitController extends GetxController {
       barrierDismissible: false,
       barrierColor: Colors.transparent,
     );
-    createdOrders.clear();
-    failedOrders.clear();
+    // createdOrders.clear();
+    // failedOrders.clear();
 
     for (var attendeeData in selectedAttendees) {
       var contactNo = attendeeData['contactNo'];
-      var attendeeName = attendeeData['name'];
+      // var attendeeName = attendeeData['name'];
       List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
 
       List<Map<String, dynamic>> listOfTliSalesLineMaps = [];
@@ -395,15 +396,15 @@ class CustomerVisitController extends GetxController {
           onSuccess: (response) async {
             if (response.data['success']) {
               log('******* Sales order created ${response.data} ****');
-              isSuccessfull.value = true;
+              // isSuccessfull.value = true;
               var salesOrderNo = response.data['data']['no'];
-              // Store order details in createdOrders list
-              createdOrders.add({
-                'customerNo': selectedCustomer!.no!,
-                'attendeeName': attendeeName,
-                'contactNo': contactNo,
-                'orderNo': salesOrderNo
-              });
+              // // Store order details in createdOrders list
+              // createdOrders.add({
+              //   'customerNo': selectedCustomer!.no!,
+              //   'attendeeName': attendeeName,
+              //   'contactNo': contactNo,
+              //   'orderNo': salesOrderNo
+              // });
 
               // Process sales line comments if available
               for (var tliSalesLine in tliSalesLineElement) {
@@ -411,7 +412,7 @@ class CustomerVisitController extends GetxController {
                     tliSalesLine.comment.isNotEmpty) {
                   List<String> commentLines =
                       splitComment(tliSalesLine.comment, 80);
-                  for (var i = 1; i <= commentLines.length; i++) {
+                  for (var i = 0; i < commentLines.length; i++) {
                     await BaseClient.safeApiCall(
                         ApiConstants.CREATE_SALES_LINES_COMMENT,
                         RequestType.post,
@@ -419,7 +420,7 @@ class CustomerVisitController extends GetxController {
                         data: {
                           "no": salesOrderNo,
                           "documentLineNo": tliSalesLine.lineNo,
-                          "lineNo": i * 10000,
+                          "lineNo": i < 1 ? 10000 : 10000 + (i * 10000),
                           "date": currentDate(),
                           "comment": commentLines[i]
                         }, onSuccess: (response) {
@@ -445,40 +446,34 @@ class CustomerVisitController extends GetxController {
               reason = e.message;
             }
 
-            failedOrders.add({
-              'customerNo': selectedCustomer!.no!,
-              'attendeeName': attendeeName,
-              'contactNo': contactNo,
-              'reason': reason,
-            });
+            // failedOrders.add({
+            //   'customerNo': selectedCustomer!.no!,
+            //   'attendeeName': attendeeName,
+            //   'contactNo': contactNo,
+            //   'reason': reason,
+            // });
 
             log('**********Error Message: $reason *************');
             isSalesOrderCreating.value = false;
           },
         );
-      } else {
-        failedOrders.add({
-          'customerNo': selectedCustomer!.no!,
-          'attendeeName': attendeeName,
-          'contactNo': contactNo,
-          'reason': 'No Sales Lines Provided',
-        });
       }
+      //  else {
+      //   // failedOrders.add({
+      //   //   'customerNo': selectedCustomer!.no!,
+      //   //   'attendeeName': attendeeName,
+      //   //   'contactNo': contactNo,
+      //   //   'reason': 'No Sales Lines Provided',
+      //   // });
+      // }
     }
-    Preferences().setCreatedOrders(createdOrders);
-    Preferences().setFailedOrders(failedOrders);
+    // Preferences().setCreatedOrders(createdOrders);
+    // Preferences().setFailedOrders(failedOrders);
 
     isSalesOrderCreating.value = false;
-    log(
-      'Orders created: ${Preferences().getCreatedOrders()}',
-    );
-    log(
-      'Orders failed: ${Preferences().getFailedOrders()}',
-    );
     if (Get.isDialogOpen!) {
       Get.back();
     }
-
     showCustomDialog();
   }
 
@@ -576,7 +571,6 @@ class CustomerVisitController extends GetxController {
   }
 
   // Method for scanning barcode
-
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
     try {
@@ -696,75 +690,93 @@ class CustomerVisitController extends GetxController {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.check_circle,
-              color: Color(0xff13C39C),
-              size: Sizes.ICON_SIZE_70,
-            ),
-            const SizedBox(
-              height: Sizes.HEIGHT_8,
-            ),
-            Text(
-              AppStrings.SUCCESS,
-              style: Get.textTheme.titleLarge?.copyWith(
-                fontSize: Sizes.TEXT_SIZE_26,
-                color: const Color(0xff7C8691),
-              ),
-            ),
-            const SizedBox(
-              height: Sizes.HEIGHT_12,
-            ),
-            Text(
-              AppStrings.RECORD_SUCCESSFULLY_SAVED,
-              style: Get.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w100,
-                color: const Color(0xff7C7A7A),
-              ),
-            ),
-            const SizedBox(
-              height: Sizes.HEIGHT_14,
-            ),
-            Container(
-                padding: const EdgeInsets.only(
-                    top: Sizes.PADDING_8,
-                    bottom: Sizes.PADDING_12,
-                    left: Sizes.PADDING_10,
-                    right: Sizes.PADDING_10),
-                color: const Color(0xffF1F5F8),
-                height: Sizes.HEIGHT_60,
-                width: double.infinity,
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  CustomElevatedButton(
-                    onPressed: () {
-                      clearCustomerVisitData();
-                      Get.back();
-                    },
-                    title: AppStrings.BACK,
-                    minWidht: Sizes.WIDTH_130,
-                    minHeight: Sizes.HEIGHT_30,
-                    backgroundColor: LightTheme.buttonBackgroundColor2,
-                    borderRadiusCircular: BorderRadius.circular(
-                      Sizes.RADIUS_6,
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: Sizes.HEIGHT_34),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: Sizes.HEIGHT_20),
+                      Text(
+                        AppStrings.SUCCESS,
+                        style: Get.textTheme.titleLarge?.copyWith(
+                          fontSize: Sizes.TEXT_SIZE_26,
+                          color: const Color(0xff7C8691),
+                        ),
+                      ),
+                      const SizedBox(height: Sizes.HEIGHT_12),
+                      Text(
+                        AppStrings.RECORD_SUCCESSFULLY_SAVED,
+                        style: Get.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w100,
+                          color: const Color(0xff7C7A7A),
+                        ),
+                      ),
+                      const SizedBox(height: Sizes.HEIGHT_14),
+                      Container(
+                        padding: const EdgeInsets.only(
+                          top: Sizes.PADDING_8,
+                          bottom: Sizes.PADDING_12,
+                          left: Sizes.PADDING_10,
+                          right: Sizes.PADDING_10,
+                        ),
+                        color: const Color(0xffF1F5F8),
+                        height: Sizes.HEIGHT_60,
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomElevatedButton(
+                              onPressed: () {
+                                clearCustomerVisitData();
+                                Get.back();
+                              },
+                              title: AppStrings.BACK,
+                              minWidht: Sizes.WIDTH_130,
+                              minHeight: Sizes.HEIGHT_30,
+                              backgroundColor:
+                                  LightTheme.buttonBackgroundColor2,
+                              borderRadiusCircular:
+                                  BorderRadius.circular(Sizes.RADIUS_6),
+                            ),
+                            const SizedBox(width: Sizes.WIDTH_20),
+                            CustomElevatedButton(
+                              onPressed: () {
+                                clearCustomerVisitData();
+                                Get.offNamed(AppRoutes.HOME_PAGE);
+                              },
+                              title: AppStrings.HOME,
+                              minWidht: Sizes.WIDTH_130,
+                              minHeight: Sizes.HEIGHT_30,
+                              backgroundColor: const Color(0xff13C39C),
+                              borderRadiusCircular:
+                                  BorderRadius.circular(Sizes.RADIUS_6),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: -Sizes.HEIGHT_34,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xff13C39C),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(Sizes.PADDING_8),
+                    child: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: Sizes.ICON_SIZE_50,
                     ),
                   ),
-                  const SizedBox(
-                    width: Sizes.WIDTH_20,
-                  ),
-                  CustomElevatedButton(
-                    onPressed: () {
-                      clearCustomerVisitData();
-                      Get.offNamed(AppRoutes.HOME_PAGE);
-                    },
-                    title: AppStrings.HOME,
-                    minWidht: Sizes.WIDTH_130,
-                    minHeight: Sizes.HEIGHT_30,
-                    backgroundColor: const Color(0xff13C39C),
-                    borderRadiusCircular: BorderRadius.circular(
-                      Sizes.RADIUS_6,
-                    ),
-                  ),
-                ]))
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -787,96 +799,4 @@ class CustomerVisitController extends GetxController {
     tliShipToAddresses!.clear();
     customerContactsMap.clear();
   }
-
-  // void showCustomDialog(BuildContext context, {bool isSuccessfull = false}) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         contentPadding: EdgeInsets.zero,
-  //         backgroundColor: const Color(0xffFFFFFF),
-  //         content: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.center,
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             isSuccessfull
-  //                 ? const Icon(
-  //                     Icons.check_circle,
-  //                     color: Color(0xff13C39C),
-  //                     size: Sizes.ICON_SIZE_70,
-  //                   )
-  //                 : const Icon(
-  //                     Icons.cancel_sharp,
-  //                     color: Colors.redAccent,
-  //                     size: Sizes.ICON_SIZE_70,
-  //                   ),
-  //             const SizedBox(
-  //               height: Sizes.HEIGHT_8,
-  //             ),
-  //             Text(
-  //               AppStrings.SUCCESS,
-  //               style: context.titleLarge.copyWith(
-  //                 fontSize: Sizes.TEXT_SIZE_26,
-  //                 color: const Color(0xff7C8691),
-  //               ),
-  //             ),
-  //             const SizedBox(
-  //               height: Sizes.HEIGHT_12,
-  //             ),
-  //             Text(
-  //               AppStrings.RECORD_SUCCESSFULLY_SAVED,
-  //               style: context.titleMedium.copyWith(
-  //                 fontWeight: FontWeight.w100,
-  //                 color: const Color(0xff7C7A7A),
-  //               ),
-  //             ),
-  //             const SizedBox(
-  //               height: Sizes.HEIGHT_14,
-  //             ),
-  //             Container(
-  //                 padding: const EdgeInsets.only(
-  //                     top: Sizes.PADDING_8,
-  //                     bottom: Sizes.PADDING_12,
-  //                     left: Sizes.PADDING_10,
-  //                     right: Sizes.PADDING_10),
-  //                 color: const Color(0xffF1F5F8),
-  //                 height: Sizes.HEIGHT_60,
-  //                 width: double.infinity,
-  //                 child: Row(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       CustomElevatedButton(
-  //                         onPressed: () {
-  //                           Get.back();
-  //                         },
-  //                         title: AppStrings.BACK,
-  //                         minWidht: Sizes.WIDTH_130,
-  //                         minHeight: Sizes.HEIGHT_30,
-  //                         backgroundColor: LightTheme.buttonBackgroundColor2,
-  //                         borderRadiusCircular: BorderRadius.circular(
-  //                           Sizes.RADIUS_6,
-  //                         ),
-  //                       ),
-  //                       const SizedBox(
-  //                         width: Sizes.WIDTH_20,
-  //                       ),
-  //                       CustomElevatedButton(
-  //                         onPressed: () {
-  //                           Get.toNamed(AppRoutes.HOME_PAGE);
-  //                         },
-  //                         title: AppStrings.HOME,
-  //                         minWidht: Sizes.WIDTH_130,
-  //                         minHeight: Sizes.HEIGHT_30,
-  //                         backgroundColor: const Color(0xff13C39C),
-  //                         borderRadiusCircular: BorderRadius.circular(
-  //                           Sizes.RADIUS_6,
-  //                         ),
-  //                       ),
-  //                     ]))
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 }
