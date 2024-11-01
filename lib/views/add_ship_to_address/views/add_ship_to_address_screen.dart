@@ -211,8 +211,9 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                   ],
                                 ),
                                 const Padding(
-                                  padding:
-                                      EdgeInsets.only(right: Sizes.PADDING_20),
+                                  padding: EdgeInsets.only(
+                                      right: Sizes.PADDING_20,
+                                      top: Sizes.PADDING_8),
                                   child: DottedLine(
                                     direction: Axis.horizontal,
                                     dashLength: 3,
@@ -263,7 +264,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          top: Sizes.PADDING_2),
+                                                          top: Sizes.PADDING_8),
                                                   child: SizedBox(
                                                     height: Sizes.HEIGHT_17,
                                                     child: Row(
@@ -358,11 +359,9 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomElevatedButton(
-                          onPressed: controller.isAllFieldsFilled.value
-                              ? () {
-                                  Get.back();
-                                }
-                              : null,
+                          onPressed: () {
+                            Get.back();
+                          },
                           title: AppStrings.CANCEL,
                           minWidht: Sizes.WIDTH_90,
                           minHeight: Sizes.HEIGHT_30,

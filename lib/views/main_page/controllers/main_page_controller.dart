@@ -49,6 +49,7 @@ class MainPageController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    selectedIndex.value = 0;
     await getCustomersFromGraphQL();
   }
 
