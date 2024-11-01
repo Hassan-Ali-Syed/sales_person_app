@@ -75,25 +75,28 @@ class HomePageScreen extends GetView<MainPageController> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    height: Sizes.HEIGHT_42,
-                                    width: Sizes.WIDTH_250,
-                                    child: TextField(
-                                      style: context.titleMedium.copyWith(
-                                        color: const Color(0xff58595B),
+                                  Expanded(
+                                    flex: 4,
+                                    child: SizedBox(
+                                      height: Sizes.HEIGHT_42,
+                                      child: TextField(
+                                        style: context.titleMedium.copyWith(
+                                          color: const Color(0xff58595B),
+                                        ),
+                                        textAlign: TextAlign.start,
+                                        textAlignVertical:
+                                            TextAlignVertical.top,
+                                        decoration: InputDecoration(
+                                            prefixIcon: const Icon(
+                                              Icons.search,
+                                              color: Color(0xff7C7A7A),
+                                              size: Sizes.ICON_SIZE_26,
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            enabledBorder: outlineInputBorder,
+                                            focusedBorder: outlineInputBorder),
                                       ),
-                                      textAlign: TextAlign.start,
-                                      textAlignVertical: TextAlignVertical.top,
-                                      decoration: InputDecoration(
-                                          prefixIcon: const Icon(
-                                            Icons.search,
-                                            color: Color(0xff7C7A7A),
-                                            size: Sizes.ICON_SIZE_26,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          enabledBorder: outlineInputBorder,
-                                          focusedBorder: outlineInputBorder),
                                     ),
                                   ),
                                   Padding(
