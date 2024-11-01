@@ -35,7 +35,7 @@ class MainPage extends GetView<MainPageController> {
             selectedColor: const Color(0xff58595B),
             unSelectedColor: const Color(0xff7C7A7A),
             backgroundColor: LightTheme.appBarBackgroundColor,
-            unselectedIconSize: Sizes.ICON_SIZE_24,
+            unselectedIconSize: Sizes.ICON_SIZE_28,
             selectedIconSize: Sizes.ICON_SIZE_28,
             selectedFontSize: Sizes.TEXT_SIZE_12,
             unselectedFontSize: Sizes.TEXT_SIZE_12,

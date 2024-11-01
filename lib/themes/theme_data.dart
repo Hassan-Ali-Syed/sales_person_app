@@ -20,7 +20,12 @@ ScrollbarThemeData scrollbarTheme({
   required Color primaryColor,
 }) =>
     ScrollbarThemeData(
-      trackColor: WidgetStateProperty.all(primaryColor),
+      trackColor: WidgetStateProperty.all(
+        const Color(0xffE9E8E7),
+      ),
+      thumbColor: WidgetStateProperty.all(
+        const Color(0xff939598),
+      ),
     );
 
 DataTableThemeData dataTableTheme({

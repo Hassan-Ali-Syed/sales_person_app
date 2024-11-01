@@ -184,6 +184,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               ),
                               Expanded(
                                 child: Scrollbar(
+                                  trackVisibility: true,
                                   radius: const Radius.circular(Sizes.RADIUS_6),
                                   interactive: true,
                                   thickness: 12,
@@ -451,6 +452,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   controller.filteredShipToAddress.isNotEmpty
                                       ? Expanded(
                                           child: Scrollbar(
+                                            trackVisibility: true,
                                             interactive: true,
                                             thickness: 12,
                                             radius: const Radius.circular(
@@ -680,6 +682,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   controller.filteredAttendees.isNotEmpty
                                       ? Expanded(
                                           child: Scrollbar(
+                                            trackVisibility: true,
                                             radius: const Radius.circular(
                                                 Sizes.RADIUS_6),
                                             interactive: true,
@@ -718,6 +721,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                               EdgeInsets.zero,
                                                           leading: Obx(
                                                             () => Checkbox(
+                                                              visualDensity:
+                                                                  VisualDensity
+                                                                      .compact,
                                                               value: controller
                                                                       .checkBoxStates[
                                                                   index],
@@ -1075,13 +1081,11 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 width: Sizes.WIDTH_26,
                               ),
                               CustomElevatedButton(
-                                onPressed: () async {
+                                onPressed: () {
                                   controller.itemsListRefresh.value = true;
                                   controller.scanBarcodeNormal();
-                                  // await controller
+                                  // controller
                                   //     .getSingleItemFromGraphQL('S10082-002');
-                                  // log('======CURRENT SALES LINE=========\n=${controller.selectedAttendees[controller.attendeeSelectedIndex.value]['tliSalesLine'][0].quantity}=========');
-                                  // controller.itemsListRefresh.value = false;
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_90,

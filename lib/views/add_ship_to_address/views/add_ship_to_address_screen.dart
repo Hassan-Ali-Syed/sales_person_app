@@ -213,6 +213,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                             ),
                             Expanded(
                               child: Scrollbar(
+                                trackVisibility: true,
                                 radius: const Radius.circular(Sizes.RADIUS_6),
                                 interactive: true,
                                 thickness: 12,
