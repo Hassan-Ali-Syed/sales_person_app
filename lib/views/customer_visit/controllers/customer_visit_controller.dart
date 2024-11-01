@@ -745,7 +745,7 @@ class CustomerVisitController extends GetxController {
                             CustomElevatedButton(
                               onPressed: () {
                                 clearCustomerVisitData();
-                                Get.offNamed(AppRoutes.HOME_PAGE);
+                                Get.offNamed(AppRoutes.MAIN_PAGE);
                               },
                               title: AppStrings.HOME,
                               minWidht: Sizes.WIDTH_130,

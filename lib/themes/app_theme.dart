@@ -53,14 +53,15 @@ class AppTheme {
         primaryIconTheme:
             const IconThemeData(color: AppColors.primaryIconColor),
         appBarTheme: AppBarTheme(
-            color: LightTheme.appBarBackgroundColor,
-            titleTextStyle: GoogleFonts.nunitoSans(
-                textStyle: const TextStyle(
-              fontSize: Sizes.TEXT_SIZE_20,
-              fontWeight: FontWeight.normal,
-              color: LightTheme.appBarTextColor,
-            )),
-            iconTheme: const IconThemeData(color: LightTheme.iconColor)),
+          color: LightTheme.appBarBackgroundColor,
+          titleTextStyle: GoogleFonts.nunitoSans(
+              textStyle: const TextStyle(
+            fontSize: Sizes.TEXT_SIZE_20,
+            fontWeight: FontWeight.bold,
+            color: LightTheme.appBarTextColor,
+          )),
+          iconTheme: const IconThemeData(color: LightTheme.iconColor),
+        ),
         brightness: brightness,
         dialogBackgroundColor: LightTheme.dialogBackgroundColor,
 
