@@ -10,11 +10,14 @@ import 'package:sales_person_app/views/add_ship_to_address/models/tlicountrys_mo
 import 'package:sales_person_app/views/customer_visit/controllers/customer_visit_controller.dart';
 
 class AddShipToAddressController extends GetxController {
+  TliCountrys? tliCountrys;
+
   RxBool isLoading = false.obs;
   RxBool countryRegionFieldRefresh = false.obs;
+  RxBool isCountryRegionExpanded = false.obs;
+  RxBool isAllFieldsFilled = false.obs;
 
   late CustomerVisitController customerVisitController;
-
   late TextEditingController companyNameController;
   late TextEditingController addressController;
   late TextEditingController address2Controller;
@@ -25,12 +28,13 @@ class AddShipToAddressController extends GetxController {
   late TextEditingController phoneNumberController;
   late TextEditingController emailController;
   late TextEditingController countryRegionController;
-  RxBool isCountryRegionExpanded = false.obs;
-  ScrollController countryRegionScrollController = ScrollController();
 
-  TliCountrys? tliCountrys;
+  late ScrollController countryRegionScrollController;
+
+  List<TliCountrysValue> filteredCountry = <TliCountrysValue>[].obs;
+
   @override
-  onInit() {
+  void onInit() {
     super.onInit();
     companyNameController = TextEditingController();
     addressController = TextEditingController();
@@ -43,10 +47,14 @@ class AddShipToAddressController extends GetxController {
     emailController = TextEditingController();
     countryRegionController = TextEditingController();
 
+    countryRegionScrollController = ScrollController();
+
     customerVisitController = Get.find<CustomerVisitController>();
     getTliCountrys();
-    companyNameController = TextEditingController(
-        text: customerVisitController.selectedCustomer!.name);
+    if (customerVisitController.selectedCustomer != null) {
+      companyNameController.text =
+          customerVisitController.selectedCustomer!.name.toString();
+    }
   }
 
   @override
@@ -62,13 +70,9 @@ class AddShipToAddressController extends GetxController {
     phoneNumberController.dispose();
     emailController.dispose();
     countryRegionController.dispose();
+    countryRegionScrollController.dispose();
     log("Dispose controllers of ship to add ");
     super.onClose();
-  }
-
-  addTliCountrys(response) {
-    tliCountrys = TliCountrys.fromJson(response);
-    filteredCountry = tliCountrys!.value;
   }
 
   Future<void> getTliCountrys() async {
@@ -89,29 +93,6 @@ class AddShipToAddressController extends GetxController {
         log('*** onError *** \n ${e.message}');
       },
     );
-  }
-
-  List<TliCountrysValue> filteredCountry = <TliCountrysValue>[].obs;
-
-  void filterCountryRegionCode() {
-    countryRegionFieldRefresh.value = true;
-    if (tliCountrys?.value == null) return;
-    if (countryRegionController.text.isEmpty ||
-        countryRegionController.text == '') {
-      filteredCountry = tliCountrys!.value;
-      countryRegionFieldRefresh.value = false;
-    } else {
-      filteredCountry = [];
-      for (var element in tliCountrys!.value) {
-        if (element.code!.toLowerCase().contains(
-              countryRegionController.text.toLowerCase(),
-            )) {
-          filteredCountry.add(element);
-        }
-      }
-      countryRegionFieldRefresh.value = false;
-    }
-    log('List $filteredCountry');
   }
 
   Future<void> createTliShipToAdd() async {
@@ -173,21 +154,34 @@ class AddShipToAddressController extends GetxController {
     );
   }
 
+  addTliCountrys(response) {
+    tliCountrys = TliCountrys.fromJson(response);
+    filteredCountry = tliCountrys!.value;
+  }
+
+  void filterCountryRegionCode() {
+    countryRegionFieldRefresh.value = true;
+    if (tliCountrys?.value == null) return;
+    if (countryRegionController.text.isEmpty ||
+        countryRegionController.text == '') {
+      filteredCountry = tliCountrys!.value;
+      countryRegionFieldRefresh.value = false;
+    } else {
+      filteredCountry = [];
+      for (var element in tliCountrys!.value) {
+        if (element.code!.toLowerCase().contains(
+              countryRegionController.text.toLowerCase(),
+            )) {
+          filteredCountry.add(element);
+        }
+      }
+      countryRegionFieldRefresh.value = false;
+    }
+    log('List $filteredCountry');
+  }
+
   void shipToAddressFormValidation() {
-    if (companyNameController.text.isEmpty ||
-        addressController.text.isEmpty ||
-        address2Controller.text.isEmpty ||
-        zipCodeController.text.isEmpty ||
-        cityController.text.isEmpty ||
-        countyController.text.isEmpty ||
-        countryRegionController.text.isEmpty ||
-        contactController.text.isEmpty ||
-        phoneNumberController.text.isEmpty ||
-        emailController.text.isEmpty) {
-      CustomSnackBar.showCustomErrorSnackBar(
-          title: 'Alert', message: 'Please enter all fields');
-      return;
-    } else if (int.tryParse(phoneNumberController.text) == null ||
+    if (int.tryParse(phoneNumberController.text) == null ||
         int.tryParse(phoneNumberController.text) == null) {
       CustomSnackBar.showCustomErrorSnackBar(
           title: 'Alert', message: 'Phone Number should be in digits');
@@ -200,16 +194,16 @@ class AddShipToAddressController extends GetxController {
     }
   }
 
-  void clearAllFields() {
-    companyNameController.clear();
-    addressController.clear();
-    address2Controller.clear();
-    zipCodeController.clear();
-    cityController.clear();
-    countyController.clear();
-    contactController.clear();
-    phoneNumberController.clear();
-    emailController.clear();
-    countryRegionController.clear();
+  checkAllFieldsFilled() {
+    log("Checking fields...");
+    isAllFieldsFilled.value = addressController.text.isNotEmpty &&
+        address2Controller.text.isNotEmpty &&
+        zipCodeController.text.isNotEmpty &&
+        cityController.text.isNotEmpty &&
+        countyController.text.isNotEmpty &&
+        contactController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        countryRegionController.text.isNotEmpty;
   }
 }

@@ -28,32 +28,35 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
               horizontal: Sizes.PADDING_22, vertical: Sizes.PADDING_20),
           child: Column(
             children: [
-              argument == 'customerVisit'
-                  ? CustomTextField(
-                      readOnly: true,
-                      hintText: 'Company Name',
-                      controller: controller.companyNameController,
-                    )
-                  : const SizedBox(),
+              CustomTextField(
+                readOnly: true,
+                hintText: 'Company Name',
+                controller: controller.companyNameController,
+              ),
               CustomTextField(
                 hintText: 'Address',
                 controller: controller.addressController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'Address 2',
                 controller: controller.address2Controller,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'Zip Code',
                 controller: controller.zipCodeController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'City',
                 controller: controller.cityController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'State',
                 controller: controller.countyController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               Obx(
                 () => !controller.isCountryRegionExpanded.value
@@ -62,6 +65,8 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                           top: Sizes.PADDING_6,
                         ),
                         child: TextField(
+                          onChanged: (value) =>
+                              controller.checkAllFieldsFilled(),
                           scrollPadding: EdgeInsets.zero,
                           style: context.bodySmall.copyWith(
                             fontWeight: FontWeight.w400,
@@ -136,6 +141,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                     autofocus: true,
                                     onChanged: (value) {
                                       controller.filterCountryRegionCode();
+                                      controller.checkAllFieldsFilled();
                                     },
                                     controller:
                                         controller.countryRegionController,
@@ -333,43 +339,55 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
               CustomTextField(
                 hintText: AppStrings.CONTACT,
                 controller: controller.contactController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: AppStrings.PH_NUMBER,
                 controller: controller.phoneNumberController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: AppStrings.EMAIL,
                 controller: controller.emailController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: Sizes.PADDING_40),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  CustomElevatedButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    title: AppStrings.CANCEL,
-                    minWidht: Sizes.WIDTH_90,
-                    minHeight: Sizes.HEIGHT_30,
-                    backgroundColor: LightTheme.buttonBackgroundColor2,
-                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                  ),
-                  const SizedBox(
-                    width: Sizes.WIDTH_26,
-                  ),
-                  CustomElevatedButton(
-                    onPressed: () {
-                      controller.shipToAddressFormValidation();
-                    },
-                    title: AppStrings.SAVE,
-                    minWidht: Sizes.WIDTH_90,
-                    minHeight: Sizes.HEIGHT_30,
-                    backgroundColor: LightTheme.buttonBackgroundColor2,
-                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                  )
-                ]),
+                child: Obx(
+                  () => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomElevatedButton(
+                          onPressed: controller.isAllFieldsFilled.value
+                              ? () {
+                                  Get.back();
+                                }
+                              : null,
+                          title: AppStrings.CANCEL,
+                          minWidht: Sizes.WIDTH_90,
+                          minHeight: Sizes.HEIGHT_30,
+                          backgroundColor: LightTheme.buttonBackgroundColor2,
+                          borderRadiusCircular:
+                              BorderRadius.circular(Sizes.RADIUS_6),
+                        ),
+                        const SizedBox(
+                          width: Sizes.WIDTH_26,
+                        ),
+                        CustomElevatedButton(
+                          onPressed: controller.isAllFieldsFilled.value
+                              ? () {
+                                  controller.shipToAddressFormValidation();
+                                }
+                              : null,
+                          title: AppStrings.SAVE,
+                          minWidht: Sizes.WIDTH_90,
+                          minHeight: Sizes.HEIGHT_30,
+                          backgroundColor: LightTheme.buttonBackgroundColor2,
+                          borderRadiusCircular:
+                              BorderRadius.circular(Sizes.RADIUS_6),
+                        )
+                      ]),
+                ),
               )
             ],
           ),
