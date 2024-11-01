@@ -11,13 +11,15 @@ class CustomTextField extends StatefulWidget {
       this.obscureText = false,
       this.keyBoardType,
       this.controller,
-      this.readOnly = false});
+      this.readOnly = false,
+      this.onChanged});
   final String hintText;
   final Widget? suffixIcon;
   final bool obscureText;
   final TextInputType? keyBoardType;
   final bool readOnly;
   final TextEditingController? controller;
+  final void Function(String)? onChanged;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -49,6 +51,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     bool shouldShowLabel = (widget.controller?.text.isNotEmpty ?? false);
     return TextField(
+      onChanged: widget.onChanged,
       readOnly: widget.readOnly,
       controller: widget.controller,
       focusNode: _focusNode,

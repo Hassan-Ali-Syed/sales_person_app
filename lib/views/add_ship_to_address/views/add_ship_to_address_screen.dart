@@ -7,6 +7,7 @@ import 'package:sales_person_app/views/add_ship_to_address/controller/add_ship_t
 import 'package:sales_person_app/widgets/custom_appbar.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_textfield.dart';
+import 'package:dotted_line/dotted_line.dart';
 
 class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
   static const String routeName = '/add_ship_to_address_screen';
@@ -27,32 +28,35 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
               horizontal: Sizes.PADDING_22, vertical: Sizes.PADDING_20),
           child: Column(
             children: [
-              argument == 'customerVisit'
-                  ? CustomTextField(
-                      readOnly: true,
-                      hintText: 'Company Name',
-                      controller: controller.companyNameController,
-                    )
-                  : const SizedBox(),
+              CustomTextField(
+                readOnly: true,
+                hintText: 'Company Name',
+                controller: controller.companyNameController,
+              ),
               CustomTextField(
                 hintText: 'Address',
                 controller: controller.addressController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'Address 2',
                 controller: controller.address2Controller,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'Zip Code',
                 controller: controller.zipCodeController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'City',
                 controller: controller.cityController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: 'State',
                 controller: controller.countyController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               Obx(
                 () => !controller.isCountryRegionExpanded.value
@@ -61,6 +65,8 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                           top: Sizes.PADDING_6,
                         ),
                         child: TextField(
+                          onChanged: (value) =>
+                              controller.checkAllFieldsFilled(),
                           scrollPadding: EdgeInsets.zero,
                           style: context.bodySmall.copyWith(
                             fontWeight: FontWeight.w400,
@@ -135,6 +141,7 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                     autofocus: true,
                                     onChanged: (value) {
                                       controller.filterCountryRegionCode();
+                                      controller.checkAllFieldsFilled();
                                     },
                                     controller:
                                         controller.countryRegionController,
@@ -203,11 +210,18 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                     ),
                                   ],
                                 ),
-                                const Divider(
-                                  endIndent: 30,
-                                  thickness: 1,
-                                  color: Color(0xff939598),
-                                  height: Sizes.HEIGHT_16,
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.only(right: Sizes.PADDING_20),
+                                  child: DottedLine(
+                                    direction: Axis.horizontal,
+                                    dashLength: 3,
+                                    lineLength: double.infinity,
+                                    dashGapLength: 2,
+                                    lineThickness: 1,
+                                    dashColor: Color(0xff939598),
+                                    dashGapColor: Colors.transparent,
+                                  ),
                                 ),
                               ],
                             ),
@@ -250,33 +264,15 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           top: Sizes.PADDING_2),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        controller
-                                                            .filteredCountry[
-                                                                index]
-                                                            .code!,
-                                                        style: context.bodySmall
-                                                            .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: Sizes
-                                                              .TEXT_SIZE_12,
-                                                          color: const Color(
-                                                              0xff58595B),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                            .only(
-                                                            left: Sizes
-                                                                .PADDING_86),
-                                                        child: Text(
+                                                  child: SizedBox(
+                                                    height: Sizes.HEIGHT_17,
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
                                                           controller
                                                               .filteredCountry[
                                                                   index]
-                                                              .description!,
+                                                              .code!,
                                                           style: context
                                                               .bodySmall
                                                               .copyWith(
@@ -288,17 +284,48 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                                                 0xff58595B),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .only(
+                                                              left: Sizes
+                                                                  .PADDING_86),
+                                                          child: Text(
+                                                            controller
+                                                                .filteredCountry[
+                                                                    index]
+                                                                .description!,
+                                                            style: context
+                                                                .bodySmall
+                                                                .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: Sizes
+                                                                  .TEXT_SIZE_12,
+                                                              color: const Color(
+                                                                  0xff58595B),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                              const Divider(
-                                                endIndent: 30,
-                                                thickness: 1,
-                                                color: Color(0xff939598),
-                                                height: Sizes.HEIGHT_16,
-                                              )
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: Sizes.PADDING_20),
+                                                child: DottedLine(
+                                                  direction: Axis.horizontal,
+                                                  dashLength: 3,
+                                                  lineLength: double.infinity,
+                                                  dashGapLength: 2,
+                                                  lineThickness: 1,
+                                                  dashColor: Color(0xff939598),
+                                                  dashGapColor:
+                                                      Colors.transparent,
+                                                ),
+                                              ),
                                             ],
                                           );
                                         },
@@ -312,43 +339,55 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
               CustomTextField(
                 hintText: AppStrings.CONTACT,
                 controller: controller.contactController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: AppStrings.PH_NUMBER,
                 controller: controller.phoneNumberController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               CustomTextField(
                 hintText: AppStrings.EMAIL,
                 controller: controller.emailController,
+                onChanged: (value) => controller.checkAllFieldsFilled(),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: Sizes.PADDING_40),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  CustomElevatedButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    title: AppStrings.CANCEL,
-                    minWidht: Sizes.WIDTH_90,
-                    minHeight: Sizes.HEIGHT_30,
-                    backgroundColor: LightTheme.buttonBackgroundColor2,
-                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                  ),
-                  const SizedBox(
-                    width: Sizes.WIDTH_26,
-                  ),
-                  CustomElevatedButton(
-                    onPressed: () {
-                      controller.shipToAddressFormValidation();
-                    },
-                    title: AppStrings.SAVE,
-                    minWidht: Sizes.WIDTH_90,
-                    minHeight: Sizes.HEIGHT_30,
-                    backgroundColor: LightTheme.buttonBackgroundColor2,
-                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                  )
-                ]),
+                child: Obx(
+                  () => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomElevatedButton(
+                          onPressed: controller.isAllFieldsFilled.value
+                              ? () {
+                                  Get.back();
+                                }
+                              : null,
+                          title: AppStrings.CANCEL,
+                          minWidht: Sizes.WIDTH_90,
+                          minHeight: Sizes.HEIGHT_30,
+                          backgroundColor: LightTheme.buttonBackgroundColor2,
+                          borderRadiusCircular:
+                              BorderRadius.circular(Sizes.RADIUS_6),
+                        ),
+                        const SizedBox(
+                          width: Sizes.WIDTH_26,
+                        ),
+                        CustomElevatedButton(
+                          onPressed: controller.isAllFieldsFilled.value
+                              ? () {
+                                  controller.shipToAddressFormValidation();
+                                }
+                              : null,
+                          title: AppStrings.SAVE,
+                          minWidht: Sizes.WIDTH_90,
+                          minHeight: Sizes.HEIGHT_30,
+                          backgroundColor: LightTheme.buttonBackgroundColor2,
+                          borderRadiusCircular:
+                              BorderRadius.circular(Sizes.RADIUS_6),
+                        )
+                      ]),
+                ),
               )
             ],
           ),
