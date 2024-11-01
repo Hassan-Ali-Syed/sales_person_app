@@ -7,6 +7,7 @@ import 'package:sales_person_app/views/add_ship_to_address/controller/add_ship_t
 import 'package:sales_person_app/widgets/custom_appbar.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_textfield.dart';
+import 'package:dotted_line/dotted_line.dart';
 
 class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
   static const String routeName = '/add_ship_to_address_screen';
@@ -203,11 +204,18 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                     ),
                                   ],
                                 ),
-                                const Divider(
-                                  endIndent: 30,
-                                  thickness: 1,
-                                  color: Color(0xff939598),
-                                  height: Sizes.HEIGHT_16,
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.only(right: Sizes.PADDING_20),
+                                  child: DottedLine(
+                                    direction: Axis.horizontal,
+                                    dashLength: 3,
+                                    lineLength: double.infinity,
+                                    dashGapLength: 2,
+                                    lineThickness: 1,
+                                    dashColor: Color(0xff939598),
+                                    dashGapColor: Colors.transparent,
+                                  ),
                                 ),
                               ],
                             ),
@@ -250,33 +258,15 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           top: Sizes.PADDING_2),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        controller
-                                                            .filteredCountry[
-                                                                index]
-                                                            .code!,
-                                                        style: context.bodySmall
-                                                            .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: Sizes
-                                                              .TEXT_SIZE_12,
-                                                          color: const Color(
-                                                              0xff58595B),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                            .only(
-                                                            left: Sizes
-                                                                .PADDING_86),
-                                                        child: Text(
+                                                  child: SizedBox(
+                                                    height: Sizes.HEIGHT_17,
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
                                                           controller
                                                               .filteredCountry[
                                                                   index]
-                                                              .description!,
+                                                              .code!,
                                                           style: context
                                                               .bodySmall
                                                               .copyWith(
@@ -288,17 +278,48 @@ class AddShipToAddressScreen extends GetView<AddShipToAddressController> {
                                                                 0xff58595B),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .only(
+                                                              left: Sizes
+                                                                  .PADDING_86),
+                                                          child: Text(
+                                                            controller
+                                                                .filteredCountry[
+                                                                    index]
+                                                                .description!,
+                                                            style: context
+                                                                .bodySmall
+                                                                .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              fontSize: Sizes
+                                                                  .TEXT_SIZE_12,
+                                                              color: const Color(
+                                                                  0xff58595B),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                              const Divider(
-                                                endIndent: 30,
-                                                thickness: 1,
-                                                color: Color(0xff939598),
-                                                height: Sizes.HEIGHT_16,
-                                              )
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    right: Sizes.PADDING_20),
+                                                child: DottedLine(
+                                                  direction: Axis.horizontal,
+                                                  dashLength: 3,
+                                                  lineLength: double.infinity,
+                                                  dashGapLength: 2,
+                                                  lineThickness: 1,
+                                                  dashColor: Color(0xff939598),
+                                                  dashGapColor:
+                                                      Colors.transparent,
+                                                ),
+                                              ),
                                             ],
                                           );
                                         },
