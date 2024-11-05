@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/views/add_attendee/bindings/add_attendee_binding.dart';
 import 'package:sales_person_app/views/add_attendee/views/add_attendee_screen.dart';
+import 'package:sales_person_app/views/add_new_customer/bindings/add_new_customer_binding.dart';
+import 'package:sales_person_app/views/add_new_customer/views/add_new_customer_screen.dart';
 import 'package:sales_person_app/views/add_ship_to_address/bindings/add_ship_to_address_binding.dart';
 import 'package:sales_person_app/views/add_ship_to_address/views/add_ship_to_address_screen.dart';
 import 'package:sales_person_app/views/customer_visit/bindings/customer_visit_binding.dart';
@@ -74,5 +76,10 @@ class AppPages {
       page: () => AddShipToAddressScreen(),
       binding: AddShipToAddressBinding(),
     ),
+    GetPage(
+      name: AppRoutes.ADD_NEW_CUSTOMER,
+      page: () => const AddNewCustomerScreen(),
+      binding: AddNewCustomerBinding(),
+    )
   ];
 }
