@@ -277,7 +277,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+                                        Get.toNamed(AppRoutes.ADD_NEW_CUSTOMER);
+                                      },
                                       child: Row(
                                         children: [
                                           Text(
