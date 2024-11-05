@@ -827,12 +827,12 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                           runSpacing: 5,
                           children: List.generate(
                               (controller.selectedAttendees.length), (index) {
+                            log("******contactNo *********${controller.contactNo.value}************88");
                             return GestureDetector(
                               onTap: () {
-                                log(controller.selectedAttendees[index]
-                                    ['contactNo']);
                                 controller.contactNo.value = controller
                                     .selectedAttendees[index]['contactNo'];
+
                                 controller.userItemListReferesh.value = true;
                                 controller.itemQntyController.clear();
                                 controller.selectedAttendee.value =
@@ -1095,9 +1095,9 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                               CustomElevatedButton(
                                 onPressed: () {
                                   controller.itemsListRefresh.value = true;
-                                  // controller.scanBarcodeNormal();
-                                  controller
-                                      .getSingleItemFromGraphQL('S10082-002');
+                                  controller.scanBarcodeNormal();
+                                  // controller
+                                  //     .getSingleItemFromGraphQL('P10012-020');
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_90,

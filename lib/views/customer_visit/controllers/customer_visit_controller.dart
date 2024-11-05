@@ -70,6 +70,7 @@ class CustomerVisitController extends GetxController {
   RxMap<String, bool> checkBoxStatesMap = <String, bool>{}.obs;
   RxBool textFieldOnTap = false.obs;
   RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
+  List<dynamic>? currentSalesLines;
 
   // customer's text field & flags
   RxBool isCustomerExpanded = false.obs;
@@ -90,6 +91,7 @@ class CustomerVisitController extends GetxController {
 
   // Attendee's related flags and controller
   RxBool isAttendeeFieldVisible = false.obs;
+  // RxBool attendeeOnTap = false.obs;
   RxBool isAttendeeExpanded = false.obs;
   RxBool isAttendeeSearch = false.obs;
   ScrollController attendeeScrollController = ScrollController();
@@ -323,34 +325,35 @@ class CustomerVisitController extends GetxController {
   //       selectedAttendees.map((attendee) => attendee['name']).join(',');
   // }
 
-  void onCheckboxChanged(bool? value, String contactNo) {
+  void onCheckboxChanged(bool? value, String attendeeNo) {
     if (value == true) {
-      checkBoxStatesMap[contactNo] = true;
+      checkBoxStatesMap[attendeeNo] = true;
 
       selectedAttendees.add({
-        'name': filteredAttendees.firstWhere((e) => e.no == contactNo).name,
-        'contactNo': contactNo,
+        'name': filteredAttendees.firstWhere((e) => e.no == attendeeNo).name,
+        'contactNo': attendeeNo,
         'tliSalesLine': customerContactsMap.firstWhere(
-            (element) => element['contactNo'] == contactNo)['tliSalesLine']
+            (element) => element['contactNo'] == attendeeNo)['tliSalesLine']
       });
 
       log('**** SELECTED attendees: $selectedAttendees ******');
     } else {
-      checkBoxStatesMap[contactNo] = false;
+      checkBoxStatesMap[attendeeNo] = false;
 
       selectedAttendees.removeWhere((attendee) =>
           attendee['name'] ==
-              filteredAttendees.firstWhere((e) => e.no == contactNo).name &&
-          attendee['contactNo'] == contactNo &&
+              filteredAttendees.firstWhere((e) => e.no == attendeeNo).name &&
+          attendee['contactNo'] == attendeeNo &&
           attendee['tliSalesLine'] ==
               customerContactsMap.firstWhere((element) =>
-                  element['contactNo'] == contactNo)['tliSalesLine']);
+                  element['contactNo'] == attendeeNo)['tliSalesLine']);
 
       log('**** SELECTED attendees: $selectedAttendees ******');
     }
 
     attendeeController.text =
         selectedAttendees.map((attendee) => attendee['name']).join(',');
+    contactNo.value = selectedAttendees[0]['contactNo'];
   }
 
 // SET CUSTOMER'S CONTACTS
@@ -570,44 +573,43 @@ class CustomerVisitController extends GetxController {
 
     tliItem = TliItems.fromJson(response);
     log('============ After Parse ${tliItem!.value.length}================');
-    for (var currentSalesLines in selectedAttendees) {
-      if (currentSalesLines['contactNo'] == contactNo) {
-        log(currentSalesLines['contactNo']);
+    for (var currentSalesLinesOfLoop in selectedAttendees) {
+      if (currentSalesLinesOfLoop['contactNo'] == contactNo.value) {
+        currentSalesLines = currentSalesLinesOfLoop['tliSalesLine'];
       }
     }
-    
 
-    // TliSalesLineElement newItem = TliSalesLineElement(
-    //   lineNo: currentSalesLines.isNotEmpty
-    //       ? (currentSalesLines.length + 1) * 10000
-    //       : 10000,
-    //   type: 'Item',
-    //   no: tliItem!.value[0].no!,
-    //   quantity: num.parse(tliItem!.value[0].qntyController!.text),
-    //   unitPrice: num.parse(
-    //     tliItem!.value[0].unitPrice.toString(),
-    //   ),
-    //   itemDescription: tliItem!.value[0].description!,
-    // );
+    TliSalesLineElement newItem = TliSalesLineElement(
+      lineNo: currentSalesLines!.isNotEmpty
+          ? (currentSalesLines!.length + 1) * 10000
+          : 10000,
+      type: 'Item',
+      no: tliItem!.value[0].no!,
+      quantity: num.parse(tliItem!.value[0].qntyController!.text),
+      unitPrice: num.parse(
+        tliItem!.value[0].unitPrice.toString(),
+      ),
+      itemDescription: tliItem!.value[0].description!,
+    );
 
-    // bool itemExists = false;
-    // for (var salesLineItem in currentSalesLines) {
-    //   if (salesLineItem.no == newItem.no) {
-    //     salesLineItem.quantity += newItem.quantity;
-    //     itemExists = true;
-    //     break;
-    //   }
-    // }
+    bool itemExists = false;
+    for (var salesLineItem in currentSalesLines!) {
+      if (salesLineItem.no == newItem.no) {
+        salesLineItem.quantity += newItem.quantity;
+        itemExists = true;
+        break;
+      }
+    }
 
-    // if (!itemExists) {
-    //   currentSalesLines.add(newItem);
-    // }
+    if (!itemExists) {
+      currentSalesLines!.add(newItem);
+    }
 
-    // itemsListRefresh.value = false;
-    // userItemListReferesh.value = false;
-    // isLoading.value = false;
-
-    // log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
+    itemsListRefresh.value = false;
+    userItemListReferesh.value = false;
+    isLoading.value = false;
+    log('====currentSalesLine===========${currentSalesLines}==============');
+    log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
   }
 
   // Method for scanning barcode
