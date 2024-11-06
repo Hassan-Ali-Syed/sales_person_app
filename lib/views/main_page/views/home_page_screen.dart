@@ -302,7 +302,9 @@ class HomePageScreen extends GetView<MainPageController> {
                         ),
                       ),
                       trailing: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          // Get.toNamed(AppRoutes.LIST_ITEMS);
+                        },
                         child: const Icon(Icons.add_circle),
                       ),
                     ),

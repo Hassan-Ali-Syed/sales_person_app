@@ -98,18 +98,6 @@ class AddNewCustomerController extends GetxController {
     super.onInit();
   }
 
-  void toggleGeneral() {
-    generalPressed.value = !generalPressed.value;
-  }
-
-  void toggleadressContact() {
-    adressContactPressed.value = !adressContactPressed.value;
-  }
-
-  void toggleInvoicing() {
-    invoicingPressed.value = !invoicingPressed.value;
-  }
-
   Future<void> getMultipleQueriesData() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
@@ -156,5 +144,17 @@ class AddNewCustomerController extends GetxController {
   addTliTaxAreas(response) {
     tliTaxAreas = TliTaxAreas.fromJson(response);
     log("**** Get tliTaxAreas \n ${tliTaxAreas!.toJson()} ");
+  }
+
+  void toggleGeneral() {
+    generalPressed.value = !generalPressed.value;
+  }
+
+  void toggleadressContact() {
+    adressContactPressed.value = !adressContactPressed.value;
+  }
+
+  void toggleInvoicing() {
+    invoicingPressed.value = !invoicingPressed.value;
   }
 }
