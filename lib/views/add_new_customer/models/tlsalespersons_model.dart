@@ -11,7 +11,8 @@ class TliSalesPersons {
     required this.value,
   });
 
-  factory TliSalesPersons.fromJson(Map<String, dynamic> json) => TliSalesPersons(
+  factory TliSalesPersons.fromJson(Map<String, dynamic> json) =>
+      TliSalesPersons(
         success: json["success"],
         status: json["status"],
         message: json["message"],
@@ -29,17 +30,21 @@ class TliSalesPersons {
 
 class TliSalesPersonsValue {
   String? code;
+  String? description;
 
   TliSalesPersonsValue({
     this.code,
+    this.description,
   });
 
   factory TliSalesPersonsValue.fromJson(Map<String, dynamic> json) =>
       TliSalesPersonsValue(
         code: json["code"],
+        description: json["description"],
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
+        "description": description,
       };
 }

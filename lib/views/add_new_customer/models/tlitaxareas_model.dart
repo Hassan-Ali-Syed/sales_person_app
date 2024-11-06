@@ -29,17 +29,21 @@ class TliTaxAreas {
 
 class TliTaxAreasValue {
   String? code;
+  String? description;
 
   TliTaxAreasValue({
     this.code,
+    this.description,
   });
 
   factory TliTaxAreasValue.fromJson(Map<String, dynamic> json) =>
       TliTaxAreasValue(
         code: json["code"],
+        description: json["description"],
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
+        "description": description,
       };
 }
