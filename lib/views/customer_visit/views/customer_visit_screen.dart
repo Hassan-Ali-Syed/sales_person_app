@@ -30,7 +30,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
           style: GoogleFonts.nunitoSans(
               textStyle: const TextStyle(
             fontSize: Sizes.TEXT_SIZE_20,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.bold,
             color: LightTheme.appBarTextColor,
           )),
         ),
@@ -640,7 +640,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                             color: const Color(0xff58595B),
                                           ),
                                           onChanged: (value) {
-                                            // controller.filterAttendeeList();
+                                            controller.filterAttendeeList();
                                           },
                                           controller: controller
                                               .searchAttendeeController,
@@ -708,6 +708,12 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                           .length,
                                                       itemBuilder:
                                                           (context, index) {
+                                                        final contactNo =
+                                                            controller
+                                                                .filteredAttendees[
+                                                                    index]
+                                                                .no;
+
                                                         final filteredData =
                                                             controller
                                                                 .filteredAttendees[
@@ -727,14 +733,14 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                                                   VisualDensity
                                                                       .compact,
                                                               value: controller
-                                                                      .checkBoxStates[
-                                                                  index],
+                                                                      .checkBoxStatesMap[
+                                                                  contactNo],
                                                               onChanged:
                                                                   (value) {
                                                                 controller
                                                                     .onCheckboxChanged(
                                                                         value,
-                                                                        index);
+                                                                        contactNo!);
                                                               },
                                                             ),
                                                           ),
@@ -820,9 +826,13 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                           spacing: 2,
                           runSpacing: 5,
                           children: List.generate(
-                            (controller.selectedAttendees.length),
-                            (index) => GestureDetector(
+                              (controller.selectedAttendees.length), (index) {
+                            log("******contactNo *********${controller.contactNo.value}************88");
+                            return GestureDetector(
                               onTap: () {
+                                controller.contactNo.value = controller
+                                    .selectedAttendees[index]['contactNo'];
+
                                 controller.userItemListReferesh.value = true;
                                 controller.itemQntyController.clear();
                                 controller.selectedAttendee.value =
@@ -830,7 +840,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                 controller.attendeeSelectedIndex.value = index;
 
                                 controller.itemIndex.value = -1;
-                                log(' Map: ${controller.selectedAttendees[controller.attendeeSelectedIndex.value]['tliSalesLine'][0].toJson()}');
+                                // log(' Map: ${controller.selectedAttendees[controller.attendeeSelectedIndex.value]['tliSalesLine'][0].toJson()}');
                                 controller.userItemListReferesh.value = false;
                               },
                               child: Obx(
@@ -857,8 +867,8 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                         )
                       : const SizedBox(),
                 ),
@@ -1087,7 +1097,7 @@ class CustomerVisitScreen extends GetView<CustomerVisitController> {
                                   controller.itemsListRefresh.value = true;
                                   controller.scanBarcodeNormal();
                                   // controller
-                                  //     .getSingleItemFromGraphQL('S10082-002');
+                                  //     .getSingleItemFromGraphQL('P10012-020');
                                 },
                                 title: AppStrings.SCAN,
                                 minWidht: Sizes.WIDTH_90,

@@ -56,6 +56,7 @@ class CustomerVisitController extends GetxController {
   String selectedShipToAddCode = '';
   RxInt attendeeSelectedIndex = 0.obs;
   RxString selectedAttendee = ''.obs;
+  RxString contactNo = ''.obs;
 
   List<String>? customersShipToAddList = <String>[];
   RxList<Map<String, dynamic>> customerContactsMap =
@@ -66,7 +67,10 @@ class CustomerVisitController extends GetxController {
 
   //selected attendees List of checkbox
   RxList<bool> checkBoxStates = <bool>[].obs;
+  RxMap<String, bool> checkBoxStatesMap = <String, bool>{}.obs;
+  RxBool textFieldOnTap = false.obs;
   RxList<Map<String, dynamic>> selectedAttendees = <Map<String, dynamic>>[].obs;
+  List<dynamic>? currentSalesLines;
 
   // customer's text field & flags
   RxBool isCustomerExpanded = false.obs;
@@ -87,6 +91,7 @@ class CustomerVisitController extends GetxController {
 
   // Attendee's related flags and controller
   RxBool isAttendeeFieldVisible = false.obs;
+  // RxBool attendeeOnTap = false.obs;
   RxBool isAttendeeExpanded = false.obs;
   RxBool isAttendeeSearch = false.obs;
   ScrollController attendeeScrollController = ScrollController();
@@ -134,7 +139,7 @@ class CustomerVisitController extends GetxController {
       },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
-        log("======getSingleItemFromGraphQL===========${response.data}==============");
+        log("======getSingleItemFromGraphQL===========${response}==============");
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
         userItemListReferesh.value = false;
@@ -257,6 +262,7 @@ class CustomerVisitController extends GetxController {
       }
       log('List $filteredAttendees');
     }
+
     return filteredAttendees;
   }
 
@@ -291,6 +297,64 @@ class CustomerVisitController extends GetxController {
 
     isShipToAddFieldVisible.value = true;
   }
+  // void onCheckboxChanged(bool? value, String contactNo) {
+  //   if (value == true) {
+  //     checkBoxStatesMap[contactNo] = true;
+  //     selectedAttendees.add({
+  //       'name': filteredAttendees.firstWhere((e) => e.no == contactNo).name,
+  //       'contactNo': contactNo,
+  //       'tliSalesLine': customerContactsMap.firstWhere(
+  //           (element) => element['tliSalesLine'] == contactNo)['tliSalesLine']
+  //     });
+  //     log('**** SELECTED attendeeS $selectedAttendees ******');
+  //   } else {
+  //     checkBoxStatesMap[contactNo] = false;
+
+  //     selectedAttendees.removeWhere((attendee) =>
+  //         attendee['name'] ==
+  //             filteredAttendees.firstWhere((e) => e.no == contactNo).name &&
+  //         attendee['contactNo'] == contactNo &&
+  //         attendee['tliSalesLine'] ==
+  //             customerContactsMap.firstWhere((element) =>
+  //                 element['tliSalesLine'] == contactNo)['tliSalesLine']);
+
+  //     log('**** SELECTED attendeeS $selectedAttendees ******');
+  //   }
+
+  //   attendeeController.text =
+  //       selectedAttendees.map((attendee) => attendee['name']).join(',');
+  // }
+
+  void onCheckboxChanged(bool? value, String attendeeNo) {
+    if (value == true) {
+      checkBoxStatesMap[attendeeNo] = true;
+
+      selectedAttendees.add({
+        'name': filteredAttendees.firstWhere((e) => e.no == attendeeNo).name,
+        'contactNo': attendeeNo,
+        'tliSalesLine': customerContactsMap.firstWhere(
+            (element) => element['contactNo'] == attendeeNo)['tliSalesLine']
+      });
+
+      log('**** SELECTED attendees: $selectedAttendees ******');
+    } else {
+      checkBoxStatesMap[attendeeNo] = false;
+
+      selectedAttendees.removeWhere((attendee) =>
+          attendee['name'] ==
+              filteredAttendees.firstWhere((e) => e.no == attendeeNo).name &&
+          attendee['contactNo'] == attendeeNo &&
+          attendee['tliSalesLine'] ==
+              customerContactsMap.firstWhere((element) =>
+                  element['contactNo'] == attendeeNo)['tliSalesLine']);
+
+      log('**** SELECTED attendees: $selectedAttendees ******');
+    }
+
+    attendeeController.text =
+        selectedAttendees.map((attendee) => attendee['name']).join(',');
+    contactNo.value = selectedAttendees[0]['contactNo'];
+  }
 
 // SET CUSTOMER'S CONTACTS
   void setCustomerContacts() {
@@ -305,14 +369,15 @@ class CustomerVisitController extends GetxController {
         for (var element in tempTliContact) {
           if (element.type == 'Person' || element.type == 'person') {
             tliContacts!.add(element);
-            customerContactsMap.add({'tliSalesLine': []});
+            customerContactsMap
+                .add({'contactNo': element.no, 'tliSalesLine': []});
+            checkBoxStatesMap[element.no!] = false;
           }
         }
       }
     }
     filteredAttendees = tliContacts!;
-    checkBoxStates.value =
-        List.generate(filterAttendeeList().length, (index) => false);
+
     isAttendeeFieldVisible.value = true;
     log("====After Adding Contacts======$customerContactsMap");
   }
@@ -362,7 +427,7 @@ class CustomerVisitController extends GetxController {
     // failedOrders.clear();
 
     for (var attendeeData in selectedAttendees) {
-      var contactNo = attendeeData['contactNo'];
+      String contactNo = attendeeData['contactNo'];
       // var attendeeName = attendeeData['name'];
       List<dynamic> tliSalesLineElement = attendeeData['tliSalesLine'];
 
@@ -508,13 +573,15 @@ class CustomerVisitController extends GetxController {
 
     tliItem = TliItems.fromJson(response);
     log('============ After Parse ${tliItem!.value.length}================');
-
-    List<dynamic> currentSalesLines =
-        selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'] ?? [];
+    for (var currentSalesLinesOfLoop in selectedAttendees) {
+      if (currentSalesLinesOfLoop['contactNo'] == contactNo.value) {
+        currentSalesLines = currentSalesLinesOfLoop['tliSalesLine'];
+      }
+    }
 
     TliSalesLineElement newItem = TliSalesLineElement(
-      lineNo: currentSalesLines.isNotEmpty
-          ? (currentSalesLines.length + 1) * 10000
+      lineNo: currentSalesLines!.isNotEmpty
+          ? (currentSalesLines!.length + 1) * 10000
           : 10000,
       type: 'Item',
       no: tliItem!.value[0].no!,
@@ -526,7 +593,7 @@ class CustomerVisitController extends GetxController {
     );
 
     bool itemExists = false;
-    for (var salesLineItem in currentSalesLines) {
+    for (var salesLineItem in currentSalesLines!) {
       if (salesLineItem.no == newItem.no) {
         salesLineItem.quantity += newItem.quantity;
         itemExists = true;
@@ -535,39 +602,14 @@ class CustomerVisitController extends GetxController {
     }
 
     if (!itemExists) {
-      currentSalesLines.add(newItem);
+      currentSalesLines!.add(newItem);
     }
 
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
-
+    log('====currentSalesLine===========${currentSalesLines}==============');
     log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
-  }
-
-  void onCheckboxChanged(bool? value, int index) {
-    if (value == true) {
-      checkBoxStates[index] = true;
-      selectedAttendees.add({
-        'name': filteredAttendees[index].name,
-        'contactNo': filteredAttendees[index].no,
-        'tliSalesLine': customerContactsMap[index]['tliSalesLine']
-      });
-      log('**** SELECTED attendeeS $selectedAttendees ******');
-    } else {
-      checkBoxStates[index] = false;
-
-      selectedAttendees.removeWhere((attendee) =>
-          attendee['name'] == filteredAttendees[index].name &&
-          attendee['contactNo'] == filteredAttendees[index].no &&
-          attendee['tliSalesLine'] ==
-              customerContactsMap[index]['tliSalesLine']);
-
-      log('**** SELECTED attendeeS $selectedAttendees ******');
-    }
-
-    attendeeController.text =
-        selectedAttendees.map((attendee) => attendee['name']).join(',');
   }
 
   // Method for scanning barcode

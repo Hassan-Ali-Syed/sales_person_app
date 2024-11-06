@@ -1,3 +1,4 @@
+
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,6 +43,7 @@ class AddNewCustomerController extends GetxController {
     super.onInit();
   }
 
+
   void toggleGeneral() {
     generalPressed.value = !generalPressed.value;
   }
@@ -53,6 +55,7 @@ class AddNewCustomerController extends GetxController {
   void toggleInvoicing() {
     invoicingPressed.value = !invoicingPressed.value;
   }
+
 
   Future<void> getMultipleQueriesData() async {
     await BaseClient.safeApiCall(
@@ -101,4 +104,6 @@ class AddNewCustomerController extends GetxController {
     tliTaxAreas = TliTaxAreas.fromJson(response);
     log("**** Get tliTaxAreas \n ${tliTaxAreas!.toJson()} ");
   }
+
+
 }

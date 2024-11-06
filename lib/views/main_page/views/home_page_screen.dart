@@ -51,7 +51,7 @@ class HomePageScreen extends GetView<MainPageController> {
                                 'Home',
                                 style: TextStyle(
                                   fontSize: Sizes.TEXT_SIZE_20,
-                                  fontWeight: FontWeight.normal,
+                                  fontWeight: FontWeight.bold,
                                   color: LightTheme.appBarTextColor,
                                 ),
                               ),

@@ -52,10 +52,12 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                             CustomTextField(
                               hintText: 'Sales Person Code',
                               suffixIcon: GestureDetector(
+
                                 onTap: () {
                                   controller.isSalesPersonCodeExpanded.value =
                                       true;
                                 },
+
                                 child: const Icon(
                                   Icons.arrow_drop_down,
                                   color: Color(0xff7C7A7A),

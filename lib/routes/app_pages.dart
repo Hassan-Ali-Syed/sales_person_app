@@ -80,6 +80,8 @@ class AppPages {
       name: AppRoutes.ADD_NEW_CUSTOMER,
       page: () => const AddNewCustomerScreen(),
       binding: AddNewCustomerBinding(),
+
     ),
+
   ];
 }

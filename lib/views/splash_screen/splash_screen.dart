@@ -71,45 +71,47 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffE9E8E7),
-      body: SafeArea(
-        child: OrientationBuilder(
-          builder: (context, orientation) {
-            bool isPortrait = orientation == Orientation.portrait;
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              bool isPortrait = orientation == Orientation.portrait;
 
-            return Center(
-              child: Column(
-                mainAxisAlignment: isPortrait
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (isPortrait) const SizedBox(height: Sizes.PADDING_80),
-                  FadeTransition(
-                    opacity: fadeAnimationTitle,
-                    child: Text(
-                      'posh textiles',
-                      style: context.titleLarge.copyWith(
-                        fontSize: Sizes.TEXT_SIZE_50,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xff58595B),
-                        fontFamily: 'Nunito Sans',
+              return Center(
+                child: Column(
+                  mainAxisAlignment: isPortrait
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (isPortrait) const SizedBox(height: Sizes.PADDING_80),
+                    FadeTransition(
+                      opacity: fadeAnimationTitle,
+                      child: Text(
+                        'posh textiles',
+                        style: context.titleLarge.copyWith(
+                          fontSize: Sizes.TEXT_SIZE_50,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xff58595B),
+                          fontFamily: 'Nunito Sans',
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                      height:
-                          isPortrait ? Sizes.PADDING_144 : Sizes.PADDING_24),
-                  FadeTransition(
-                    opacity: fadeAnimationLogo,
-                    child: Image.asset(
-                      height: Sizes.HEIGHT_260,
-                      AppAssets.getPNGIcon(AppAssets.SPLASH_SCREEN_LOGO),
+                    SizedBox(
+                        height:
+                            isPortrait ? Sizes.PADDING_144 : Sizes.PADDING_24),
+                    FadeTransition(
+                      opacity: fadeAnimationLogo,
+                      child: Image.asset(
+                        height: Sizes.HEIGHT_260,
+                        AppAssets.getPNGIcon(AppAssets.SPLASH_SCREEN_LOGO),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
