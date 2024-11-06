@@ -70,6 +70,11 @@ class AppStrings {
   static const String NO_CONTACTS_AVAILABLE = 'No Contacts Available';
   static const String COMING_SOON = 'Coming Soon..';
   static const String COUNTRY_REGION_CODE = 'Country/Region Code';
+  static const String SALES_PERSON_CODE = 'Sales Person Code';
+  static const String TAX_AREA_CODE = 'Tax Area Code';
+  static const String GEN_BUS_POSTING_GROUP = 'Gen Bus Posting Group';
+  static const String CUSTOMER_POSTING_GROUP = 'Customer Posting Group';
+  static const String CUSTOMER_PRICING_GROUP = 'Customer Pricing Group';
   static const String CODE = 'Code';
 
   //ELEVATED BUTTONS CONST STRING

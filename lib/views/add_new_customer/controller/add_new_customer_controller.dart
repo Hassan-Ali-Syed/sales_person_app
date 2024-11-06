@@ -17,8 +17,27 @@ class AddNewCustomerController extends GetxController {
   RxBool adressContactPressed = false.obs;
   RxBool invoicingPressed = false.obs;
   RxBool taxButtonPressed = false.obs;
+
   RxBool isSalesPersonCodeExpanded = false.obs;
   RxBool isCountryRegionExpanded = false.obs;
+  RxBool isTaxAreaCodeExpanded = false.obs;
+  RxBool isGenBusGroupExpanded = false.obs;
+  RxBool isCustomerPostingGroupExpanded = false.obs;
+  RxBool isCustomerPriceGroupExpanded = false.obs;
+
+  RxBool salesPersonCodeFieldRefresh = false.obs;
+  RxBool countryRegionFieldRefresh = false.obs;
+  RxBool isTaxAreaCodeFieldRefresh = false.obs;
+  RxBool genBusFieldRefresh = false.obs;
+  RxBool customerPostingFieldRefresh = false.obs;
+  RxBool customerPriceFieldRefresh = false.obs;
+
+  late ScrollController salesPersonCodeScrollController;
+  late ScrollController countryRegionScrollController;
+  late ScrollController taxAreaCodeScrollController;
+  late ScrollController genBusPostingScrollController;
+  late ScrollController customerPostingScrollController;
+  late ScrollController customerPricingScrollController;
 
   TliCustomerPostGrps? tliCustomerPostGrps;
   TliCustomerPriceGrps? tliCustomerPriceGrps;
@@ -28,13 +47,50 @@ class AddNewCustomerController extends GetxController {
   TliCountrys? tliCountrys;
 
   late AddShipToAddressController shipToAddController;
-  late ScrollController countryRegionScrollController;
+
+  late TextEditingController nameController;
+  late TextEditingController salesPersonCodeController;
+  late TextEditingController addressController;
+  late TextEditingController address2Controller;
+  late TextEditingController zipCodeController;
+  late TextEditingController cityController;
+  late TextEditingController stateController;
   late TextEditingController countryRegionController;
+  late TextEditingController phoneNumberController;
+  late TextEditingController emailController;
+  late TextEditingController homePageController;
+  late TextEditingController taxAreaCodeController;
+  late TextEditingController genBusPostingController;
+  late TextEditingController customerPostingController;
+  late TextEditingController customerPricingController;
 
   @override
   void onInit() async {
+    //initializing Scroll Controllers
+    salesPersonCodeScrollController = ScrollController();
     countryRegionScrollController = ScrollController();
+    taxAreaCodeScrollController = ScrollController();
+    genBusPostingScrollController = ScrollController();
+    customerPostingScrollController = ScrollController();
+    customerPricingScrollController = ScrollController();
+
+    //initializing TextEditing Controllers
+    nameController = TextEditingController();
+    salesPersonCodeController = TextEditingController();
+    addressController = TextEditingController();
+    address2Controller = TextEditingController();
+    zipCodeController = TextEditingController();
+    cityController = TextEditingController();
+    stateController = TextEditingController();
     countryRegionController = TextEditingController();
+    phoneNumberController = TextEditingController();
+    emailController = TextEditingController();
+    homePageController = TextEditingController();
+    taxAreaCodeController = TextEditingController();
+    genBusPostingController = TextEditingController();
+    customerPostingController = TextEditingController();
+    customerPricingController = TextEditingController();
+
     shipToAddController = Get.find<AddShipToAddressController>();
     await shipToAddController.getTliCountrys();
     log('****** TliCountrys: \n ${shipToAddController.tliCountrys!.toJson()} ');
