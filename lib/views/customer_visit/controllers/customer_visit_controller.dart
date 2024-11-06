@@ -139,7 +139,7 @@ class CustomerVisitController extends GetxController {
       },
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********');
-        log("======getSingleItemFromGraphQL===========${response}==============");
+        log("======getSingleItemFromGraphQL===========$response==============");
         addTliItemModel(response.data!["tliItems"]);
         isLoading.value = false;
         userItemListReferesh.value = false;
@@ -350,6 +350,7 @@ class CustomerVisitController extends GetxController {
 
       log('**** SELECTED attendees: $selectedAttendees ******');
     }
+    log("===attedneeIndex=======${attendeeSelectedIndex.toString()}================");
 
     attendeeController.text =
         selectedAttendees.map((attendee) => attendee['name']).join(',');
@@ -608,7 +609,7 @@ class CustomerVisitController extends GetxController {
     itemsListRefresh.value = false;
     userItemListReferesh.value = false;
     isLoading.value = false;
-    log('====currentSalesLine===========${currentSalesLines}==============');
+    log('====currentSalesLine===========$currentSalesLines==============');
     log('==SELECTED ATTENDEES ITEM LIST==========${selectedAttendees[attendeeSelectedIndex.value]['tliSalesLine'][0]}=========================');
   }
 
