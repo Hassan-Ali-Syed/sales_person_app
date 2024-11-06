@@ -25,5 +25,7 @@ class AppRoutes {
   static const String ADD_ATTENDEE_PAGE = AddAttendeeScreen.routeName;
   static const String CUSTOMER_VISIT = CustomerVisitScreen.routeName;
   static const String ADD_SHIP_TO_ADDRESS = AddShipToAddressScreen.routeName;
+
    static const String ADD_NEW_CUSTOMER = AddNewCustomerScreen.routeName;
+
 }
