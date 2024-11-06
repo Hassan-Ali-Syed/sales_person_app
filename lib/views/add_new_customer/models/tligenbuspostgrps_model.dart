@@ -30,17 +30,21 @@ class TliGenBusPostGrps {
 
 class TliGenBusPostGrpsValue {
   String? code;
+  String? description;
 
   TliGenBusPostGrpsValue({
     this.code,
+    this.description,
   });
 
   factory TliGenBusPostGrpsValue.fromJson(Map<String, dynamic> json) =>
       TliGenBusPostGrpsValue(
         code: json["code"],
+        description: json["description"],
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
+        "description": description,
       };
 }

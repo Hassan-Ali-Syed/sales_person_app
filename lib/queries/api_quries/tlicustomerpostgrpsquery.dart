@@ -12,6 +12,7 @@ class TliCustomerPostGrpsQuery {
     success
     value {
       code
+      description
     }
   }""";
   }

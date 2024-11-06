@@ -15,6 +15,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: controller.addNewCustomerScaffoldKey,
       appBar: customAppBar(
         context: context,
         title: const Text(AppStrings.ADD_CUSTOMER),
@@ -25,6 +26,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
               vertical: Sizes.PADDING_22, horizontal: Sizes.PADDING_18),
           child: Column(
             children: [
+              //GENERAL
               AddCustomerTile(
                   onTap: () {
                     controller.toggleGeneral();
@@ -223,7 +225,8 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                             child: Scrollbar(
                                               trackVisibility: true,
                                               radius: const Radius.circular(
-                                                  Sizes.RADIUS_6),
+                                                Sizes.RADIUS_6,
+                                              ),
                                               interactive: true,
                                               thickness: 12,
                                               thumbVisibility: true,
@@ -233,12 +236,19 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                 scrollDirection: Axis.vertical,
                                                 controller: controller
                                                     .salesPersonCodeScrollController,
-                                                itemCount: 10,
+                                                itemCount: controller
+                                                    .tliSalesPersons!
+                                                    .value
+                                                    .length,
                                                 itemBuilder: (context, index) {
                                                   return Column(
                                                     children: [
                                                       InkWell(
-                                                        onTap: () {},
+                                                        onTap: () {
+                                                          controller
+                                                              .salesPersonCodeOnTap(
+                                                                  index);
+                                                        },
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
@@ -251,7 +261,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  'code',
+                                                                  controller
+                                                                      .tliSalesPersons!
+                                                                      .value[
+                                                                          index]
+                                                                      .code!,
                                                                   style: context
                                                                       .bodySmall
                                                                       .copyWith(
@@ -270,7 +284,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                       left: Sizes
                                                                           .PADDING_86),
                                                                   child: Text(
-                                                                    'Name',
+                                                                    controller
+                                                                        .tliSalesPersons!
+                                                                        .value[
+                                                                            index]
+                                                                        .description!,
                                                                     style: context
                                                                         .bodySmall
                                                                         .copyWith(
@@ -362,12 +380,12 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
               ),
               AddCustomerTile(
                 onTap: () {
-                  controller.toggleadressContact();
+                  controller.toggleAddressContact();
                 },
                 title: 'ADDRESS & CONTACT',
                 icon: Obx(
                   () => Icon(
-                      controller.adressContactPressed.value
+                      controller.addressContactPressed.value
                           ? Icons.arrow_drop_up
                           : Icons.arrow_drop_down,
                       color: Colors.white,
@@ -375,7 +393,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                 ),
               ),
               Obx(
-                () => controller.adressContactPressed.value
+                () => controller.addressContactPressed.value
                     ? Padding(
                         padding: const EdgeInsets.only(
                             top: Sizes.PADDING_8,
@@ -609,15 +627,16 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                 scrollDirection: Axis.vertical,
                                                 controller: controller
                                                     .countryRegionScrollController,
-                                                itemCount: 5,
+                                                itemCount: controller
+                                                    .tliCountrys!.value.length,
                                                 itemBuilder: (context, index) {
                                                   return Column(
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
                                                           controller
-                                                              .isCountryRegionExpanded
-                                                              .value = false;
+                                                              .countryRegionCodeOnTap(
+                                                                  index);
                                                         },
                                                         child: Padding(
                                                           padding:
@@ -631,7 +650,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  'code',
+                                                                  controller
+                                                                      .tliCountrys!
+                                                                      .value[
+                                                                          index]
+                                                                      .code!,
                                                                   style: context
                                                                       .bodySmall
                                                                       .copyWith(
@@ -650,7 +673,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                       left: Sizes
                                                                           .PADDING_86),
                                                                   child: Text(
-                                                                    'Name',
+                                                                    controller
+                                                                        .tliCountrys!
+                                                                        .value[
+                                                                            index]
+                                                                        .description!,
                                                                     style: context.bodySmall.copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -928,7 +955,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                           ),
                                           Obx(
                                             () => controller
-                                                    .isTaxAreaCodeFieldRefresh
+                                                    .taxAreaCodeFieldRefresh
                                                     .value
                                                 ? const Center(
                                                     child:
@@ -1013,12 +1040,17 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                 scrollDirection: Axis.vertical,
                                                 controller: controller
                                                     .taxAreaCodeScrollController,
-                                                itemCount: 5,
+                                                itemCount: controller
+                                                    .tliTaxAreas!.value.length,
                                                 itemBuilder: (context, index) {
                                                   return Column(
                                                     children: [
                                                       InkWell(
-                                                        onTap: () {},
+                                                        onTap: () {
+                                                          controller
+                                                              .taxAreaCodeOnTap(
+                                                                  index);
+                                                        },
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
@@ -1031,7 +1063,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  'code',
+                                                                  controller
+                                                                      .tliTaxAreas!
+                                                                      .value[
+                                                                          index]
+                                                                      .code!,
                                                                   style: context
                                                                       .bodySmall
                                                                       .copyWith(
@@ -1050,7 +1086,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                       left: Sizes
                                                                           .PADDING_86),
                                                                   child: Text(
-                                                                    'Description',
+                                                                    controller
+                                                                        .tliTaxAreas!
+                                                                        .value[
+                                                                            index]
+                                                                        .description!,
                                                                     style: context.bodySmall.copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -1310,15 +1350,18 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                 scrollDirection: Axis.vertical,
                                                 controller: controller
                                                     .genBusPostingScrollController,
-                                                itemCount: 5,
+                                                itemCount: controller
+                                                    .tliGenBusPostGrps!
+                                                    .value
+                                                    .length,
                                                 itemBuilder: (context, index) {
                                                   return Column(
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
                                                           controller
-                                                              .isCountryRegionExpanded
-                                                              .value = false;
+                                                              .genBusPostGrpsOnTap(
+                                                                  index);
                                                         },
                                                         child: Padding(
                                                           padding:
@@ -1332,7 +1375,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  'code',
+                                                                  controller
+                                                                      .tliGenBusPostGrps!
+                                                                      .value[
+                                                                          index]
+                                                                      .code!,
                                                                   style: context
                                                                       .bodySmall
                                                                       .copyWith(
@@ -1351,7 +1398,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                       left: Sizes
                                                                           .PADDING_86),
                                                                   child: Text(
-                                                                    'Name',
+                                                                    controller
+                                                                        .tliGenBusPostGrps!
+                                                                        .value[
+                                                                            index]
+                                                                        .description!,
                                                                     style: context
                                                                         .bodySmall
                                                                         .copyWith(
@@ -1617,15 +1668,18 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                 scrollDirection: Axis.vertical,
                                                 controller: controller
                                                     .customerPostingScrollController,
-                                                itemCount: 5,
+                                                itemCount: controller
+                                                    .tliCustomerPostGrps!
+                                                    .value
+                                                    .length,
                                                 itemBuilder: (context, index) {
                                                   return Column(
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
                                                           controller
-                                                              .isCustomerPostingGroupExpanded
-                                                              .value = false;
+                                                              .customerPostGrpsOnTap(
+                                                                  index);
                                                         },
                                                         child: Padding(
                                                           padding:
@@ -1639,7 +1693,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  'code',
+                                                                  controller
+                                                                      .tliCustomerPostGrps!
+                                                                      .value[
+                                                                          index]
+                                                                      .code!,
                                                                   style: context
                                                                       .bodySmall
                                                                       .copyWith(
@@ -1658,7 +1716,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                       left: Sizes
                                                                           .PADDING_86),
                                                                   child: Text(
-                                                                    'Name',
+                                                                    controller
+                                                                        .tliCustomerPostGrps!
+                                                                        .value[
+                                                                            index]
+                                                                        .description!,
                                                                     style: context.bodySmall.copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -1916,20 +1978,23 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                               thickness: 12,
                                               thumbVisibility: true,
                                               controller: controller
-                                                  .countryRegionScrollController,
+                                                  .customerPricingScrollController,
                                               child: ListView.builder(
                                                 scrollDirection: Axis.vertical,
                                                 controller: controller
-                                                    .countryRegionScrollController,
-                                                itemCount: 5,
+                                                    .customerPricingScrollController,
+                                                itemCount: controller
+                                                    .tliCustomerPriceGrps!
+                                                    .value
+                                                    .length,
                                                 itemBuilder: (context, index) {
                                                   return Column(
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
                                                           controller
-                                                              .isCustomerPriceGroupExpanded
-                                                              .value = false;
+                                                              .customerPriceGrpsOnTap(
+                                                                  index);
                                                         },
                                                         child: Padding(
                                                           padding:
@@ -1943,7 +2008,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  'code',
+                                                                  controller
+                                                                      .tliCustomerPriceGrps!
+                                                                      .value[
+                                                                          index]
+                                                                      .code!,
                                                                   style: context
                                                                       .bodySmall
                                                                       .copyWith(
@@ -1962,7 +2031,11 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                       left: Sizes
                                                                           .PADDING_86),
                                                                   child: Text(
-                                                                    'Name',
+                                                                    controller
+                                                                        .tliCustomerPriceGrps!
+                                                                        .value[
+                                                                            index]
+                                                                        .description!,
                                                                     style: context.bodySmall.copyWith(
                                                                         fontWeight:
                                                                             FontWeight

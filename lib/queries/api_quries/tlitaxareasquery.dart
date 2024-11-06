@@ -12,6 +12,7 @@ class TliTaxAreasQuery {
     success
     value {
       code
+      description
     }
   }""";
   }
