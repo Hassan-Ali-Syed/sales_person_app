@@ -225,6 +225,8 @@ class Sizes {
   static const double WIDTH_40 = 40.0;
   static const double WIDTH_38 = 38.0;
   static const double WIDTH_36 = 36.0;
+  static const double WIDTH_35 = 35.0;
+  static const double WIDTH_34 = 34.0;
   static const double WIDTH_32 = 32.0;
   static const double WIDTH_30 = 30.0;
   static const double WIDTH_26 = 26.0;
@@ -315,6 +317,7 @@ class Sizes {
   static const double PADDING_10 = 10.0;
   static const double PADDING_8 = 8.0;
   static const double PADDING_6 = 6.0;
+  static const double PADDING_5 = 5.0;
   static const double PADDING_4 = 4.0;
   static const double PADDING_2 = 2.0;
   static const double PADDING_0 = 0.0;

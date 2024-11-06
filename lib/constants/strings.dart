@@ -22,6 +22,8 @@ class AppStrings {
   static const String SIGN_IN = 'Sign in';
   static const String WELCOME = 'Welcome!';
   static const String SIGN_IN_TO_CONTINUE = 'Sign in to continue';
+  static const String CONFIRMATION_ITEM_DELETE_MESSAGE =
+      'If you proceed, you will lose selected Item. Are you sure you want to delete?';
 
 //Navigation Bar title
   static const String HOME = 'Home';
@@ -37,6 +39,7 @@ class AppStrings {
   static const String MORE_TITLE = 'More';
   static const String ADD_CONTACT = 'Add Contact';
   static const String CUSTOMER_VISIT = 'Customer Visit';
+  static const String LIST_ITEMS = 'List Items';
 
   // hint_text
   static const String NAME = 'Name';
@@ -80,6 +83,7 @@ class AppStrings {
   static const FAILURE = 'Failed';
   static const String RECORD_FAILED = 'Sales Order has been cancelled';
   static const String BACK = 'Back';
+
   // Api Message Strings
   static const String LOADING = 'Loading';
   static const String NO_INTERNET_CONNECTION = 'No internet connection';

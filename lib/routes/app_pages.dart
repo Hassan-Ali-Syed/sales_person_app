@@ -8,6 +8,8 @@ import 'package:sales_person_app/views/add_ship_to_address/bindings/add_ship_to_
 import 'package:sales_person_app/views/add_ship_to_address/views/add_ship_to_address_screen.dart';
 import 'package:sales_person_app/views/customer_visit/bindings/customer_visit_binding.dart';
 import 'package:sales_person_app/views/customer_visit/views/customer_visit_screen.dart';
+import 'package:sales_person_app/views/list_items/bindings/list_items_biniding.dart';
+import 'package:sales_person_app/views/list_items/views/list_items_screen.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/home_page_screen.dart';
@@ -80,8 +82,11 @@ class AppPages {
       name: AppRoutes.ADD_NEW_CUSTOMER,
       page: () => const AddNewCustomerScreen(),
       binding: AddNewCustomerBinding(),
-
     ),
-
+    GetPage(
+      name: AppRoutes.LIST_ITEMS,
+      page: () => const ListItemsScreen(),
+      binding: ListItemsBiniding(),
+    ),
   ];
 }
