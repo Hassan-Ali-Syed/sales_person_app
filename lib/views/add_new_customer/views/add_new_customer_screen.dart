@@ -177,7 +177,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                 const EdgeInsets
                                                                     .only(
                                                                     left: Sizes
-                                                                        .PADDING_74),
+                                                                        .PADDING_82),
                                                             child: Text(
                                                               'Name',
                                                               style: context
@@ -553,7 +553,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                                 const EdgeInsets
                                                                     .only(
                                                                     left: Sizes
-                                                                        .PADDING_74),
+                                                                        .PADDING_84),
                                                             child: Text(
                                                               'Name',
                                                               style: context
@@ -914,7 +914,6 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                   controller
                                                       .isTaxAreaCodeExpanded
                                                       .value = false;
-                                                  
                                                 },
                                                 child: const Icon(
                                                   Icons.arrow_drop_up,
