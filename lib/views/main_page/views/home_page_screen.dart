@@ -12,6 +12,7 @@ import 'package:sales_person_app/views/main_page/controllers/main_page_controlle
 class HomePageScreen extends GetView<MainPageController> {
   HomePageScreen({super.key});
   static const String routeName = '/home_page_screen';
+
   final OutlineInputBorder outlineInputBorder = OutlineInputBorder(
     borderSide: const BorderSide(
       width: 1.4,
@@ -303,7 +304,7 @@ class HomePageScreen extends GetView<MainPageController> {
                       ),
                       trailing: GestureDetector(
                         onTap: () {
-                          // Get.toNamed(AppRoutes.LIST_ITEMS);
+                          Get.toNamed(AppRoutes.SCANNER_SCREEN);
                         },
                         child: const Icon(Icons.add_circle),
                       ),

@@ -12,7 +12,8 @@ class CustomTextField extends StatefulWidget {
       this.keyBoardType,
       this.controller,
       this.readOnly = false,
-      this.onChanged});
+      this.onChanged,
+      this.label});
   final String hintText;
   final Widget? suffixIcon;
   final bool obscureText;
@@ -20,6 +21,7 @@ class CustomTextField extends StatefulWidget {
   final bool readOnly;
   final TextEditingController? controller;
   final void Function(String)? onChanged;
+  final Text? label;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -31,14 +33,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     super.initState();
-
-    _focusNode.addListener(() {
-      // log('Focus changed: ${_focusNode.hasFocus}');
-      setState(() {});
-    });
-    widget.controller?.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -70,13 +64,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fontWeight: FontWeight.w600,
             color: const Color(0xff939598),
           ),
-          label: Text(
-            widget.hintText,
-            style: context.titleSmall.copyWith(
-              fontWeight: FontWeight.w600,
-              color: const Color(0xff939598),
-            ),
-          ),
+          label: widget.label ??
+              Text(
+                widget.hintText,
+                style: context.titleSmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xff939598),
+                ),
+              ),
           focusedBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
               color: Color(0xff7C7A7A),

@@ -30,6 +30,8 @@ class AppStrings {
   static const String CUSTOMER = 'Customer';
   static const String CONTACT = 'Contact';
   static const String MORE = 'More';
+  static const String LIST_ITEM = 'List item';
+  static const String ADD_MANUAL = 'Add Manual';
 
 // App Bar title
   static const String HOME_TITLE = 'Home';
@@ -58,6 +60,7 @@ class AppStrings {
   static const String SEARCH_SHIP_TO_ADD = 'Search Ship to Address';
   static const String ADD_CUSTOMER = 'Add New Customer';
   static const String ADD_ADDRESS = 'Add New Address';
+  static const String ADD = 'Add';
   static const String ADD_SHIP_TO_ADD = 'Add New Ship to Address';
   static const String ADD_ATTENDEE = 'Add New Attendee';
   static const String ATTENDEE_F_NAME = 'Attendee Full Name';
