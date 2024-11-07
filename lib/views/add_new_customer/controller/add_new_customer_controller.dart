@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sales_person_app/queries/api_mutate/create_customer_mutation.dart';
 import 'package:sales_person_app/queries/api_quries/multiqueries.dart';
 import 'package:sales_person_app/queries/api_quries/tlicountrys_query.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
@@ -13,7 +14,7 @@ import 'package:sales_person_app/views/add_new_customer/models/tlsalespersons_mo
 import 'package:sales_person_app/views/add_ship_to_address/models/tlicountrys_model.dart';
 
 class AddNewCustomerController extends GetxController {
-  // Add a GlobalKey for the Scaffold
+  // GlobalKey for the Scaffold
   final GlobalKey<ScaffoldState> addNewCustomerScaffoldKey =
       GlobalKey<ScaffoldState>();
 
@@ -21,7 +22,7 @@ class AddNewCustomerController extends GetxController {
   final RxBool generalPressed = false.obs;
   final RxBool addressContactPressed = false.obs;
   final RxBool invoicingPressed = false.obs;
-  final RxBool taxButtonPressed = false.obs;
+  // final RxBool taxButtonPressed = false.obs;
 
   // Drop-down Expansion Toggles
   final RxBool isSalesPersonCodeExpanded = false.obs;
@@ -39,12 +40,14 @@ class AddNewCustomerController extends GetxController {
   final RxBool customerPostingFieldRefresh = false.obs;
   final RxBool customerPriceFieldRefresh = false.obs;
 
+  // Selected Values
   final RxString selectedSalesPersonCode = ''.obs;
   final RxString selectedCountryRegionCode = ''.obs;
   final RxString selectedTaxAreaCode = ''.obs;
   final RxString selectedGenBusPostGrpCode = ''.obs;
   final RxString selectedCustomerPostGrpCode = ''.obs;
   final RxString selectedCustomerPriceGrpCode = ''.obs;
+  final RxString taxLiable = '0'.obs;
 
   // Scroll Controllers
   late final ScrollController salesPersonCodeScrollController;
@@ -79,9 +82,6 @@ class AddNewCustomerController extends GetxController {
   TliTaxAreas? tliTaxAreas;
   TliCountrys? tliCountrys;
 
-  // // Dependency Injection for Ship To Address Controller
-  // late final AddShipToAddressController shipToAddController;
-
   @override
   void onInit() async {
     super.onInit();
@@ -93,13 +93,13 @@ class AddNewCustomerController extends GetxController {
   /// Initializes data and controllers asynchronously
   Future<void> initializeControllerData() async {
     initializeControllers();
-    await getTliCountrys();
-    await getMultipleQueriesData();
+    await fetchCountriesData();
+    await fetchMultipleQueriesData();
   }
 
   /// Initializes scroll and text controllers
   void initializeControllers() {
-    // Initializing Scroll Controllers
+    // Scroll Controllers
     salesPersonCodeScrollController = ScrollController();
     countryRegionScrollController = ScrollController();
     taxAreaCodeScrollController = ScrollController();
@@ -107,7 +107,7 @@ class AddNewCustomerController extends GetxController {
     customerPostingScrollController = ScrollController();
     customerPricingScrollController = ScrollController();
 
-    // Initializing TextEditing Controllers
+    // Text Editing Controllers
     nameController = TextEditingController();
     salesPersonCodeController = TextEditingController();
     addressController = TextEditingController();
@@ -125,7 +125,8 @@ class AddNewCustomerController extends GetxController {
     customerPricingController = TextEditingController();
   }
 
-  Future<void> getTliCountrys() async {
+  /// Fetches countries data from the API
+  Future<void> fetchCountriesData() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
@@ -133,16 +134,14 @@ class AddNewCustomerController extends GetxController {
       query: TliCountrysQuery.tliCountrysQuery(),
       onSuccessGraph: (response) {
         log("******* RESPONSE: *********\n ${response.data}");
-        addTliCountrys(response.data!['tliCountrys']);
+        addCountriesData(response.data!['tliCountrys']);
       },
-      onError: (e) {
-        log('*** onError *** \n ${e.message}');
-      },
+      onError: (e) => log('*** onError *** \n ${e.message}'),
     );
   }
 
-  /// Fetches multiple queries data from the API
-  Future<void> getMultipleQueriesData() async {
+  /// Fetches data for multiple queries from the API
+  Future<void> fetchMultipleQueriesData() async {
     await BaseClient.safeApiCall(
       ApiConstants.BASE_URL_GRAPHQL,
       RequestType.query,
@@ -151,44 +150,72 @@ class AddNewCustomerController extends GetxController {
       onLoading: () => log('******* LOADING ********'),
       onSuccessGraph: (response) {
         log('******* On SUCCESS ********\n $response');
-        addTliCustomerPostGrps(response.data?['tliCustomerPostGrps']);
-        addTliCustomerPriceGrps(response.data?['tliCustomerPriceGrps']);
-        addTliGenBusPostGrps(response.data?['tliGenBusPostGrps']);
-        addTliSalesPersons(response.data?['tliSalespersons']);
-        addTliTaxAreas(response.data?['tliTaxAreas']);
+        addCustomerPostGroupsData(response.data?['tliCustomerPostGrps']);
+        addCustomerPriceGroupsData(response.data?['tliCustomerPriceGrps']);
+        addGenBusPostGroupsData(response.data?['tliGenBusPostGrps']);
+        addSalesPersonsData(response.data?['tliSalespersons']);
+        addTaxAreasData(response.data?['tliTaxAreas']);
       },
       onError: (e) => log('******* ON ERROR******** \n ${e.message}'),
     );
   }
 
-  void addTliSalesPersons(dynamic response) {
+  /// Creates a new customer with the input data
+  Future<void> createCustomer() async {
+    await BaseClient.safeApiCall(
+      ApiConstants.BASE_URL_GRAPHQL,
+      RequestType.query,
+      headersForGraphQL: await BaseClient.generateHeadersWithTokenForGraphQL(),
+      query: CreateCustomerMutation.createCustomerMutation(
+        name: nameController.text,
+        salespersonCode: selectedSalesPersonCode.value,
+        address: addressController.text,
+        postCode: zipCodeController.text,
+        city: cityController.text,
+        county: stateController.text,
+        countryRegionCode: selectedCountryRegionCode.value,
+        taxLiable: taxLiable.value,
+        taxAreaCode: selectedTaxAreaCode.value,
+        genBusPostingGroup: selectedGenBusPostGrpCode.value,
+        customerPostingGroup: selectedCustomerPostGrpCode.value,
+        customerPriceGroup: selectedCustomerPriceGrpCode.value,
+      ),
+      onLoading: () => log('******* LOADING ********'),
+      onSuccessGraph: (response) =>
+          log('******* On SUCCESS ********\n $response'),
+      onError: (e) => log('******* ON ERROR******** \n ${e.message}'),
+    );
+  }
+
+  /// Updates the model objects based on API response
+  void addSalesPersonsData(dynamic response) {
     tliSalesPersons = TliSalesPersons.fromJson(response);
-    log("**** Get tliSalespersons \n ${tliSalesPersons?.toJson()} ");
+    log("**** Sales Persons Data: \n ${tliSalesPersons?.toJson()} ");
   }
 
-  void addTliCountrys(response) {
+  void addCountriesData(dynamic response) {
     tliCountrys = TliCountrys.fromJson(response);
-    log("**** Get tliTaxAreas \n ${tliCountrys?.toJson()} ");
+    log("**** Countries Data: \n ${tliCountrys?.toJson()} ");
   }
 
-  void addTliTaxAreas(dynamic response) {
+  void addTaxAreasData(dynamic response) {
     tliTaxAreas = TliTaxAreas.fromJson(response);
-    log("**** Get tliTaxAreas \n ${tliTaxAreas?.toJson()} ");
+    log("**** Tax Areas Data: \n ${tliTaxAreas?.toJson()} ");
   }
 
-  void addTliCustomerPostGrps(dynamic response) {
+  void addCustomerPostGroupsData(dynamic response) {
     tliCustomerPostGrps = TliCustomerPostGrps.fromJson(response);
-    log("**** Get tliCustomerPostGrps \n ${tliCustomerPostGrps?.toJson()} ");
+    log("**** Customer Post Groups Data: \n ${tliCustomerPostGrps?.toJson()} ");
   }
 
-  void addTliCustomerPriceGrps(dynamic response) {
+  void addCustomerPriceGroupsData(dynamic response) {
     tliCustomerPriceGrps = TliCustomerPriceGrps.fromJson(response);
-    log("**** Get tliCustomerPriceGrps \n ${tliCustomerPriceGrps?.toJson()} ");
+    log("**** Customer Price Groups Data: \n ${tliCustomerPriceGrps?.toJson()} ");
   }
 
-  void addTliGenBusPostGrps(dynamic response) {
+  void addGenBusPostGroupsData(dynamic response) {
     tliGenBusPostGrps = TliGenBusPostGrps.fromJson(response);
-    log("**** Get tliGenBusPostGrps \n ${tliGenBusPostGrps?.toJson()} ");
+    log("**** Gen. Bus Post Groups Data: \n ${tliGenBusPostGrps?.toJson()} ");
   }
 
   void toggleGeneral() => generalPressed.value = !generalPressed.value;
@@ -198,7 +225,7 @@ class AddNewCustomerController extends GetxController {
 
   void toggleInvoicing() => invoicingPressed.value = !invoicingPressed.value;
 
-  void toggleTaxButton() => taxButtonPressed.value = !taxButtonPressed.value;
+  // void toggleTaxButton() => taxButtonPressed.value = !taxButtonPressed.value;
 
   /// Methods for subList OnTap property
   salesPersonCodeOnTap(int index) {

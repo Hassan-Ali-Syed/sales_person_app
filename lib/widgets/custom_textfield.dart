@@ -41,11 +41,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
     });
   }
 
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _focusNode.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

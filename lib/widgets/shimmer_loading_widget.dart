@@ -4,7 +4,7 @@ import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/themes/themes.dart';
 
 class ShimmerLoadingWidget extends StatelessWidget {
-  const ShimmerLoadingWidget({Key? key}) : super(key: key);
+  const ShimmerLoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class ShimmerLoadingWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: Sizes.PADDING_10),
+                const SizedBox(height: Sizes.PADDING_10),
                 // Row 2 with three shimmer containers
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,13 +51,13 @@ class ShimmerLoadingWidget extends StatelessWidget {
                       height: Sizes.HEIGHT_42,
                       color: Colors.white,
                     ),
-                    SizedBox(width: Sizes.PADDING_8),
+                    const SizedBox(width: Sizes.PADDING_8),
                     Container(
                       width: 50,
                       height: Sizes.HEIGHT_42,
                       color: Colors.white,
                     ),
-                    SizedBox(width: Sizes.PADDING_8),
+                    const SizedBox(width: Sizes.PADDING_8),
                     Container(
                       width: 30,
                       height: Sizes.HEIGHT_42,
