@@ -2179,29 +2179,32 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                     ? Sizes.HEIGHT_70
                                     : Sizes.HEIGHT_10,
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomElevatedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  title: AppStrings.CANCEL,
-                  minWidht: Sizes.WIDTH_90,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                ),
-                const SizedBox(
-                  width: Sizes.WIDTH_26,
-                ),
-                CustomElevatedButton(
-                  onPressed: () {},
-                  title: AppStrings.SAVE,
-                  minWidht: Sizes.WIDTH_90,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                )
-              ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    title: AppStrings.CANCEL,
+                    minWidht: Sizes.WIDTH_90,
+                    minHeight: Sizes.HEIGHT_30,
+                    backgroundColor: LightTheme.buttonBackgroundColor2,
+                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
+                  ),
+                  const SizedBox(
+                    width: Sizes.WIDTH_26,
+                  ),
+                  CustomElevatedButton(
+                    onPressed: () {},
+                    title: AppStrings.SAVE,
+                    minWidht: Sizes.WIDTH_90,
+                    minHeight: Sizes.HEIGHT_30,
+                    backgroundColor: LightTheme.buttonBackgroundColor2,
+                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
+                  )
+                ],
+              ),
             ],
           ),
         ),
