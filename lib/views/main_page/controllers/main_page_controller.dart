@@ -64,9 +64,6 @@ class MainPageController extends GetxController {
         log('loading...................................');
       },
       onSuccessGraph: (response) async {
-        // log("===Query of getCustomersFromGraphQL ====${TlicustomersQuery.tliCustomersQuery()}");
-        // log("===Header For getCustomersFromGraphQL ====${await BaseClient.generateHeadersWithTokenForGraphQL()}");
-        // log("===Response of customer on Success ====$response");
         addTliCustomerModel(response.data!['tliCustomers']);
 
         isLoading.value = false;
@@ -86,7 +83,7 @@ class MainPageController extends GetxController {
   addTliCustomerModel(response) {
     tliCustomers = TliCustomers.fromJson(response);
     Preferences().setCustomerRecords(tliCustomers);
-    log("******************addTliCustomerModel****************");
+    log("******************addedTliCustomerModel****************");
     isLoading.value = false;
   }
 

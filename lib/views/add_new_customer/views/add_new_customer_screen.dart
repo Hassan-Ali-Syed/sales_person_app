@@ -846,49 +846,15 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                       Colors.white,
                                                     ),
                                                     value: controller
-                                                            .taxLiable.value ==
-                                                        "1",
+                                                        .taxLiable.value,
                                                     onChanged: (value) {
-                                                      controller
-                                                              .taxLiable.value =
-                                                          value ? "1" : "0";
+                                                      controller.taxLiable
+                                                          .value = value;
                                                       log("tax Liable: ${controller.taxLiable.value}");
                                                     },
                                                   ),
                                                 ),
                                               ),
-                                              // Padding(
-                                              //   padding: const EdgeInsets.only(
-                                              //       right: Sizes.PADDING_26),
-                                              //   child: Expanded(
-                                              //     flex: 1,
-                                              //     child: Transform.scale(
-                                              //       scale: 1.1,
-                                              //       child: Switch(
-                                              //         trackOutlineWidth:
-                                              //             const WidgetStatePropertyAll(
-                                              //                 200),
-                                              //         inactiveTrackColor:
-                                              //             const Color(
-                                              //                 0xff979797),
-                                              //         activeTrackColor:
-                                              //             const Color(
-                                              //                 0xff13C39C),
-                                              //         thumbColor:
-                                              //             const WidgetStatePropertyAll(
-                                              //                 Colors.white),
-                                              //         value: controller
-                                              //             .taxButtonPressed
-                                              //             .value,
-                                              //         onChanged: (value) {
-                                              //           controller
-                                              //               .taxButtonPressed
-                                              //               .value = value;
-                                              //         },
-                                              //       ),
-                                              //     ),
-                                              //   ),
-                                              // ),
                                             ],
                                           ),
                                         ),
@@ -2171,7 +2137,7 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                             : !controller.generalPressed.value &&
                                     !controller.addressContactPressed.value &&
                                     controller.invoicingPressed.value
-                                ? Sizes.HEIGHT_300
+                                ? Sizes.HEIGHT_250
                                 : controller.generalPressed.value &&
                                         !controller
                                             .addressContactPressed.value &&
@@ -2179,29 +2145,34 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                     ? Sizes.HEIGHT_70
                                     : Sizes.HEIGHT_10,
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                CustomElevatedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  title: AppStrings.CANCEL,
-                  minWidht: Sizes.WIDTH_90,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                ),
-                const SizedBox(
-                  width: Sizes.WIDTH_26,
-                ),
-                CustomElevatedButton(
-                  onPressed: () {},
-                  title: AppStrings.SAVE,
-                  minWidht: Sizes.WIDTH_90,
-                  minHeight: Sizes.HEIGHT_30,
-                  backgroundColor: LightTheme.buttonBackgroundColor2,
-                  borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-                )
-              ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    title: AppStrings.CANCEL,
+                    minWidht: Sizes.WIDTH_90,
+                    minHeight: Sizes.HEIGHT_30,
+                    backgroundColor: LightTheme.buttonBackgroundColor2,
+                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
+                  ),
+                  const SizedBox(
+                    width: Sizes.WIDTH_26,
+                  ),
+                  CustomElevatedButton(
+                    onPressed: () {
+                      controller.createCustomer();
+                    },
+                    title: AppStrings.SAVE,
+                    minWidht: Sizes.WIDTH_90,
+                    minHeight: Sizes.HEIGHT_30,
+                    backgroundColor: LightTheme.buttonBackgroundColor2,
+                    borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
+                  )
+                ],
+              ),
             ],
           ),
         ),
