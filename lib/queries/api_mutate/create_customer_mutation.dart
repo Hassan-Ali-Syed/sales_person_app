@@ -13,7 +13,7 @@ class CreateCustomerMutation {
     String? phoneNo,
     String? eMail,
     String? homePage,
-    required String taxLiable,
+    required bool taxLiable,
     required String taxAreaCode,
     required String genBusPostingGroup,
     required String customerPostingGroup,
@@ -27,22 +27,22 @@ class CreateCustomerMutation {
           no: ""
           primaryContactNo: ""
           locationCode: "SYOSSET"
-          name: $name
-          salespersonCode: $salespersonCode
-          address: $address
-          address2: $address2
-          postCode: $postCode
-          city: $city
-          county: $county
-          countryRegionCode: $countryRegionCode
-          phoneNo: $phoneNo
-          eMail: $eMail
-          homePage: $homePage
-          taxLiable: $taxLiable
-          taxAreaCode: $taxAreaCode
-          genBusPostingGroup: $genBusPostingGroup
-          customerPostingGroup: $customerPostingGroup
-          customerPriceGroup: $customerPriceGroup
+          name: "$name"
+          salespersonCode: "$salespersonCode"
+          address: "$address"
+          address2: "$address2"
+          postCode: "$postCode"
+          city: "$city"
+          county: "$county"
+          countryRegionCode: "$countryRegionCode"
+          phoneNo: "$phoneNo"
+          eMail: "$eMail"
+          homePage: "$homePage"
+          taxLiable: "$taxLiable"
+          taxAreaCode: "$taxAreaCode"
+          genBusPostingGroup: "$genBusPostingGroup"
+          customerPostingGroup: "$customerPostingGroup"
+          customerPriceGroup: "$customerPriceGroup"
         }
       ) {
         message

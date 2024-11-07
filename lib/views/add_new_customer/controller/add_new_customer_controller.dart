@@ -4,14 +4,17 @@ import 'package:get/get.dart';
 import 'package:sales_person_app/queries/api_mutate/create_customer_mutation.dart';
 import 'package:sales_person_app/queries/api_quries/multiqueries.dart';
 import 'package:sales_person_app/queries/api_quries/tlicountrys_query.dart';
+import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/services/api/api_constants.dart';
 import 'package:sales_person_app/services/api/base_client.dart';
+import 'package:sales_person_app/utils/custom_snackbar.dart';
 import 'package:sales_person_app/views/add_new_customer/models/tlicustomerpostgrps_model.dart';
 import 'package:sales_person_app/views/add_new_customer/models/tlicustomerpricegrps_model.dart';
 import 'package:sales_person_app/views/add_new_customer/models/tligenbuspostgrps_model.dart';
 import 'package:sales_person_app/views/add_new_customer/models/tlitaxareas_model.dart';
 import 'package:sales_person_app/views/add_new_customer/models/tlsalespersons_model.dart';
 import 'package:sales_person_app/views/add_ship_to_address/models/tlicountrys_model.dart';
+import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
 
 class AddNewCustomerController extends GetxController {
   // GlobalKey for the Scaffold
@@ -47,7 +50,7 @@ class AddNewCustomerController extends GetxController {
   final RxString selectedGenBusPostGrpCode = ''.obs;
   final RxString selectedCustomerPostGrpCode = ''.obs;
   final RxString selectedCustomerPriceGrpCode = ''.obs;
-  final RxString taxLiable = '0'.obs;
+  final RxBool taxLiable = false.obs;
 
   // Scroll Controllers
   late final ScrollController salesPersonCodeScrollController;
@@ -82,10 +85,13 @@ class AddNewCustomerController extends GetxController {
   TliTaxAreas? tliTaxAreas;
   TliCountrys? tliCountrys;
 
+  late MainPageController _mainPageController;
+
   @override
   void onInit() async {
     super.onInit();
     log('Initialization start....');
+    _mainPageController = Get.find<MainPageController>();
     await initializeControllerData();
     log('Initialization end....');
   }
@@ -170,10 +176,14 @@ class AddNewCustomerController extends GetxController {
         name: nameController.text,
         salespersonCode: selectedSalesPersonCode.value,
         address: addressController.text,
+        address2: addressController.text,
         postCode: zipCodeController.text,
         city: cityController.text,
         county: stateController.text,
         countryRegionCode: selectedCountryRegionCode.value,
+        phoneNo: phoneNumberController.text,
+        eMail: emailController.text,
+        homePage: homePageController.text,
         taxLiable: taxLiable.value,
         taxAreaCode: selectedTaxAreaCode.value,
         genBusPostingGroup: selectedGenBusPostGrpCode.value,
@@ -181,8 +191,21 @@ class AddNewCustomerController extends GetxController {
         customerPriceGroup: selectedCustomerPriceGrpCode.value,
       ),
       onLoading: () => log('******* LOADING ********'),
-      onSuccessGraph: (response) =>
-          log('******* On SUCCESS ********\n $response'),
+      onSuccessGraph: (response) async {
+        log('******* On SUCCESS ********\n $response');
+        if (response.data!['createtliCustomer']['success'] &&
+            response.data!['createtliCustomer']['status'] == 200) {
+          await _mainPageController.getCustomersFromGraphQL();
+          Get.offNamed(AppRoutes.CUSTOMER_VISIT);
+        } else if (response.data!['createtliCustomer']['status'] == 400) {
+          CustomSnackBar.showCustomErrorSnackBar(
+            title: 'Error',
+            message: '${response.data!['createtliCustomer']['message']}',
+            duration: const Duration(seconds: 3),
+          );
+          log("Error: ${response.data!['createtliCustomer']['message']}");
+        }
+      },
       onError: (e) => log('******* ON ERROR******** \n ${e.message}'),
     );
   }
@@ -231,24 +254,31 @@ class AddNewCustomerController extends GetxController {
   salesPersonCodeOnTap(int index) {
     salesPersonCodeController.text = tliSalesPersons!.value[index].description!;
     selectedSalesPersonCode.value = tliSalesPersons!.value[index].code!;
+    log("SalesPersonCode: ${selectedSalesPersonCode.value}");
     isSalesPersonCodeExpanded.value = false;
   }
 
   countryRegionCodeOnTap(int index) {
     countryRegionController.text = tliCountrys!.value[index].description!;
     selectedCountryRegionCode.value = tliCountrys!.value[index].code!;
+    log("countryRegionCodeOnTap: ${selectedCountryRegionCode.value}");
+
     isCountryRegionExpanded.value = false;
   }
 
   taxAreaCodeOnTap(int index) {
     taxAreaCodeController.text = tliTaxAreas!.value[index].description!;
     selectedTaxAreaCode.value = tliTaxAreas!.value[index].code!;
+    log("taxAreaCodeOnTap: ${selectedTaxAreaCode.value}");
+
     isTaxAreaCodeExpanded.value = false;
   }
 
   genBusPostGrpsOnTap(int index) {
     genBusPostingController.text = tliGenBusPostGrps!.value[index].description!;
     selectedGenBusPostGrpCode.value = tliGenBusPostGrps!.value[index].code!;
+    log("genBusPostGrpsOnTap: ${selectedGenBusPostGrpCode.value}");
+
     isGenBusGroupExpanded.value = false;
   }
 
@@ -256,6 +286,7 @@ class AddNewCustomerController extends GetxController {
     customerPostingController.text =
         tliCustomerPostGrps!.value[index].description!;
     selectedCustomerPostGrpCode.value = tliCustomerPostGrps!.value[index].code!;
+    log("customerPostGrpsOnTap: ${selectedCustomerPostGrpCode.value}");
     isCustomerPostingGroupExpanded.value = false;
   }
 
@@ -264,6 +295,7 @@ class AddNewCustomerController extends GetxController {
         tliCustomerPriceGrps!.value[index].description!;
     selectedCustomerPriceGrpCode.value =
         tliCustomerPriceGrps!.value[index].code!;
+    log(" customerPriceGrps: ${selectedCustomerPriceGrpCode.value}");
     isCustomerPriceGroupExpanded.value = false;
   }
 }

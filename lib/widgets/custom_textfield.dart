@@ -33,19 +33,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
     super.initState();
 
     _focusNode.addListener(() {
-      // log('Focus changed: ${_focusNode.hasFocus}');
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
+
     widget.controller?.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
-  // @override
-  // void dispose() {
-  //   _focusNode.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
