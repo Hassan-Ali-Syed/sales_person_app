@@ -36,8 +36,7 @@ class TlicustomersQuery {
           value {
             systemId
             no
-            contact
-            shipToCode
+            primaryContactNo
             tliContact {
               customerNo
               name

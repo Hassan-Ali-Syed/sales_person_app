@@ -76,6 +76,9 @@ class Sizes {
   static const double HEIGHT_756 = 756.0;
   static const double HEIGHT_750 = 750.0;
   static const double HEIGHT_600 = 600.0;
+  static const double HEIGHT_590 = 590.0;
+  static const double HEIGHT_580 = 580.0;
+  static const double HEIGHT_570 = 570.0;
   static const double HEIGHT_560 = 560.0;
   static const double HEIGHT_500 = 500.0;
   static const double HEIGHT_440 = 440.0;

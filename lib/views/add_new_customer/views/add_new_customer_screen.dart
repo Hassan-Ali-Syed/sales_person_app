@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/extensions/context_extension.dart';
+import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/add_new_customer/components/add_customer_tile.dart';
 import 'package:sales_person_app/views/add_new_customer/controller/add_new_customer_controller.dart';
 import 'package:sales_person_app/widgets/custom_appbar.dart';
+import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 import 'package:sales_person_app/widgets/custom_textfield.dart';
 
 class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
@@ -457,7 +461,8 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                                       .value = true;
                                                 },
                                                 child: const Icon(
-                                                    Icons.arrow_drop_down),
+                                                  Icons.arrow_drop_down,
+                                                ),
                                               ),
                                               controller: controller
                                                   .countryRegionController,
@@ -794,10 +799,10 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                 () => controller.invoicingPressed.value
                     ? Padding(
                         padding: const EdgeInsets.only(
-                            top: Sizes.PADDING_8,
-                            left: Sizes.PADDING_14,
-                            right: Sizes.PADDING_14,
-                            bottom: Sizes.PADDING_30),
+                          top: Sizes.PADDING_8,
+                          left: Sizes.PADDING_14,
+                          right: Sizes.PADDING_14,
+                        ),
                         child: Column(
                           children: [
                             Obx(
@@ -825,35 +830,65 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     right: Sizes.PADDING_26),
-                                                child: Expanded(
-                                                  flex: 1,
-                                                  child: Transform.scale(
-                                                    scale: 1.1,
-                                                    child: Switch(
-                                                      trackOutlineWidth:
-                                                          const WidgetStatePropertyAll(
-                                                              200),
-                                                      inactiveTrackColor:
-                                                          const Color(
-                                                              0xff979797),
-                                                      activeTrackColor:
-                                                          const Color(
-                                                              0xff13C39C),
-                                                      thumbColor:
-                                                          const WidgetStatePropertyAll(
-                                                              Colors.white),
-                                                      value: controller
-                                                          .taxButtonPressed
-                                                          .value,
-                                                      onChanged: (value) {
-                                                        controller
-                                                            .taxButtonPressed
-                                                            .value = value;
-                                                      },
+                                                child: Transform.scale(
+                                                  scale: 1.1,
+                                                  child: Switch(
+                                                    trackOutlineWidth:
+                                                        const WidgetStatePropertyAll(
+                                                      200,
                                                     ),
+                                                    inactiveTrackColor:
+                                                        const Color(0xff979797),
+                                                    activeTrackColor:
+                                                        const Color(0xff13C39C),
+                                                    thumbColor:
+                                                        const WidgetStatePropertyAll(
+                                                      Colors.white,
+                                                    ),
+                                                    value: controller
+                                                            .taxLiable.value ==
+                                                        "1",
+                                                    onChanged: (value) {
+                                                      controller
+                                                              .taxLiable.value =
+                                                          value ? "1" : "0";
+                                                      log("tax Liable: ${controller.taxLiable.value}");
+                                                    },
                                                   ),
                                                 ),
                                               ),
+                                              // Padding(
+                                              //   padding: const EdgeInsets.only(
+                                              //       right: Sizes.PADDING_26),
+                                              //   child: Expanded(
+                                              //     flex: 1,
+                                              //     child: Transform.scale(
+                                              //       scale: 1.1,
+                                              //       child: Switch(
+                                              //         trackOutlineWidth:
+                                              //             const WidgetStatePropertyAll(
+                                              //                 200),
+                                              //         inactiveTrackColor:
+                                              //             const Color(
+                                              //                 0xff979797),
+                                              //         activeTrackColor:
+                                              //             const Color(
+                                              //                 0xff13C39C),
+                                              //         thumbColor:
+                                              //             const WidgetStatePropertyAll(
+                                              //                 Colors.white),
+                                              //         value: controller
+                                              //             .taxButtonPressed
+                                              //             .value,
+                                              //         onChanged: (value) {
+                                              //           controller
+                                              //               .taxButtonPressed
+                                              //               .value = value;
+                                              //         },
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                         ),
@@ -2118,37 +2153,55 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                           ],
                         ),
                       )
-                    : const SizedBox(
-                        height: Sizes.HEIGHT_10,
-                      ),
+                    : const SizedBox(),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: Sizes.PADDING_40),
-              //   child:
-              //       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              //     CustomElevatedButton(
-              //       onPressed: () {
-              //         Get.back();
-              //       },
-              //       title: AppStrings.CANCEL,
-              //       minWidht: Sizes.WIDTH_90,
-              //       minHeight: Sizes.HEIGHT_30,
-              //       backgroundColor: LightTheme.buttonBackgroundColor2,
-              //       borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-              //     ),
-              //     const SizedBox(
-              //       width: Sizes.WIDTH_26,
-              //     ),
-              //     CustomElevatedButton(
-              //       onPressed: () {},
-              //       title: AppStrings.SAVE,
-              //       minWidht: Sizes.WIDTH_90,
-              //       minHeight: Sizes.HEIGHT_30,
-              //       backgroundColor: LightTheme.buttonBackgroundColor2,
-              //       borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
-              //     )
-              //   ]),
-              // ),
+              SizedBox(
+                height: !controller.generalPressed.value &&
+                        !controller.addressContactPressed.value &&
+                        !controller.invoicingPressed.value
+                    ? Sizes.HEIGHT_570
+                    : controller.generalPressed.value &&
+                            !controller.addressContactPressed.value &&
+                            !controller.invoicingPressed.value
+                        ? Sizes.HEIGHT_380
+                        : !controller.generalPressed.value &&
+                                controller.addressContactPressed.value &&
+                                !controller.invoicingPressed.value
+                            ? Sizes.HEIGHT_100
+                            : !controller.generalPressed.value &&
+                                    !controller.addressContactPressed.value &&
+                                    controller.invoicingPressed.value
+                                ? Sizes.HEIGHT_300
+                                : controller.generalPressed.value &&
+                                        !controller
+                                            .addressContactPressed.value &&
+                                        controller.invoicingPressed.value
+                                    ? Sizes.HEIGHT_70
+                                    : Sizes.HEIGHT_10,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                CustomElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  title: AppStrings.CANCEL,
+                  minWidht: Sizes.WIDTH_90,
+                  minHeight: Sizes.HEIGHT_30,
+                  backgroundColor: LightTheme.buttonBackgroundColor2,
+                  borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
+                ),
+                const SizedBox(
+                  width: Sizes.WIDTH_26,
+                ),
+                CustomElevatedButton(
+                  onPressed: () {},
+                  title: AppStrings.SAVE,
+                  minWidht: Sizes.WIDTH_90,
+                  minHeight: Sizes.HEIGHT_30,
+                  backgroundColor: LightTheme.buttonBackgroundColor2,
+                  borderRadiusCircular: BorderRadius.circular(Sizes.RADIUS_6),
+                )
+              ]),
             ],
           ),
         ),

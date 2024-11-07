@@ -42,8 +42,9 @@ class CustomerValue {
   String? no;
   String? address;
   String? address2;
-  String? contact;
-  String? shipToCode;
+  String? primaryContactNo;
+  // String? contact;
+  // String? shipToCode;
   List<TliContact>? tliContact;
   List<TliShipToAddress>? tliShipToAdds;
 
@@ -53,8 +54,9 @@ class CustomerValue {
     this.no,
     this.address,
     this.address2,
-    this.contact,
-    this.shipToCode,
+    this.primaryContactNo,
+    // this.contact,
+    // this.shipToCode,
     this.tliContact,
     this.tliShipToAdds,
   });
@@ -67,8 +69,9 @@ class CustomerValue {
       no: json['no'],
       address: json['address'],
       address2: json['address2'],
-      contact: json['contact'],
-      shipToCode: json['shipToCode'],
+      primaryContactNo: json['primaryContactNo'],
+      // contact: json['contact'],
+      // shipToCode: json['shipToCode'],
       tliContact: json['tliContact'] != null
           ? List<TliContact>.from(
               json['tliContact'].map((x) => TliContact.fromJson(x)))
@@ -88,8 +91,9 @@ class CustomerValue {
       'no': no,
       'address': address,
       'address2': address2,
-      'contact': contact,
-      'shipToCode': shipToCode,
+      'primaryContactNo': primaryContactNo,
+      // 'contact': contact,
+      // 'shipToCode': shipToCode,
       'tliContact': tliContact?.map((v) => v.toJson()).toList(),
       'tliShipToAdds': tliShipToAdds?.map((v) => v.toJson()).toList(),
     };
