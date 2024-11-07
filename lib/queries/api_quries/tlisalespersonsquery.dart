@@ -11,6 +11,7 @@ class TliSalesPersonsQuery {
         success
         value {
           code
+          description
         }
       }""";
   }

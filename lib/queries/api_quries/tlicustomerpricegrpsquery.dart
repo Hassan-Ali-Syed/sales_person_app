@@ -12,6 +12,7 @@ class TliCustomerPriceGrpsQuery {
     success
     value {
       code
+      description,
     }
   }""";
   }

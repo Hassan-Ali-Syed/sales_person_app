@@ -12,6 +12,7 @@ class TliGenBusPostGrpsQuery {
     message
     value {
       code
+      description
     }
   }""";
   }

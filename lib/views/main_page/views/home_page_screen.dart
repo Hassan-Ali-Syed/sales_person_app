@@ -8,6 +8,7 @@ import 'package:sales_person_app/routes/app_routes.dart';
 import 'package:sales_person_app/themes/themes.dart';
 import 'package:sales_person_app/views/main_page/components/calender_date_widget.dart';
 import 'package:sales_person_app/views/main_page/controllers/main_page_controller.dart';
+// import 'package:sales_person_app/widgets/shimmer_loading_widget.dart';
 
 class HomePageScreen extends GetView<MainPageController> {
   HomePageScreen({super.key});
@@ -25,7 +26,9 @@ class HomePageScreen extends GetView<MainPageController> {
     return Scaffold(
       body: Obx(
         () => controller.isLoading.value
-            ? const Center(
+            ?
+            // const ShimmerLoadingWidget()
+            const Center(
                 child: CircularProgressIndicator(
                   color: Colors.black45,
                 ),

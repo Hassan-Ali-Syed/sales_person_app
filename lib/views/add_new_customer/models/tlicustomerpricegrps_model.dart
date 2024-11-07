@@ -30,17 +30,21 @@ class TliCustomerPriceGrps {
 
 class TliCustomerPriceGrpsValue {
   String? code;
+  String? description;
 
   TliCustomerPriceGrpsValue({
     this.code,
+    this.description,
   });
 
   factory TliCustomerPriceGrpsValue.fromJson(Map<String, dynamic> json) =>
       TliCustomerPriceGrpsValue(
         code: json["code"],
+        description: json["description"],
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
+        "description": description,
       };
 }
