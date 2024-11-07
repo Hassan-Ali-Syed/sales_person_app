@@ -451,22 +451,34 @@ class AddNewCustomerScreen extends GetView<AddNewCustomerController> {
                                           width: Sizes.WIDTH_40,
                                         ),
                                         Expanded(
-                                            flex: 2,
-                                            child: CustomTextField(
-                                              hintText: 'Country/Region Code',
-                                              suffixIcon: GestureDetector(
-                                                onTap: () {
-                                                  controller
-                                                      .isCountryRegionExpanded
-                                                      .value = true;
-                                                },
-                                                child: const Icon(
-                                                  Icons.arrow_drop_down,
-                                                ),
-                                              ),
-                                              controller: controller
-                                                  .countryRegionController,
-                                            ))
+
+                                          flex: 2,
+                                          child: CustomTextField(
+                                            label: Text(
+                                              'Country/Region Code',
+                                              style: context.titleSmall
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: const Color(
+                                                          0xff939598),
+                                                      fontSize: 15),
+                                            ),
+                                            hintText: '',
+                                            suffixIcon: GestureDetector(
+                                              onTap: () {
+                                                controller
+                                                    .isCountryRegionExpanded
+                                                    .value = true;
+                                              },
+                                              child: const Icon(
+                                                  Icons.arrow_drop_down),
+                                            ),
+                                            controller: controller
+                                                .countryRegionController,
+                                          ),
+                                        )
+
                                       ],
                                     )
                                   : Container(

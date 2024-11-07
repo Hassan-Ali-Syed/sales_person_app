@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
-import 'package:sales_person_app/views/list_items/controllers/list_items_controller.dart';
+import 'package:sales_person_app/views/list_items/controllers/scanner_module_controller.dart';
 
-class ListItemsBiniding extends Bindings {
+class ScannerModuleBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ListItemsController>(
-      () => ListItemsController(),
+    Get.lazyPut<ScannerModuleController>(
+      () => ScannerModuleController(),
     );
   }
 }

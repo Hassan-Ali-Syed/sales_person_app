@@ -5,6 +5,7 @@ import 'package:sales_person_app/views/add_new_customer/views/add_new_customer_s
 import 'package:sales_person_app/views/add_ship_to_address/views/add_ship_to_address_screen.dart';
 import 'package:sales_person_app/views/customer_visit/views/customer_visit_screen.dart';
 import 'package:sales_person_app/views/list_items/views/list_items_screen.dart';
+import 'package:sales_person_app/views/list_items/views/scanner_screen.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/home_page_screen.dart';
@@ -28,4 +29,5 @@ class AppRoutes {
   static const String ADD_SHIP_TO_ADDRESS = AddShipToAddressScreen.routeName;
   static const String ADD_NEW_CUSTOMER = AddNewCustomerScreen.routeName;
   static const String LIST_ITEMS = ListItemsScreen.routeName;
+  static const String SCANNER_SCREEN = ScannerScreen.routeName;
 }

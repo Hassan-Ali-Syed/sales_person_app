@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sales_person_app/constants/constants.dart';
 import 'package:sales_person_app/themes/themes.dart';
+import 'package:sales_person_app/views/list_items/views/item_add_manualy.dart';
+import 'package:sales_person_app/views/list_items/views/list_items_screen.dart';
 import 'package:sales_person_app/widgets/custom_elevated_button.dart';
 
-class ListItemsController extends GetxController {
+class ScannerModuleController extends GetxController {
   RxBool ischeckBox = false.obs;
   RxBool isSelectAllChecked = false.obs;
-
+  RxInt selectedIndex = 0.obs;
+  RxBool isItemNameFieldExpanded = false.obs;
+  RxBool isLoading = false.obs;
+  RxBool itemsFieldRefresh = false.obs;
+  List<Widget> pages = [const ItemAddManualy(), const ListItemsScreen()];
+  late TextEditingController itemNameController;
   var items = [
     {
       'id': 1,
@@ -20,6 +27,11 @@ class ListItemsController extends GetxController {
       'qty': 45,
     },
   ].obs;
+  @override
+  void onInit() {
+    itemNameController = TextEditingController();
+    super.onInit();
+  }
 
   // Toggle select all checkbox state
   void toggleSelectAll() {

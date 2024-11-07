@@ -10,6 +10,7 @@ import 'package:sales_person_app/views/customer_visit/bindings/customer_visit_bi
 import 'package:sales_person_app/views/customer_visit/views/customer_visit_screen.dart';
 import 'package:sales_person_app/views/list_items/bindings/list_items_biniding.dart';
 import 'package:sales_person_app/views/list_items/views/list_items_screen.dart';
+import 'package:sales_person_app/views/list_items/views/scanner_screen.dart';
 import 'package:sales_person_app/views/main_page/views/contact_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/customer_page_screen.dart';
 import 'package:sales_person_app/views/main_page/views/home_page_screen.dart';
@@ -86,7 +87,12 @@ class AppPages {
     GetPage(
       name: AppRoutes.LIST_ITEMS,
       page: () => const ListItemsScreen(),
-      binding: ListItemsBiniding(),
+      binding: ScannerModuleBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.SCANNER_SCREEN,
+      page: () => const ScannerScreen(),
+      binding: ScannerModuleBinding(),
     ),
   ];
 }
